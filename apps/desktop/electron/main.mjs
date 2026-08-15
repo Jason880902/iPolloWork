@@ -31,6 +31,9 @@ import {
 import { createUiControlServer } from "./ui-control-server.mjs";
 import { createApplicationMenu } from "./app-menu.mjs";
 import { createBrowserPanel } from "./browser-panel.mjs";
+import { createPetWindow } from "./pet-window.mjs";
+import { createPetAssistant } from "./pet-assistant.mjs";
+import { createPetIntegrations } from "./pet-integrations.mjs";
 import { createWorkspaceStore } from "./workspace-store.mjs";
 import { openExternalUrl } from "./open-external.mjs";
 import { protectOutputStreamFromBrokenPipe } from "./stdio-safety.mjs";
@@ -1507,6 +1510,20 @@ const workspaceStore = createWorkspaceStore({
   forceRequireSignin: FORCE_DESKTOP_REQUIRE_SIGNIN,
 });
 
+const petWindow = createPetWindow({
+  getWindow: () => mainWindow,
+});
+
+const petAssistant = createPetAssistant({
+  petWindow,
+  taskFilePath: path.join(os.homedir(), "pet-tasks.md"),
+});
+
+const petIntegrations = createPetIntegrations({
+  petWindow,
+  getMainWindow: () => mainWindow,
+});
+
 function normalizePlatform(value) {
   if (value === "darwin" || value === "linux") return value;
   if (value === "win32") return "windows";
@@ -2299,6 +2316,34 @@ const desktopCommandHandlers = {
   "desktopNotificationShow": async (event, ...args) => {
       return showDesktopNotification(args[0] ?? {});
   },
+  "petEvent": async (event, ...args) => {
+      return petAssistant.handleDesktopEvent(args[0] ?? {});
+  },
+  "petChatReply": async (event, ...args) => {
+      const input = args[0] ?? {};
+      if (typeof input.id !== "string" || typeof input.text !== "string") {
+        return { ok: false, reason: "invalid reply payload" };
+      }
+      if (input.internal === true) {
+        petIntegrations.handleCheckReply(input.text);
+      } else {
+        petWindow.sendChatReply({ id: input.id, text: input.text });
+      }
+      return { ok: true };
+  },
+  "petGetState": async () => {
+      return petWindow.getState();
+  },
+  "petSetEnabled": async (event, ...args) => {
+      const input = args[0] ?? {};
+      return petWindow.setEnabled(input.enabled === true);
+  },
+  "petGetIntegrations": async () => {
+      return petIntegrations.getPublicState();
+  },
+  "petSetAutoCheck": async (event, ...args) => {
+      return petIntegrations.setAutoCheck(args[0] ?? {});
+  },
   "listSystemFontFamilies": async (event, ...args) => {
       try {
         return listSystemFontFamilies();
@@ -2904,6 +2949,7 @@ async function createMainWindow() {
 
   mainWindow.on("closed", () => {
     browserPanel.destroy();
+    petWindow.destroyWindow();
     mainWindow = null;
   });
 
@@ -4100,6 +4146,7 @@ ipcMain.handle("ipollowork:hyperframes:set-simple-mode", async (event, enabled) 
 });
 
 browserPanel.registerIpc(ipcMain);
+petWindow.registerIpc(ipcMain);
 
 registerMigrationIpc({ app, ipcMain });
 const { ensureAutoUpdater } = registerUpdaterIpc({ app, ipcMain, getMainWindow: () => mainWindow });
@@ -4111,6 +4158,8 @@ if (!app.requestSingleInstanceLock()) {
     if (runtimeDisposedForQuit) return;
     event.preventDefault();
     if (runtimeDisposeInProgress) return;
+    petAssistant.stop();
+    petIntegrations.stop();
     showShutdownScreen();
     void Promise.all([disposeRuntimeBeforeQuit(), uiControlServer.stop()]).finally(() => app.quit());
   });
@@ -4170,6 +4219,11 @@ if (!app.requestSingleInstanceLock()) {
     const windowStartedAt = Date.now();
     const win = await createMainWindow();
     console.info(`[startup] main window loaded in ${Date.now() - windowStartedAt}ms`);
+    petWindow.ensureWindow().catch((error) => {
+      console.warn("[pet] failed to create pet window", error);
+    });
+    petAssistant.start();
+    void petIntegrations.start();
     win.webContents.on("did-finish-load", () => {
       console.info(`[startup] renderer finished loading after ${Date.now() - startupStartedAt}ms`);
       flushPendingDeepLinks();
@@ -4184,11 +4238,17 @@ if (!app.requestSingleInstanceLock()) {
   app.on("activate", async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       await createMainWindow();
+      petWindow.ensureWindow().catch((error) => {
+        console.warn("[pet] failed to recreate pet window", error);
+      });
       return;
     }
     const win = await createMainWindow();
     win.show();
     win.focus();
+    petWindow.ensureWindow().catch((error) => {
+      console.warn("[pet] failed to recreate pet window", error);
+    });
   });
 
   app.on("window-all-closed", () => {

@@ -6,6 +6,8 @@ const NATIVE_MENU_OPEN_SETTINGS_EVENT = "ipollowork:native-menu:open-settings";
 const NATIVE_MENU_TOGGLE_SIDEBAR_EVENT = "ipollowork:native-menu:toggle-sidebar";
 const NATIVE_MENU_CHECK_UPDATES_EVENT = "ipollowork:native-menu:check-updates";
 const NATIVE_MENU_ZOOM_EVENT = "ipollowork:native-menu:zoom";
+const PET_CHAT_REQUEST_EVENT = "ipollowork:pet:chat-request";
+const PET_OPEN_SETTINGS_EVENT = "ipollowork:pet:open-settings";
 
 function normalizePlatform(value) {
   if (value === "darwin" || value === "linux") return value;
@@ -214,6 +216,16 @@ ipcRenderer.on(NATIVE_MENU_CHECK_UPDATES_EVENT, () => {
 ipcRenderer.on(NATIVE_MENU_ZOOM_EVENT, (_event, action) => {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new CustomEvent(NATIVE_MENU_ZOOM_EVENT, { detail: action }));
+});
+
+ipcRenderer.on(PET_CHAT_REQUEST_EVENT, (_event, payload) => {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(PET_CHAT_REQUEST_EVENT, { detail: payload }));
+});
+
+ipcRenderer.on(PET_OPEN_SETTINGS_EVENT, () => {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event(PET_OPEN_SETTINGS_EVENT));
 });
 
 if (!applyShellDocumentMarkers() && typeof document !== "undefined") {

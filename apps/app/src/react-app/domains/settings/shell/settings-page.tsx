@@ -11,6 +11,7 @@ import {
   Info,
   Layout,
   Paintbrush,
+  PawPrint,
   Puzzle,
   RefreshCcw,
   ShieldCheck,
@@ -58,6 +59,8 @@ export function getSettingsTabIcon(tab: SettingsTab) {
       return Zap;
     case "preferences":
       return SlidersHorizontal;
+    case "pet":
+      return PawPrint;
     case "shell":
       return Layout;
     case "permissions":
@@ -101,6 +104,8 @@ export function getSettingsTabLabel(tab: SettingsTab) {
       return t("settings.tab_ai");
     case "preferences":
       return t("settings.tab_preferences");
+    case "pet":
+      return t("settings.tab_pet");
     case "shell":
       return t("settings.tab_shell");
     case "permissions":
@@ -146,6 +151,8 @@ export function getSettingsTabDescription(tab: SettingsTab) {
       return t("settings.tab_description_ai");
     case "preferences":
       return t("settings.tab_description_preferences");
+    case "pet":
+      return t("settings.tab_description_pet");
     case "shell":
       return t("settings.tab_description_shell");
     case "permissions":
@@ -190,7 +197,7 @@ export function getWorkspaceSettingsTabs(): SettingsTab[] {
 }
 
 export function getGlobalSettingsTabs(developerMode: boolean): SettingsTab[] {
-  const tabs: SettingsTab[] = ["ai", "authorizations", "shell", "appearance", "environment", "updates", "recovery"];
+  const tabs: SettingsTab[] = ["ai", "authorizations", "shell", "appearance", "pet", "environment", "updates", "recovery"];
   if (developerMode) tabs.push("debug");
   return tabs;
 }

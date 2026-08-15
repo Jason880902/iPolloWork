@@ -8,6 +8,7 @@ import { useUiStateStore } from "./ui-state-store";
 const NATIVE_MENU_OPEN_SETTINGS_EVENT = "ipollowork:native-menu:open-settings";
 const NATIVE_MENU_TOGGLE_SIDEBAR_EVENT = "ipollowork:native-menu:toggle-sidebar";
 const NATIVE_MENU_CHECK_UPDATES_EVENT = "ipollowork:native-menu:check-updates";
+const PET_OPEN_SETTINGS_EVENT = "ipollowork:pet:open-settings";
 
 export function AppMenuProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ export function AppMenuProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const openSettings = () => navigate("/settings/preferences");
+    const openPetSettings = () => navigate("/settings/pet");
     const checkUpdates = () => {
       useUpdateCheckRequestStore.getState().requestUpdateCheck();
       navigate("/settings/updates");
@@ -23,10 +25,12 @@ export function AppMenuProvider({ children }: { children: ReactNode }) {
     window.addEventListener(NATIVE_MENU_OPEN_SETTINGS_EVENT, openSettings);
     window.addEventListener(NATIVE_MENU_TOGGLE_SIDEBAR_EVENT, toggleSidebar);
     window.addEventListener(NATIVE_MENU_CHECK_UPDATES_EVENT, checkUpdates);
+    window.addEventListener(PET_OPEN_SETTINGS_EVENT, openPetSettings);
     return () => {
       window.removeEventListener(NATIVE_MENU_OPEN_SETTINGS_EVENT, openSettings);
       window.removeEventListener(NATIVE_MENU_TOGGLE_SIDEBAR_EVENT, toggleSidebar);
       window.removeEventListener(NATIVE_MENU_CHECK_UPDATES_EVENT, checkUpdates);
+      window.removeEventListener(PET_OPEN_SETTINGS_EVENT, openPetSettings);
     };
   }, [navigate, toggleSidebar]);
 

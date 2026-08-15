@@ -60,6 +60,46 @@ export type DesktopNotificationResult =
   | { ok: true }
   | { ok: false; reason: string };
 
+export type PetEventInput = {
+  type: "task.completed" | "task.failed" | "permission.asked" | "question.asked";
+  sessionId: string;
+  detail?: string;
+};
+
+export type PetEventResult =
+  | { ok: true }
+  | { ok: false; reason: string };
+
+export type PetChatReplyInput = {
+  id: string;
+  text: string;
+  internal?: boolean;
+};
+
+export type PetChatReplyResult =
+  | { ok: true }
+  | { ok: false; reason: string };
+
+export type PetStateResult = {
+  enabled: boolean;
+};
+
+export type PetSetEnabledInput = {
+  enabled: boolean;
+};
+
+export type PetIntegrationsStateResult = {
+  autoCheck: boolean;
+};
+
+export type PetSetAutoCheckInput = {
+  enabled: boolean;
+};
+
+export type PetSetAutoCheckResult =
+  | { ok: true; state: PetIntegrationsStateResult }
+  | { ok: false; reason: string };
+
 export type iPolloWorkServerInfo = {
   running: boolean;
   remoteAccessEnabled: boolean;
@@ -424,6 +464,30 @@ export type DesktopCommandMap = {
   desktopNotificationShow: {
     args: [input: DesktopNotificationInput];
     result: DesktopNotificationResult;
+  };
+  petEvent: {
+    args: [input: PetEventInput];
+    result: PetEventResult;
+  };
+  petChatReply: {
+    args: [input: PetChatReplyInput];
+    result: PetChatReplyResult;
+  };
+  petGetState: {
+    args: [];
+    result: PetStateResult;
+  };
+  petSetEnabled: {
+    args: [input: PetSetEnabledInput];
+    result: PetStateResult;
+  };
+  petGetIntegrations: {
+    args: [];
+    result: PetIntegrationsStateResult;
+  };
+  petSetAutoCheck: {
+    args: [input: PetSetAutoCheckInput];
+    result: PetSetAutoCheckResult;
   };
   listSystemFontFamilies: { args: []; result: string[] };
   getUiControlBridgeInfo: { args: []; result: UiControlBridgeInfo | null };

@@ -75,6 +75,7 @@ import { AuthorizedFoldersPanel } from "@/react-app/domains/settings/panels/auth
 import { SettingsStack } from "@/react-app/domains/settings/settings-section";
 import { AdvancedView } from "@/react-app/domains/settings/pages/advanced-view";
 import { AppearanceView } from "@/react-app/domains/settings/pages/appearance-view";
+import { PetView } from "@/react-app/domains/settings/pages/pet-view";
 import { CloudAccountView } from "@/react-app/domains/settings/pages/cloud-account-view";
 import { ConnectView } from "@/react-app/domains/settings/pages/connect-view";
 import { CloudMarketplacesView } from "@/react-app/domains/settings/pages/cloud-marketplaces-view";
@@ -241,6 +242,7 @@ export function parseSettingsPath(pathname: string): {
     case "general":
     case "ai":
     case "preferences":
+    case "pet":
     case "permissions":
     case "shell":
     case "advanced":
@@ -1966,6 +1968,8 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
             toggleHideTitlebar={() => setHideTitlebar((current) => !current)}
           />
         );
+      case "pet":
+        return <PetView onOpenProviderAuth={handleOpenProviderAuth} />;
       case "updates":
         return (
           <UpdatesView
