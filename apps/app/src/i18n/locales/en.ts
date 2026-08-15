@@ -1417,6 +1417,7 @@ export default {
 "mcp.missing_env": "Set these environment variables first: {vars}. Add them in Settings → Environment Variables, then retry.",
   "mcp.env_modal_title": "Credentials required to connect {name}",
   "mcp.env_modal_desc": "These credentials are stored in this device's encrypted env store and never uploaded. Connection continues automatically after saving.",
+"mcp.env_modal_open_console": "Open platform console (create app)",
   "mcp.env_modal_placeholder": "Paste the value",
   "mcp.env_modal_cancel": "Cancel",
   "mcp.env_modal_save": "Save & connect",

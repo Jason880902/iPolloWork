@@ -1275,6 +1275,7 @@ export default {
 "mcp.missing_env": "连接前请先配置环境变量：{vars}。到 设置 → 环境变量 里填好后重试。",
   "mcp.env_modal_title": "连接 {name} 需要的凭据",
   "mcp.env_modal_desc": "以下凭据将保存到本机的环境变量存储（加密保存在本设备，不会上传）。填好后自动完成连接。",
+"mcp.env_modal_open_console": "打开开放平台（创建应用）",
   "mcp.env_modal_placeholder": "粘贴对应的值",
   "mcp.env_modal_cancel": "取消",
   "mcp.env_modal_save": "保存并连接",

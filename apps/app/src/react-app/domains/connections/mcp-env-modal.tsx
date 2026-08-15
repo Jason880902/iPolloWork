@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { ExternalLink, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,12 +12,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { TextInput } from "../../design-system/text-input";
+import { openDesktopUrl } from "@/app/lib/desktop";
 import { t } from "@/i18n";
 
 export type McpEnvModalProps = {
   open: boolean;
   serverName: string;
   missing: string[];
+  helpUrl?: string;
   saving: boolean;
   error?: string | null;
   onSubmit: (values: Record<string, string>) => void | Promise<void>;
@@ -40,6 +42,17 @@ export function McpEnvModal(props: McpEnvModalProps) {
           <DialogTitle>{t("mcp.env_modal_title", { name: props.serverName })}</DialogTitle>
           <DialogDescription>{t("mcp.env_modal_desc")}</DialogDescription>
         </DialogHeader>
+        {props.helpUrl ? (
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-fit"
+            onClick={() => void openDesktopUrl(props.helpUrl!).catch(() => undefined)}
+          >
+            <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
+            {t("mcp.env_modal_open_console")}
+          </Button>
+        ) : null}
         <div className="flex flex-col gap-3 py-2">
           {props.missing.map((key) => (
             <label key={key} className="flex flex-col gap-1.5">

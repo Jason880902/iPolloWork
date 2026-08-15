@@ -38,6 +38,8 @@ export type McpDirectoryInfo = {
   command?: string[];
   /** Static env for local MCPs. Values may reference {env:VAR} placeholders. */
   environment?: Record<string, string>;
+  /** Deep link to the platform console for credential setup guidance. */
+  helpUrl?: string;
   oauth: boolean;
   oauthConfig?: {
     clientId?: string;
@@ -183,6 +185,7 @@ export const MCP_QUICK_CONNECT: McpDirectoryInfo[] = [
     kind: "mcp",
     pluginPackageId: "lark",
     iconSlug: "lark",
+    helpUrl: "https://open.feishu.cn/app",
   },
   {
     get name() { return t("mcp.quick_connect_dingtalk_title"); },
@@ -199,6 +202,7 @@ export const MCP_QUICK_CONNECT: McpDirectoryInfo[] = [
     kind: "mcp",
     pluginPackageId: "dingtalk",
     iconSlug: "dingtalk",
+    helpUrl: "https://open-dev.dingtalk.com/",
   },
   {
     get name() { return t("mcp.quick_connect_wecom_title"); },
@@ -215,6 +219,7 @@ export const MCP_QUICK_CONNECT: McpDirectoryInfo[] = [
     kind: "mcp",
     pluginPackageId: "wecom",
     iconSlug: "wechat",
+    helpUrl: "https://work.weixin.qq.com/wework_admin/frame",
   },
   {
     get name() { return t("mcp.quick_connect_ipollowork_cloud_title"); },

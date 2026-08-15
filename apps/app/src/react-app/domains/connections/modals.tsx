@@ -51,6 +51,7 @@ export default function ConnectionsModals(props: ConnectionsModalsProps) {
         open={envRequirements !== null}
         serverName={envRequirements?.entry.name ?? ""}
         missing={envRequirements?.missing ?? []}
+        helpUrl={envRequirements?.entry.helpUrl}
         saving={props.modalState.mcpEnvSaving}
         error={props.modalState.mcpEnvError}
         onSubmit={props.onSubmitMcpEnv}

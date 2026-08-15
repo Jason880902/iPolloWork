@@ -10,8 +10,12 @@
     "trusted": true,
     "reference": "https://github.com/open-dingtalk/dingtalk-mcp"
   },
-  "icon": { "simpleIconSlug": "dingtalk" },
-  "composer": { "prompt": "使用钉钉插件查询或处理待办、日程、消息和审批相关事项，涉及写操作前先确认范围。" },
+  "icon": {
+    "simpleIconSlug": "dingtalk"
+  },
+  "composer": {
+    "prompt": "使用钉钉插件查询或处理待办、日程、消息和审批相关事项，涉及写操作前先确认范围。"
+  },
   "setup": {
     "instructions": "在钉钉开放平台创建企业内部应用，进入应用详情页「凭证与基础信息」获取 Client ID 与 Client Secret，并按需添加权限点；然后在 设置 → 环境变量 中配置 DINGTALK_CLIENT_ID 和 DINGTALK_CLIENT_SECRET。默认激活全部钉钉服务。",
     "primaryCta": "打开钉钉开放平台",
@@ -23,7 +27,9 @@
       "en": {
         "description": "DingTalk MCP: contacts, departments, robot messages/DING, todos, calendar, work notices, and reports.",
         "category": "Work Collaboration",
-        "composer": { "prompt": "Use the DingTalk plugin to query or handle todos, calendar, messages, and approvals; confirm scope before write actions." },
+        "composer": {
+          "prompt": "Use the DingTalk plugin to query or handle todos, calendar, messages, and approvals; confirm scope before write actions."
+        },
         "setup": {
           "instructions": "Create an internal app on the DingTalk Open Platform, get the Client ID and Client Secret from Credentials & Basic Info, grant the needed scopes, then set DINGTALK_CLIENT_ID and DINGTALK_CLIENT_SECRET in Settings → Environment Variables. All services are enabled by default; set DINGTALK_ACTIVE_PROFILES to narrow them.",
           "primaryCta": "Open DingTalk Open Platform",
@@ -36,22 +42,38 @@
           }
         },
         "permissions": {
-          "network": { "reason": "Call the DingTalk Open Platform APIs requested by the user." },
-          "process": { "reason": "Run the local dingtalk-mcp server via npx." }
+          "network": {
+            "reason": "Call the DingTalk Open Platform APIs requested by the user."
+          },
+          "process": {
+            "reason": "Run the local dingtalk-mcp server via npx."
+          }
         }
       }
     }
   },
   "package": {
     "version": "1.0.0",
-    "publisher": { "id": "ipollowork", "name": "iPolloWork" },
-    "compatibility": { "ipollowork": ">=0.18.0", "opencode": ">=1.18.0" },
+    "publisher": {
+      "id": "ipollowork",
+      "name": "iPolloWork"
+    },
+    "compatibility": {
+      "ipollowork": ">=0.18.0",
+      "opencode": ">=1.18.0"
+    },
     "updateId": "ipollowork/dingtalk",
     "entrypoints": {}
   },
   "permissions": [
-    { "id": "network", "reason": "调用用户请求的钉钉开放平台 API。" },
-    { "id": "process", "reason": "通过 npx 运行本地 dingtalk-mcp 服务。" }
+    {
+      "id": "network",
+      "reason": "调用用户请求的钉钉开放平台 API。"
+    },
+    {
+      "id": "process",
+      "reason": "通过 npx 运行本地 dingtalk-mcp 服务。"
+    }
   ],
   "resources": [
     {
@@ -63,6 +85,13 @@
       "mcpServerName": "dingtalk",
       "oauth": false,
       "required": true
+    }
+  ],
+  "contributions": [
+    {
+      "type": "setup-instructions",
+      "ref": "https://open-dev.dingtalk.com/",
+      "location": "settings-detail"
     }
   ]
 }
