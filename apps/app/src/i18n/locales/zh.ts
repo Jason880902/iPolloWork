@@ -1272,6 +1272,7 @@ export default {
   "mcp.connection_type": "连接方式",
   "mcp.custom_app_cta_hint": "连接你的MCP服务器、内部工具或托管应用。",
   "mcp.desktop_required": "应用需要桌面应用。",
+"mcp.missing_env": "连接前请先配置环境变量：{vars}。到 设置 → 环境变量 里填好后重试。",
   "mcp.docs_link": "了解更多",
   "mcp.file_not_found": "配置文件尚未创建",
   "mcp.friendly_status_issue": "异常",

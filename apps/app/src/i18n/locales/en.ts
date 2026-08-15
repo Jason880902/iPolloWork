@@ -1414,6 +1414,7 @@ export default {
   "mcp.connection_type": "Connection",
   "mcp.custom_app_cta_hint": "Connect your own MCP server, internal tool, or hosted app.",
   "mcp.desktop_required": "Apps require the desktop app.",
+"mcp.missing_env": "Set these environment variables first: {vars}. Add them in Settings → Environment Variables, then retry.",
   "mcp.docs_link": "Learn more",
   "mcp.file_not_found": "Config file not created yet",
   "mcp.friendly_status_issue": "Issue",

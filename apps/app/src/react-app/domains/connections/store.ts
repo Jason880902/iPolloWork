@@ -24,6 +24,7 @@ import {
 } from "../../../app/lib/desktop";
 import { toSessionTransportDirectory } from "../../../app/lib/session-scope";
 import {
+  collectReferencedEnvVars,
   parseMcpServersFromContent,
   removeMcpFromConfig,
   validateMcpServerName,
@@ -631,6 +632,26 @@ export function createConnectionsStore(options: {
 
     const slug = entry.id ?? getMcpServerName(entry);
     const action = snapshot.mcpServers.some((server) => server.name === slug) ? "updated" : "added";
+
+    // Local MCPs with {env:VAR} placeholders silently start without
+    // credentials when the vars are missing — block the connect and point the
+    // user at Settings → Environment Variables instead.
+    const referencedEnvVars = collectReferencedEnvVars(entry);
+    if (referencedEnvVars.length > 0 && canUseiPolloWorkServer && ipolloworkClient) {
+      const knownKeys = await ipolloworkClient.listUserEnvKeys()
+        .then((result) => new Set(result.keys))
+        .catch(() => null);
+      if (knownKeys) {
+        const missing = referencedEnvVars.filter((key) => !knownKeys.has(key));
+        if (missing.length > 0) {
+          setStateField("mcpStatus", t("mcp.missing_env", { vars: missing.join(", ") }));
+          finishPerf(options.developerMode(), "mcp.connect", "blocked", startedAt, {
+            reason: "missing-env-vars",
+          });
+          return false;
+        }
+      }
+    }
 
     try {
       mutateState((current) => ({ ...current, mcpStatus: null, mcpConnectingName: entry.name }));
