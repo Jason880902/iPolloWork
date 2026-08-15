@@ -1,6 +1,5 @@
 /** @jsxImportSource react */
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -33,9 +32,11 @@ import {
   LayoutStack,
 } from "../settings-layout";
 
-export function PetView({ onOpenProviderAuth }: { onOpenProviderAuth: () => void }) {
+export function PetView({ onOpenProviderAuth, onOpenExtensions }: {
+  onOpenProviderAuth: () => void;
+  onOpenExtensions: () => void;
+}) {
   const local = useLocal();
-  const navigate = useNavigate();
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [busy, setBusy] = useState(false);
   const [persona, setPersona] = useState(PET_PERSONA_PROMPT);
@@ -176,7 +177,7 @@ export function PetView({ onOpenProviderAuth }: { onOpenProviderAuth: () => void
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => navigate("../extensions")}
+                onClick={onOpenExtensions}
               >
                 {t("settings.pet.mcp_configure")}
               </Button>

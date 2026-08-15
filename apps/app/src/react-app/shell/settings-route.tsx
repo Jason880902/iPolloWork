@@ -1969,7 +1969,12 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
           />
         );
       case "pet":
-        return <PetView onOpenProviderAuth={handleOpenProviderAuth} />;
+        return (
+          <PetView
+            onOpenProviderAuth={handleOpenProviderAuth}
+            onOpenExtensions={() => navigateSettingsPath("extensions")}
+          />
+        );
       case "updates":
         return (
           <UpdatesView
