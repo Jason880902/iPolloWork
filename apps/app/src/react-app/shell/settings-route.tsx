@@ -690,6 +690,23 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
     }, 0);
   }, [cloudSession.baseUrl, navigate, platform, providerAuthStore, selectedWorkspaceId]);
 
+  const [mcpEnvSaving, setMcpEnvSaving] = useState(false);
+  const [mcpEnvError, setMcpEnvError] = useState<string | null>(null);
+  const handleSubmitMcpEnv = useCallback(async (values: Record<string, string>) => {
+    setMcpEnvSaving(true);
+    setMcpEnvError(null);
+    try {
+      const ok = await connectionsStore.submitMcpEnvRequirements(values);
+      if (!ok) {
+        setMcpEnvError(t("mcp.env_modal_save_failed"));
+      }
+    } catch (error) {
+      setMcpEnvError(error instanceof Error ? error.message : t("mcp.env_modal_save_failed"));
+    } finally {
+      setMcpEnvSaving(false);
+    }
+  }, [connectionsStore]);
+
   const handleOpenProviderAuth = useCallback(() => {
     if (checkDesktopRestriction({ restriction: "allowCustomProviders" })) {
       restrictionNotice.show({
@@ -2117,9 +2134,17 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
           mcpAuthModalOpen: connectionsSnapshot.mcpAuthModalOpen,
           mcpAuthEntry: connectionsSnapshot.mcpAuthEntry,
           mcpAuthNeedsReload: connectionsSnapshot.mcpAuthNeedsReload,
+          mcpEnvRequirements: connectionsSnapshot.mcpEnvRequirements,
+          mcpEnvSaving,
+          mcpEnvError,
         }}
         onCloseMcpAuthModal={() => connectionsStore.closeMcpAuthModal()}
         onCompleteMcpAuthModal={() => connectionsStore.completeMcpAuthModal()}
+        onSubmitMcpEnv={handleSubmitMcpEnv}
+        onCloseMcpEnv={() => {
+          setMcpEnvError(null);
+          connectionsStore.dismissMcpEnvRequirements();
+        }}
       />
       <ModelPickerModal
         open={modelPicker.open}

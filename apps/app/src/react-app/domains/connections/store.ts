@@ -73,6 +73,7 @@ export type ConnectionsStoreSnapshot = {
   mcpAuthModalOpen: boolean;
   mcpAuthEntry: McpDirectoryInfo | null;
   mcpAuthNeedsReload: boolean;
+  mcpEnvRequirements: { entry: McpDirectoryInfo; missing: string[] } | null;
 };
 
 type MutableState = ConnectionsStoreSnapshot;
@@ -111,6 +112,7 @@ export function createConnectionsStore(options: {
     mcpAuthModalOpen: false,
     mcpAuthEntry: null,
     mcpAuthNeedsReload: false,
+    mcpEnvRequirements: null,
   };
 
   const emitChange = () => {
@@ -128,6 +130,7 @@ export function createConnectionsStore(options: {
       mcpAuthModalOpen: state.mcpAuthModalOpen,
       mcpAuthEntry: state.mcpAuthEntry,
       mcpAuthNeedsReload: state.mcpAuthNeedsReload,
+      mcpEnvRequirements: state.mcpEnvRequirements,
     };
   };
 
@@ -634,8 +637,8 @@ export function createConnectionsStore(options: {
     const action = snapshot.mcpServers.some((server) => server.name === slug) ? "updated" : "added";
 
     // Local MCPs with {env:VAR} placeholders silently start without
-    // credentials when the vars are missing — block the connect and point the
-    // user at Settings → Environment Variables instead.
+    // credentials when the vars are missing — open the guided credential
+    // dialog instead of installing a broken connection.
     const referencedEnvVars = collectReferencedEnvVars(entry);
     if (referencedEnvVars.length > 0 && canUseiPolloWorkServer && ipolloworkClient) {
       const knownKeys = await ipolloworkClient.listUserEnvKeys()
@@ -644,7 +647,7 @@ export function createConnectionsStore(options: {
       if (knownKeys) {
         const missing = referencedEnvVars.filter((key) => !knownKeys.has(key));
         if (missing.length > 0) {
-          setStateField("mcpStatus", t("mcp.missing_env", { vars: missing.join(", ") }));
+          setStateField("mcpEnvRequirements", { entry, missing });
           finishPerf(options.developerMode(), "mcp.connect", "blocked", startedAt, {
             reason: "missing-env-vars",
           });
@@ -1218,6 +1221,33 @@ export function createConnectionsStore(options: {
     await refreshMcpServers();
   }
 
+  function dismissMcpEnvRequirements() {
+    setStateField("mcpEnvRequirements", null);
+  }
+
+  async function submitMcpEnvRequirements(values: Record<string, string>): Promise<boolean> {
+    const requirements = snapshot.mcpEnvRequirements;
+    if (!requirements) return false;
+    const client = getiPolloWorkSnapshot().ipolloworkServerClient;
+    if (!client) {
+      setStateField("mcpStatus", t("mcp.desktop_required"));
+      return false;
+    }
+    const entries = requirements.missing
+      .map((key) => ({ key, value: (values[key] ?? "").trim() }))
+      .filter((entry) => entry.value.length > 0);
+    if (entries.length < requirements.missing.length) return false;
+    try {
+      await client.upsertUserEnv(entries);
+    } catch (error) {
+      setStateField("mcpStatus", error instanceof Error ? error.message : t("mcp.toggle_failed"));
+      return false;
+    }
+    const entry = requirements.entry;
+    dismissMcpEnvRequirements();
+    return connectMcp(entry);
+  }
+
   const syncFromOptions = () => {
     const workspaceContextKey = getWorkspaceContextKey();
     const projectDir = options.projectDir().trim();
@@ -1312,6 +1342,8 @@ export function createConnectionsStore(options: {
     },
     closeMcpAuthModal,
     completeMcpAuthModal,
+    dismissMcpEnvRequirements,
+    submitMcpEnvRequirements,
   };
 }
 
