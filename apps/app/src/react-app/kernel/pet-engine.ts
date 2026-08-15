@@ -14,9 +14,17 @@ export async function resolvePetEngineHandle(): Promise<PetEngineHandle | null> 
   const bootstrap = await workspaceBootstrap();
   const workspaceId = bootstrap?.selectedId ?? bootstrap?.activeId ?? null;
   if (typeof workspaceId !== "string" || !workspaceId) return null;
+  const workspace = (bootstrap?.workspaces ?? []).find((entry) => entry?.id === workspaceId);
+  const directory = typeof workspace?.path === "string" ? workspace.path.trim() : "";
   return {
     mount: `${baseUrl}/workspace/${encodeURIComponent(workspaceId)}/opencode/api`,
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      // Sessions must bind to the workspace directory or they land in the
+      // "global" project where workspace MCP tools are unavailable.
+      ...(directory ? { "x-opencode-directory": /[^\x00-\x7F]/.test(directory) ? encodeURIComponent(directory) : directory } : {}),
+    },
   };
 }
 
