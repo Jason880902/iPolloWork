@@ -31,6 +31,12 @@ extraResources:
     to: plugin-packages/github
   - from: ../../examples/plugin-packages/wechat-official
     to: plugin-packages/wechat-official
+  - from: ../../examples/plugin-packages/lark
+    to: plugin-packages/lark
+  - from: ../../examples/plugin-packages/dingtalk
+    to: plugin-packages/dingtalk
+  - from: ../../examples/plugin-packages/wecom
+    to: plugin-packages/wecom
   - from: ../../examples/plugin-packages/design-agent
     to: plugin-packages/design-agent
   - from: ../../examples/plugin-packages/video-agent

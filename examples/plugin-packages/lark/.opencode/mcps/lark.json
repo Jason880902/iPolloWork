@@ -1,0 +1,14 @@
+{
+  "type": "local",
+  "command": [
+    "npx",
+    "-y",
+    "@larksuiteoapi/lark-mcp",
+    "mcp",
+    "-a",
+    "{env:LARK_APP_ID}",
+    "-s",
+    "{env:LARK_APP_SECRET}"
+  ],
+  "enabled": true
+}

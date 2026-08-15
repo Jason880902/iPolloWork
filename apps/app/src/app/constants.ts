@@ -36,6 +36,8 @@ export type McpDirectoryInfo = {
   url?: string;
   type?: "remote" | "local";
   command?: string[];
+  /** Static env for local MCPs. Values may reference {env:VAR} placeholders. */
+  environment?: Record<string, string>;
   oauth: boolean;
   oauthConfig?: {
     clientId?: string;
@@ -170,6 +172,49 @@ export const MCP_QUICK_CONNECT: McpDirectoryInfo[] = [
     pluginPackageId: "context7",
     iconSlug: "semanticscholar",
     iconSrc: publicAssetUrl("ext-context7.svg"),
+  },
+  {
+    get name() { return t("mcp.quick_connect_lark_title"); },
+    serverName: "lark",
+    get description() { return t("mcp.quick_connect_lark_desc"); },
+    type: "local",
+    command: ["npx", "-y", "@larksuiteoapi/lark-mcp", "mcp", "-a", "{env:LARK_APP_ID}", "-s", "{env:LARK_APP_SECRET}"],
+    oauth: false,
+    kind: "mcp",
+    pluginPackageId: "lark",
+    iconSlug: "lark",
+  },
+  {
+    get name() { return t("mcp.quick_connect_dingtalk_title"); },
+    serverName: "dingtalk",
+    get description() { return t("mcp.quick_connect_dingtalk_desc"); },
+    type: "local",
+    command: ["npx", "-y", "dingtalk-mcp@latest"],
+    environment: {
+      DINGTALK_Client_ID: "{env:DINGTALK_CLIENT_ID}",
+      DINGTALK_Client_Secret: "{env:DINGTALK_CLIENT_SECRET}",
+      ACTIVE_PROFILES: "ALL",
+    },
+    oauth: false,
+    kind: "mcp",
+    pluginPackageId: "dingtalk",
+    iconSlug: "dingtalk",
+  },
+  {
+    get name() { return t("mcp.quick_connect_wecom_title"); },
+    serverName: "wecom",
+    get description() { return t("mcp.quick_connect_wecom_desc"); },
+    type: "local",
+    command: ["npx", "-y", "@qwang007/wecom-mcp"],
+    environment: {
+      WECOM_CORP_ID: "{env:WECOM_CORP_ID}",
+      WECOM_CORP_SECRET: "{env:WECOM_CORP_SECRET}",
+      WECOM_ADMIN_USERID: "{env:WECOM_ADMIN_USERID}",
+    },
+    oauth: false,
+    kind: "mcp",
+    pluginPackageId: "wecom",
+    iconSlug: "wechat",
   },
   {
     get name() { return t("mcp.quick_connect_ipollowork_cloud_title"); },

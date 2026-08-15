@@ -357,20 +357,23 @@ export function createConnectionsStore(options: {
   };
 
   const resolveLocalMcpEnvironment = async (entry: McpDirectoryInfo) => {
-    if (entry.serverName !== "ipollowork-ui") return undefined;
+    if (entry.serverName !== "ipollowork-ui") return entry.environment;
     try {
       const environment = await window.__IPOLLOWORK_ELECTRON__?.invokeDesktop?.("getiPolloWorkUiMcpEnvironment");
       if (environment && typeof environment === "object" && !Array.isArray(environment)) {
-        return Object.fromEntries(
-          Object.entries(environment).filter((entry): entry is [string, string] =>
-            typeof entry[0] === "string" && typeof entry[1] === "string"
+        return {
+          ...entry.environment,
+          ...Object.fromEntries(
+            Object.entries(environment).filter((entry): entry is [string, string] =>
+              typeof entry[0] === "string" && typeof entry[1] === "string"
+            ),
           ),
-        );
+        };
       }
     } catch {
       // Discovery fallback in ipollowork-ui-mcp still handles normal launches.
     }
-    return undefined;
+    return entry.environment;
   };
 
   /**
