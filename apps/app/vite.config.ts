@@ -109,6 +109,7 @@ export default defineConfig({
       input: {
         app: resolve(appRoot, "index.html"),
         overlay: resolve(appRoot, "overlay.html"),
+        pet: resolve(appRoot, "pet.html"),
       },
     },
   },

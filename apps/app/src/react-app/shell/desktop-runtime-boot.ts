@@ -25,6 +25,8 @@ import {
 import { isDesktopRuntime, isElectronRuntime, safeStringify } from "../../app/utils";
 import { useServer } from "../kernel/server-provider";
 import { useBootState } from "./boot-state";
+import { usePetActivityBridge } from "./pet-activity-bridge";
+import { usePetCompanionBridge } from "./pet-companion";
 
 // Module-scoped latch so React Strict-Mode's "mount-unmount-remount" cycle in
 // dev only triggers the boot sequence once per app launch, and the async work
@@ -327,5 +329,7 @@ export function useDesktopRuntimeBoot() {
  */
 export function DesktopRuntimeBoot(): null {
   useDesktopRuntimeBoot();
+  usePetCompanionBridge();
+  usePetActivityBridge();
   return null;
 }

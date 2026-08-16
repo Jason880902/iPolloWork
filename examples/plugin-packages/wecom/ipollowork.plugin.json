@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "wecom",
+  "name": "企业微信",
+  "description": "企业微信 MCP：通讯录、审批、微盘、文档与智能表格等 79 项工具。",
+  "category": "办公协作",
+  "source": {
+    "format": "ipollowork-extension-manifest",
+    "origin": "builtin",
+    "trusted": true,
+    "reference": "https://www.npmjs.com/package/@qwang007/wecom-mcp"
+  },
+  "icon": {
+    "simpleIconSlug": "wechat"
+  },
+  "composer": {
+    "prompt": "使用企业微信插件查询或处理通讯录、审批、文档和表格，涉及写操作前先确认范围。"
+  },
+  "setup": {
+    "instructions": "推荐免建应用：安装官方 wecom-cli（npm i -g @wecom/cli）后运行 wecom-cli init，用企业微信 App 扫码即可完成接入（一次性）。需要常驻 MCP 时，再在企业微信管理后台创建自建应用，把企业 ID（corpid）、应用 Secret、管理员 userid 配到 设置 → 环境变量 的 WECOM_CORP_ID / WECOM_CORP_SECRET / WECOM_ADMIN_USERID。",
+    "primaryCta": "打开企业微信管理后台",
+    "secondaryCta": "查看 wecom-mcp 文档"
+  },
+  "localization": {
+    "defaultLocale": "zh",
+    "translations": {
+      "en": {
+        "description": "WeCom MCP: 79 tools covering contacts, approvals, drive, docs, and smartsheets.",
+        "category": "Work Collaboration",
+        "composer": {
+          "prompt": "Use the WeCom plugin to query or handle contacts, approvals, docs, and sheets; confirm scope before write actions."
+        },
+        "setup": {
+          "instructions": "Recommended, no app creation: install the official wecom-cli (npm i -g @wecom/cli), run `wecom-cli init`, and scan the QR code with the WeCom mobile app — one-time setup. For a resident MCP connection, create a custom app in the WeCom admin console and set WECOM_CORP_ID / WECOM_CORP_SECRET / WECOM_ADMIN_USERID in Settings → Environment Variables.",
+          "primaryCta": "Open WeCom Admin Console",
+          "secondaryCta": "View wecom-mcp docs"
+        },
+        "resources": {
+          "wecom-mcp": {
+            "label": "WeCom MCP",
+            "description": "Contacts, approvals, drive, docs, and smartsheets for WeCom."
+          }
+        },
+        "permissions": {
+          "network": {
+            "reason": "Call the WeCom Open APIs requested by the user."
+          },
+          "process": {
+            "reason": "Run the local wecom-mcp server via npx."
+          }
+        }
+      }
+    }
+  },
+  "package": {
+    "version": "1.0.0",
+    "publisher": {
+      "id": "ipollowork",
+      "name": "iPolloWork"
+    },
+    "compatibility": {
+      "ipollowork": ">=0.18.0",
+      "opencode": ">=1.18.0"
+    },
+    "updateId": "ipollowork/wecom",
+    "entrypoints": {}
+  },
+  "permissions": [
+    {
+      "id": "network",
+      "reason": "调用用户请求的企业微信开放 API。"
+    },
+    {
+      "id": "process",
+      "reason": "通过 npx 运行本地 wecom-mcp 服务。"
+    }
+  ],
+  "resources": [
+    {
+      "type": "mcp",
+      "id": "wecom-mcp",
+      "label": "企业微信 MCP",
+      "description": "通讯录、审批、微盘、文档与智能表格等企业微信能力。",
+      "path": ".opencode/mcps/wecom.json",
+      "mcpServerName": "wecom",
+      "oauth": false,
+      "required": true
+    }
+  ],
+  "contributions": [
+    {
+      "type": "setup-instructions",
+      "ref": "https://www.npmjs.com/package/@wecom/cli",
+      "location": "settings-detail"
+    }
+  ]
+}

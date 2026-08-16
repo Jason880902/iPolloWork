@@ -32,6 +32,21 @@ export function validateMcpServerName(name: string): string {
   return trimmed;
 }
 
+const ENV_REFERENCE_RE = /\{env:([A-Za-z_][A-Za-z0-9_]*)\}/g;
+
+/** Env vars referenced via {env:VAR} placeholders in a directory entry's
+ * command args and static environment values. */
+export function collectReferencedEnvVars(entry: { command?: string[]; environment?: Record<string, string> }): string[] {
+  const found = new Set<string>();
+  for (const part of entry.command ?? []) {
+    for (const match of part.matchAll(ENV_REFERENCE_RE)) found.add(match[1]);
+  }
+  for (const value of Object.values(entry.environment ?? {})) {
+    for (const match of value.matchAll(ENV_REFERENCE_RE)) found.add(match[1]);
+  }
+  return [...found];
+}
+
 export async function removeMcpFromConfig(
   projectDir: string,
   name: string,

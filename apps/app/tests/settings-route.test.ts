@@ -51,4 +51,12 @@ describe("settings route parsing", () => {
   test("returns to the task that opened settings", () => {
     expect(settingsRouteSource).toContain("workspaceSessionRoute(selectedWorkspaceId, navigationSessionId)");
   });
+
+  test("force-restarts the worker when applying environment changes", () => {
+    const applyChanges = settingsRouteSource.match(
+      /const handleApplyEnvironmentChanges = async \(\) => \{([\s\S]*?)\n  \};/,
+    )?.[1];
+
+    expect(applyChanges).toContain("forceRestart: true");
+  });
 });

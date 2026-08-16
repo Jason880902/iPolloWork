@@ -32,7 +32,7 @@ import {
   workspaceServerId,
 } from "@/app/lib/workspace-endpoint";
 import { buildiPolloWorkEnvRuntimeKey } from "@/app/lib/ipollowork-env-runtime";
-import type { iPolloWorkServerInfo } from "@/app/lib/desktop";
+import { engineRestart, type iPolloWorkServerInfo } from "@/app/lib/desktop";
 import type {
   ComposerDraft,
   ModelRef,
@@ -126,6 +126,7 @@ import { useShellShortcuts } from "./use-shell-shortcuts";
 import { useEngineReload } from "./use-engine-reload";
 import { useSessionGroupSync } from "./use-session-group-sync";
 import { useWorkspaceRouteState } from "./use-workspace-route-state";
+import { ensureDesktopLocaliPolloWorkConnection } from "./desktop-local-ipollowork";
 import { getReactQueryClient } from "@/react-app/infra/query-client";
 import { useSessionControlActions } from "@/react-app/domains/session/control/session-control-actions";
 import { workspaceSessionRoute, workspaceSettingsRoute } from "./workspace-routes";
@@ -305,7 +306,7 @@ export function SessionRoute() {
         }),
     [sessionsByWorkspaceId],
   );
-  const { engineReloadVersion, reloadWorkspaceEngineFromUi } = useEngineReload({
+  const { engineReloadVersion } = useEngineReload({
     client,
     workspaceId: selectedWorkspaceId,
     workspace: selectedWorkspace,
@@ -334,11 +335,23 @@ export function SessionRoute() {
     if (!selectedWorkspaceRoot) {
       throw new Error(t("settings.environment.apply_no_local_workspace"));
     }
-    const reloaded = await reloadWorkspaceEngineFromUi();
-    if (!reloaded) {
+    await engineRestart({});
+    const serverInfo = await ensureDesktopLocaliPolloWorkConnection({
+      route: "session",
+      workspace: selectedWorkspace,
+      allWorkspaces: workspaces,
+    });
+    if (!serverInfo) {
       throw new Error(t("app.error_connect_first"));
     }
-  }, [activeReloadBlockingSessions.length, reloadWorkspaceEngineFromUi, selectedWorkspaceRoot]);
+    await refreshRouteState();
+  }, [
+    activeReloadBlockingSessions.length,
+    refreshRouteState,
+    selectedWorkspace,
+    selectedWorkspaceRoot,
+    workspaces,
+  ]);
 
   const remoteWorkspaceConnectionEditor = useRemoteWorkspaceConnectionEditor({
     workspaces,
