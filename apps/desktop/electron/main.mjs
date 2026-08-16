@@ -1974,7 +1974,7 @@ async function readRouterGatewayConfig() {
 async function writeRouterGatewayConfig(content) {
   const targetPath = routerGatewayConfigPath();
   await mkdir(path.dirname(targetPath), { recursive: true });
-  await writeFile(targetPath, content, "utf8");
+  await writeFile(targetPath, content, { encoding: "utf8", mode: 0o600 });
   return execResult(true, `Wrote ${targetPath}`);
 }
 
@@ -3192,11 +3192,11 @@ ipcMain.handle("ipollowork:ssh:list-hosts", () => sshOps.readSshConfigHosts());
 // Commit DAG + ref mapping builder (buildGitGraph) lives in git-graph.mjs
 // and is injected as `gitGraph`.
 
-ipcMain.handle("ipollowork:git:graph", (event, options = {}) => {
+ipcMain.handle("ipollowork:git:graph", async (event, options = {}) => {
   const cwd = typeof options?.cwd === "string" && options.cwd.trim() ? options.cwd.trim() : undefined;
   if (!cwd) return { ok: false, error: "missing cwd" };
   try {
-    const result = gitGraph.buildGitGraph(cwd, Number.isFinite(options?.maxCommits) ? options.maxCommits : 2000);
+    const result = await gitGraph.buildGitGraph(cwd, Number.isFinite(options?.maxCommits) ? options.maxCommits : 2000);
     result.isRepo = true;
     return result;
   } catch (error) {
