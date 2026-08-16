@@ -276,6 +276,26 @@ export type OpencodeConfigFile = {
   content: string | null;
 };
 
+/** 智能路由网关配置文件的读写结果（与 OpencodeConfigFile 同形）。 */
+export type RouterGatewayConfigFile = OpencodeConfigFile;
+
+/** 智能路由网关运行状态（来自网关 /__router/status，失败时仅 running=false）。 */
+export type RouterGatewayStatus = {
+  running: boolean;
+  error?: string;
+  primary?: string;
+  primaryBaseURL?: string;
+  escalationEnabled?: boolean;
+  maxCompactions?: number;
+  escalationModels?: string[];
+  sessions?: {
+    lastContextTokens: number;
+    compactCount: number;
+    escalated: boolean;
+    target: string;
+  }[];
+};
+
 export type UpdaterEnvironment = {
   supported: boolean;
   reason: string | null;
@@ -508,6 +528,9 @@ export type DesktopCommandMap = {
     args: [scope: string, projectDir: string, content: string];
     result: ExecResult;
   };
+  routerGatewayGetConfig: { args: []; result: RouterGatewayConfigFile };
+  routerGatewayWriteConfig: { args: [content: string]; result: ExecResult };
+  routerGatewayStatus: { args: []; result: RouterGatewayStatus };
   /**
    * The renderer passes its reset-modal mode, but the main process currently
    * IGNORES it and always removes workspace state + bootstrap config; only

@@ -118,10 +118,12 @@ const uiControlServer = createUiControlServer({
   getWindow: () => createMainWindow(),
 });
 
+const previewCore = createPreviewCore({ getWindow: () => createMainWindow() });
+
 const lanPreviewServer = createLanPreviewServer({
   appName: APP_NAME,
   getWindow: () => createMainWindow(),
-  previewCore: createPreviewCore({ getWindow: () => createMainWindow() }),
+  previewCore,
   pageHtmlPath: lanPreviewPagePath(path.resolve(__dirname, "..")),
 });
 
@@ -1926,6 +1928,53 @@ async function writeOpencodeConfig(scope, projectDir, content) {
   return execResult(true, `Wrote ${targetPath}`);
 }
 
+// ---------- router gateway (smart model routing) ----------
+// 配置与状态统一放在 ~/.config/ipollowork/router-gateway/ 下，跨工作区可用。
+function routerGatewayRoot() {
+  return path.join(configHomePath(), "ipollowork", "router-gateway");
+}
+
+function routerGatewayConfigPath() {
+  return path.join(routerGatewayRoot(), "routing.json");
+}
+
+function routerGatewayStatusUrl() {
+  // 与网关默认监听地址一致，见 tools/qwen-proxy/routing.json 的 listen 配置。
+  return "http://127.0.0.1:18222/__router/status";
+}
+
+async function readRouterGatewayConfig() {
+  const targetPath = routerGatewayConfigPath();
+  const exists = await pathExists(targetPath);
+  return {
+    path: targetPath,
+    exists,
+    content: exists ? await readFile(targetPath, "utf8") : null,
+  };
+}
+
+async function writeRouterGatewayConfig(content) {
+  const targetPath = routerGatewayConfigPath();
+  await mkdir(path.dirname(targetPath), { recursive: true });
+  await writeFile(targetPath, content, "utf8");
+  return execResult(true, `Wrote ${targetPath}`);
+}
+
+async function routerGatewayStatus() {
+  try {
+    const response = await fetch(routerGatewayStatusUrl(), {
+      signal: AbortSignal.timeout(2000),
+    });
+    if (!response.ok) {
+      return { running: false, error: `HTTP ${response.status}` };
+    }
+    const payload = await response.json();
+    return { running: true, ...payload };
+  } catch (error) {
+    return { running: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
 function resolveCommandsDir(scope, projectDir) {
   if (scope === "workspace") {
     if (!String(projectDir ?? "").trim()) {
@@ -2533,6 +2582,15 @@ const desktopCommandHandlers = {
         String(args[1] ?? "").trim(),
         String(args[2] ?? ""),
       );
+  },
+  "routerGatewayGetConfig": async () => {
+      return readRouterGatewayConfig();
+  },
+  "routerGatewayWriteConfig": async (event, ...args) => {
+      return writeRouterGatewayConfig(String(args[0] ?? ""));
+  },
+  "routerGatewayStatus": async () => {
+      return routerGatewayStatus();
   },
   "resetiPolloWorkState": async (event, ...args) => {
       return workspaceStore.resetiPolloWorkState();

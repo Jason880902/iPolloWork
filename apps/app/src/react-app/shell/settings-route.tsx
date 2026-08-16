@@ -57,7 +57,7 @@ import { formatProviderAuthName } from "@/react-app/domains/connections/provider
 import ProviderAuthModal from "@/react-app/domains/connections/provider-auth/provider-auth-modal";
 import ConnectionsModals from "@/react-app/domains/connections/modals";
 import { AiSettingsView } from "@/react-app/domains/settings/pages/ai-view";
-// Side-effect imports: register extension config components into the registry.
+import { RouterGatewayView } from "@/react-app/domains/settings/pages/router-gateway-view";
 import "@/react-app/domains/settings/openai-image-gen-config";
 import "@/react-app/domains/settings/ollama-config";
 import "@/react-app/domains/settings/minimax-config";
@@ -1680,6 +1680,7 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
                 session={denSession}
               />
             }
+            routerGatewayView={<RouterGatewayView />}
           />
         );
       case "preferences":

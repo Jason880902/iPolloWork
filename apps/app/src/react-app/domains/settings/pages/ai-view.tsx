@@ -50,6 +50,8 @@ export type AiSettingsViewProps = {
   onSubscribeiPolloWorkModels?: () => void | Promise<void>;
   onDismissiPolloWorkModels?: () => void | Promise<void>;
   cloudProvidersView?: ReactNode;
+  /** 智能路由网关配置区块（自包含组件，渲染在 providers 列表之后）。 */
+  routerGatewayView?: ReactNode;
 };
 
 function providerSourceLabel(source?: ConnectedProvider["source"]) {
@@ -259,6 +261,8 @@ export function AiSettingsView(props: AiSettingsViewProps) {
       </LayoutSection>
 
       {props.cloudProvidersView}
+
+      {props.routerGatewayView}
 
       </LayoutStack>
       <ConfirmModal
