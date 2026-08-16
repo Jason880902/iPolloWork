@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dark Tech — AI 基础设施技术宣讲模版</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #060A12;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: var(--ipw-body-line-height);
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+  }
+  .slide-inner { position: absolute; inset: 56px 72px 64px; display: flex; flex-direction: column; }
+
+  /* signature gradient rule: amber -> blue */
+  .gradient-rule { position: absolute; top: 0; left: 0; right: 0; height: 6px;
+    background: linear-gradient(90deg, var(--ipw-color-accent) 0%, var(--ipw-color-primary) 100%); }
+
+  /* eyebrow: tick square + all-caps mono */
+  .eyebrow { display: flex; align-items: center; gap: 10px;
+    font-family: var(--ipw-font-mono); font-size: 13px; letter-spacing: 3.5px; text-transform: uppercase;
+    color: var(--ipw-color-primary); font-weight: 700; margin-bottom: 14px; }
+  .eyebrow::before { content: ""; width: 10px; height: 10px; background: var(--ipw-color-accent); flex-shrink: 0; }
+
+  h1.action-title { font-family: var(--ipw-font-display); font-size: 30px; font-weight: 700;
+    line-height: 1.35; max-width: 1060px; }
+  h1.action-title k { color: var(--ipw-color-primary); }
+  h1.action-title t { color: var(--ipw-color-secondary); }
+  h1.action-title a { color: var(--ipw-color-accent); }
+  h1.action-title r { color: var(--ipw-color-accent-2); }
+  h1.action-title p { color: var(--ipw-color-accent-3); }
+
+  /* insight block: 4px accent bar on the left */
+  .insight {
+    padding: 14px 18px;
+    background: var(--ipw-color-surface);
+    border-left: 4px solid var(--ipw-color-accent);
+    border-radius: 0 6px 6px 0;
+    font-size: 15px; color: var(--ipw-color-text);
+  }
+  .insight .it { display: block; font-family: var(--ipw-font-mono); font-size: 11px;
+    letter-spacing: 2px; font-weight: 700; margin-bottom: 6px; color: var(--ipw-color-accent); }
+  .insight.blue { border-left-color: var(--ipw-color-primary); }
+  .insight.blue .it { color: var(--ipw-color-primary); }
+  .insight.teal { border-left-color: var(--ipw-color-secondary); }
+  .insight.teal .it { color: var(--ipw-color-secondary); }
+  .insight.red { border-left-color: var(--ipw-color-accent-2); }
+  .insight.red .it { color: var(--ipw-color-accent-2); }
+  .insight.purple { border-left-color: var(--ipw-color-accent-3); }
+  .insight.purple .it { color: var(--ipw-color-accent-3); }
+
+  .footer { position: absolute; left: 72px; right: 72px; bottom: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--ipw-font-mono); font-size: 11px; letter-spacing: 1.5px;
+    color: var(--ipw-color-muted);
+    border-top: 1px solid var(--ipw-color-border); padding-top: 10px; }
+  .footer .stamp { font-weight: 700; color: var(--ipw-color-neutral); }
+  .footer .prompt { color: var(--ipw-color-accent); font-weight: 700; }
+  .pagenum { font-variant-numeric: tabular-nums; }
+
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 30px; }
+  .tile {
+    background: var(--ipw-card-bg); border: 1px solid var(--ipw-card-border);
+    border-radius: var(--ipw-card-radius); box-shadow: var(--ipw-card-shadow);
+    padding: 20px 24px 18px; border-top: 3px solid var(--ipw-color-primary);
+  }
+  .tile.teal { border-top-color: var(--ipw-color-secondary); }
+  .tile.amber { border-top-color: var(--ipw-color-accent); }
+  .tile .label { font-family: var(--ipw-font-mono); font-size: 12px; letter-spacing: 1px;
+    color: var(--ipw-color-muted); font-weight: 600; margin-bottom: 8px; }
+  .tile .value { font-size: 42px; font-weight: 800; font-family: var(--ipw-font-display); line-height: 1.1; }
+  .tile .value { color: var(--ipw-color-primary); }
+  .tile.teal .value { color: var(--ipw-color-secondary); }
+  .tile.amber .value { color: var(--ipw-color-accent); }
+  .tile .delta { font-size: 13px; margin-top: 8px; color: var(--ipw-color-muted); }
+
+  /* diagram island: white panel on dark page, diagrams live here only */
+  .island {
+    margin-top: 26px;
+    background: var(--ipw-island-bg);
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    padding: 24px 28px;
+  }
+  .diagram { display: flex; align-items: stretch; }
+  .node {
+    flex: 1; background: #FFFFFF;
+    border: 1px solid #D9E2EE; border-top: 4px solid var(--ipw-color-primary);
+    border-radius: 8px; padding: 12px 14px;
+    color: var(--ipw-island-ink);
+  }
+  .node.teal { border-top-color: var(--ipw-color-secondary); }
+  .node.amber { border-top-color: var(--ipw-color-accent); }
+  .node.purple { border-top-color: var(--ipw-color-accent-3); }
+  .node h4 { font-size: 15px; font-weight: 700; }
+  .node .sub { font-family: var(--ipw-font-mono); font-size: 11px; letter-spacing: 1px;
+    color: #5A6B82; margin-top: 4px; }
+  .link { width: 52px; flex-shrink: 0; position: relative; align-self: center; height: 2px; background: #9FB2C8; }
+  .link::after { content: ""; position: absolute; right: -1px; top: -4px;
+    border-left: 8px solid #9FB2C8; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+  .figure-cap { margin-top: 12px; font-family: var(--ipw-font-mono); font-size: 12px;
+    letter-spacing: 1px; color: var(--ipw-color-muted); }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 32px; }
+  .bullet-block h3 { font-size: 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .bullet-block h3 .dot { width: 10px; height: 10px; background: var(--ipw-color-secondary); }
+  .bullet-block ul { list-style: none; }
+  .bullet-block li { font-size: 14px; padding: 9px 0 9px 20px; position: relative;
+    border-bottom: 1px solid var(--ipw-color-border); color: var(--ipw-color-text); }
+  .bullet-block li::before { content: "—"; position: absolute; left: 0; color: var(--ipw-color-muted); }
+  .insight-stack { display: flex; flex-direction: column; gap: 16px; }
+
+  .steps { display: flex; gap: 0; margin-top: 40px; }
+  .step { flex: 1; position: relative; padding: 20px 20px 0 0; }
+  .step .num { font-family: var(--ipw-font-mono); font-size: 14px; font-weight: 700;
+    color: var(--ipw-color-bg); background: var(--ipw-color-primary);
+    width: 30px; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+  .step:nth-child(2) .num { background: var(--ipw-color-secondary); }
+  .step:nth-child(3) .num { background: var(--ipw-color-accent); }
+  .step:nth-child(4) .num { background: var(--ipw-color-accent-3); }
+  .step h4 { font-size: 15px; margin: 12px 0 6px; }
+  .step p { font-size: 13px; color: var(--ipw-color-muted); }
+  .step::after { content: ""; position: absolute; top: 35px; left: 38px; right: 8px;
+    height: 1px; background: var(--ipw-color-border); }
+  .step:last-child::after { display: none; }
+
+  /* terminal ">_" mono brand chip */
+  .term { display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--ipw-font-mono); font-size: 14px;
+    background: #0A101C; border: 1px solid var(--ipw-color-border); border-radius: 6px;
+    padding: 10px 16px; color: var(--ipw-color-secondary); }
+  .term .prompt { color: var(--ipw-color-accent); font-weight: 700; }
+
+  /* cover */
+  .cover .slide-inner { justify-content: center; }
+  .cover .eyebrow { color: var(--ipw-color-accent); }
+  .cover h1 { font-size: 54px; line-height: 1.25; font-weight: 800; max-width: 920px; }
+  .cover .underline-rule { width: 120px; height: 4px; margin-top: 26px;
+    background: linear-gradient(90deg, var(--ipw-color-accent), var(--ipw-color-primary)); }
+  .cover .sub { margin-top: 22px; font-size: 18px; color: var(--ipw-color-muted); max-width: 780px; }
+  .cover .term { margin-top: 40px; align-self: flex-start; }
+  .cover .meta { margin-top: 40px; font-family: var(--ipw-font-mono); font-size: 13px;
+    color: var(--ipw-color-muted); letter-spacing: 1.5px; }
+
+  /* divider */
+  .divider .slide-inner { justify-content: center; }
+  .divider .bignum { position: absolute; right: 48px; top: 50%; transform: translateY(-50%);
+    font-size: 320px; font-weight: 800; color: rgba(232, 237, 245, 0.06); line-height: 1;
+    font-family: var(--ipw-font-display); }
+  .divider .eyebrow { color: var(--ipw-color-accent); }
+  .divider h2 { font-size: 44px; font-weight: 800; max-width: 760px; position: relative; }
+
+  /* ending */
+  .ending .slide-inner { justify-content: center; align-items: flex-start; }
+  .ending .eyebrow { color: var(--ipw-color-accent); }
+  .ending h2 { font-size: 40px; font-weight: 800; max-width: 900px; }
+  .ending .term { margin-top: 32px; }
+  .ending .contact { margin-top: 28px; font-size: 15px; color: var(--ipw-color-muted); }
+</style>
+<link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide cover" id="cover">
+    <div class="gradient-rule"></div>
+    <div class="slide-inner">
+      <div class="eyebrow" data-ipw-text="cover.kicker">AI INFRA · PRODUCT BRIEFING · 2026</div>
+      <h1 data-ipw-text="cover.title">AI 基础设施产品<br />技术宣讲</h1>
+      <div class="underline-rule"></div>
+      <p class="sub" data-ipw-text="cover.sub">面向大模型训练与推理场景的一体化算力平台：架构设计、性能指标与商业化路径</p>
+      <div class="term"><span class="prompt">&gt;_</span><span data-ipw-text="cover.term">./briefing --product ai-infra --audience exec</span></div>
+      <div class="meta" data-ipw-text="cover.meta">产品营销部 · 韩立 · 2026 年 8 月</div>
+    </div>
+    <div class="footer">
+      <span class="stamp"><span class="prompt">&gt;_</span> <span data-ipw-text="cover.stamp">AINFRA · INTERNAL 内部资料</span></span>
+      <span class="pagenum">01</span>
+    </div>
+  </section>
+
+  <!-- 2 Agenda -->
+  <section class="slide" id="agenda">
+    <div class="gradient-rule"></div>
+    <div class="slide-inner">
+      <div class="eyebrow" data-ipw-text="agenda.kicker">AGENDA</div>
+      <h1 class="action-title" data-ipw-text="agenda.title">四步走：定位、架构、性能与成本，最后落到商业化打法</h1>
+      <div class="steps">
+        <div class="step"><div class="num">01</div><h4 data-ipw-text="agenda.s1t">产品定位</h4><p data-ipw-text="agenda.s1d">算力平台的市场位置与目标客户</p></div>
+        <div class="step"><div class="num">02</div><h4 data-ipw-text="agenda.s2t">技术架构</h4><p data-ipw-text="agenda.s2d">接入、调度、算力、存储四层解耦</p></div>
+        <div class="step"><div class="num">03</div><h4 data-ipw-text="agenda.s3t">性能与成本</h4><p data-ipw-text="agenda.s3d">关键指标、TCO 对比与风险边界</p></div>
+        <div class="step"><div class="num">04</div><h4 data-ipw-text="agenda.s4t">商业化路径</h4><p data-ipw-text="agenda.s4d">定价模型、标杆客户与渠道协同</p></div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp"><span class="prompt">&gt;_</span> AINFRA · INTERNAL 内部资料</span><span class="pagenum">02</span></div>
+  </section>
+
+  <!-- 3 Architecture: KPI + diagram island -->
+  <section class="slide" id="arch">
+    <div class="gradient-rule"></div>
+    <div class="slide-inner">
+      <div class="eyebrow" data-ipw-text="arc.kicker">ARCHITECTURE</div>
+      <h1 class="action-title" data-ipw-text="arc.title">管控面与数据面分离：<k>四层架构</k>支撑单集群万卡规模，训练线性度保持 <t>92%</t></h1>
+      <div class="tiles">
+        <div class="tile"><div class="label" data-ipw-text="arc.t1l">单集群规模（GPU 卡）</div><div class="value" data-ipw-text="arc.t1v">10,000+</div><div class="delta" data-ipw-text="arc.t1d">已交付 3 个万卡集群</div></div>
+        <div class="tile teal"><div class="label" data-ipw-text="arc.t2l">万卡训练线性度</div><div class="value" data-ipw-text="arc.t2v">92%</div><div class="delta" data-ipw-text="arc.t2d">行业平均约 80%</div></div>
+        <div class="tile amber"><div class="label" data-ipw-text="arc.t3l">推理 P99 时延（ms）</div><div class="value" data-ipw-text="arc.t3v">48</div><div class="delta" data-ipw-text="arc.t3d">同精度下优于竞品 35%</div></div>
+      </div>
+      <div class="island">
+        <div class="diagram">
+          <div class="node"><h4 data-ipw-text="arc.n1t">接入层</h4><div class="sub" data-ipw-text="arc.n1s">L1 · API 网关</div></div>
+          <div class="link"></div>
+          <div class="node teal"><h4 data-ipw-text="arc.n2t">调度层</h4><div class="sub" data-ipw-text="arc.n2s">L2 · 调度引擎</div></div>
+          <div class="link"></div>
+          <div class="node amber"><h4 data-ipw-text="arc.n3t">算力层</h4><div class="sub" data-ipw-text="arc.n3s">L3 · GPU 集群</div></div>
+          <div class="link"></div>
+          <div class="node purple"><h4 data-ipw-text="arc.n4t">存储层</h4><div class="sub" data-ipw-text="arc.n4s">L4 · 并行文件存储</div></div>
+        </div>
+      </div>
+      <div class="figure-cap" data-ipw-text="arc.figcap">Figure 1 — 平台逻辑架构：接入 / 调度 / 算力 / 存储四层解耦</div>
+    </div>
+    <div class="footer"><span class="stamp"><span class="prompt">&gt;_</span> AINFRA · INTERNAL 内部资料</span><span class="pagenum">03</span></div>
+  </section>
+
+  <!-- 4 Performance & cost: bullets + insight bars -->
+  <section class="slide" id="perf">
+    <div class="gradient-rule"></div>
+    <div class="slide-inner">
+      <div class="eyebrow" data-ipw-text="per.kicker">PERFORMANCE &amp; COST</div>
+      <h1 class="action-title" data-ipw-text="per.title">同等精度下训练成本 <a>下降 38%</a>，但<r>供应链与能耗</r>仍是两大硬约束</h1>
+      <div class="cols">
+        <div class="bullet-block">
+          <h3><span class="dot"></span><span data-ipw-text="per.gt">已验证优势（客户实测）</span></h3>
+          <ul>
+            <li data-ipw-text="per.g1">千亿模型 MFU 达 58%，行业前二水平</li>
+            <li data-ipw-text="per.g2">训练中断自动恢复 &lt; 5 分钟，断点续训零感知</li>
+            <li data-ipw-text="per.g3">推理吞吐较上代提升 2.3×，单卡成本同步下降</li>
+          </ul>
+        </div>
+        <div class="insight-stack">
+          <div class="insight">
+            <span class="it" data-ipw-text="per.i1t">COST</span>
+            <span data-ipw-text="per.i1d">三年 TCO 较自建机房低 27%，主要来自调度利用率提升</span>
+          </div>
+          <div class="insight red">
+            <span class="it" data-ipw-text="per.i2t">RISK</span>
+            <span data-ipw-text="per.i2d">高端 GPU 供给受限，大客户需提前 6 个月锁定产能</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp"><span class="prompt">&gt;_</span> AINFRA · INTERNAL 内部资料</span><span class="pagenum">04</span></div>
+  </section>
+
+  <!-- 5 Divider -->
+  <section class="slide divider" id="divider">
+    <div class="gradient-rule"></div>
+    <div class="bignum" data-ipw-text="div.num">04</div>
+    <div class="slide-inner">
+      <div class="eyebrow" data-ipw-text="div.kicker">PART 04</div>
+      <h2 data-ipw-text="div.title">商业化路径：<br />把技术优势翻译成客户听得懂的价值</h2>
+    </div>
+    <div class="footer"><span class="stamp"><span class="prompt">&gt;_</span> AINFRA · INTERNAL 内部资料</span><span class="pagenum">05</span></div>
+  </section>
+
+  <!-- 6 Ending -->
+  <section class="slide ending" id="ending">
+    <div class="gradient-rule"></div>
+    <div class="slide-inner">
+      <div class="eyebrow" data-ipw-text="end.kicker">NEXT STEP</div>
+      <h2 data-ipw-text="end.title">请决策：白皮书发布与首批标杆客户共创计划下月启动</h2>
+      <div class="term"><span class="prompt">&gt;_</span><span data-ipw-text="end.term">./next --whitepaper v1.0 --pilot-customers 3</span></div>
+      <div class="contact" data-ipw-text="end.contact">产品营销部 · 韩立 · 会后一周内联合解决方案团队输出客户版宣讲材料</div>
+    </div>
+    <div class="footer"><span class="stamp"><span class="prompt">&gt;_</span> AINFRA · INTERNAL 内部资料</span><span class="pagenum">06</span></div>
+  </section>
+
+</div>
+</body>
+</html>

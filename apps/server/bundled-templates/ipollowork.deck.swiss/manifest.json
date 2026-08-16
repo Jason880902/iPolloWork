@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.deck.swiss",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "data",
+  "style": "swiss",
+  "tags": [
+    "swiss",
+    "minimal",
+    "typography",
+    "grid"
+  ],
+  "surface": "design",
+  "title": "Swiss 极简排版",
+  "description": "国际主义排版风（International Typographic Style）幻灯片模版：白底、严格 12 栏左对齐网格、巨大字重对比（超大粗标题 vs 小号正文）、发丝级黑线分隔、栏后幽灵数字，全篇唯一红色 #E2231A 只给一个焦点元素。无渐变、无圆角、无柔和阴影。适合数据汇报、年度复盘、学术与设计导向的演讲。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "iPolloWork",
+    "license": "MIT",
+    "attribution": "Designed for iPolloWork as a International Typographic Style presentation template; visual system and editable variables by iPolloWork."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (ink)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (ink)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (swiss red)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-risk",
+        "label": "Risk (ink)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-neutral",
+        "label": "Neutral (grey)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-color-rule",
+        "label": "Hairline rule",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-color-ghost",
+        "label": "Ghost numeral",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-mono",
+        "label": "Mono font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-rule-w",
+        "label": "Rule width",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案全部替换为真实汇报内容，标题保持超大粗体、正文保持小号，字号对比不低于 4:1。",
+    "全篇只有一个红色 #E2231A：每页最多一个红色焦点元素（小方块、关键词或关键数字），不要新增第二种彩色。",
+    "禁止圆角、渐变与柔和阴影；卡片 radius 保持 0，阴影保持 none。",
+    "所有元素贴 12 栏网格左对齐，分隔只用 1px 发丝线。",
+    "幽灵数字保持极浅灰（rgba(0,0,0,0.05)），置于栏后，不要加深以免抢焦点。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

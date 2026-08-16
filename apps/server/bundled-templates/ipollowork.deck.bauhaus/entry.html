@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>包豪斯几何 — 设计语言体系发布会</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8E6E0;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: var(--ipw-body-line-height);
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(26, 26, 26, 0.12);
+    flex-shrink: 0;
+  }
+  .slide-inner { position: absolute; inset: 64px 88px 72px; display: flex; flex-direction: column; z-index: 2; }
+
+  /* hero primitives — exactly one per page */
+  .shape { position: absolute; z-index: 1; }
+  .shape-circle { border-radius: 50%; }
+  .shape-tri { clip-path: polygon(50% 0%, 100% 100%, 0% 100%); }
+
+  /* signature thick black rule */
+  .rule { height: 3px; background: var(--ipw-color-border); flex-shrink: 0; }
+
+  .kicker { font-size: 15px; letter-spacing: 3px; text-transform: lowercase;
+    color: var(--ipw-color-muted); font-weight: 700; }
+  h1, h2, h4 { font-family: var(--ipw-font-display); }
+  h1 { font-weight: 700; line-height: 1.18; }
+
+  .sub { margin-top: 28px; font-size: 20px; color: var(--ipw-color-muted); max-width: 560px; }
+  .meta { margin-top: 56px; font-size: 14px; letter-spacing: 1px; color: var(--ipw-color-muted); }
+
+  .footer { position: absolute; left: 88px; right: 88px; bottom: 28px; z-index: 2;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; letter-spacing: 1.5px; color: var(--ipw-color-muted);
+    border-top: 3px solid var(--ipw-color-border); padding-top: 12px; }
+  .pagenum { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ipw-color-text); }
+
+  /* agenda list */
+  .toc-list { list-style: none; margin-top: 44px; max-width: 600px; }
+  .toc-list li { display: flex; align-items: baseline; gap: 28px;
+    padding: 18px 0; border-top: 3px solid var(--ipw-color-border); }
+  .toc-list li:last-child { border-bottom: 3px solid var(--ipw-color-border); }
+  .toc-list .num { font-family: var(--ipw-font-display); font-size: 28px; font-weight: 700;
+    color: var(--ipw-color-secondary); min-width: 48px; }
+  .toc-list h4 { font-size: 20px; font-weight: 700; }
+  .toc-list p { font-size: 14px; color: var(--ipw-color-muted); margin-top: 2px; }
+
+  /* left-aligned points */
+  .points { list-style: none; margin-top: 40px; max-width: 580px; }
+  .points li { position: relative; padding: 14px 0 14px 28px; }
+  .points li::before { content: ""; position: absolute; left: 0; top: 24px;
+    width: 12px; height: 12px; background: var(--ipw-color-primary); }
+  .points h4 { font-size: 19px; font-weight: 700; }
+  .points p { font-size: 14px; color: var(--ipw-color-muted); margin-top: 3px; }
+
+  /* systematic shape legend */
+  .legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 52px; }
+  .legend .cell {
+    background: var(--ipw-card-bg);
+    border: 3px solid var(--ipw-card-border);
+    border-radius: var(--ipw-card-radius);
+    box-shadow: var(--ipw-card-shadow);
+    padding: 32px 28px 28px;
+  }
+  .legend .mini { width: 72px; height: 72px; margin-bottom: 24px; }
+  .legend h4 { font-size: 19px; font-weight: 700; }
+  .legend p { font-size: 14px; color: var(--ipw-color-muted); margin-top: 6px; }
+
+  /* divider */
+  .slide.divider { background: var(--ipw-color-primary); color: var(--ipw-color-bg); }
+  .divider .slide-inner { justify-content: center; }
+  .divider .kicker { color: var(--ipw-color-accent-2); }
+  .divider .rule { background: var(--ipw-color-bg); }
+  .divider h2 { font-size: 52px; font-weight: 700; margin-top: 20px; max-width: 620px; position: relative; }
+  .divider .footer { border-top-color: var(--ipw-color-bg); color: var(--ipw-color-bg); }
+  .divider .footer .pagenum { color: var(--ipw-color-bg); }
+
+  /* ending */
+  .ending .slide-inner { justify-content: center; }
+  .ending h1 { font-size: 60px; text-transform: lowercase; letter-spacing: -0.5px; }
+</style>
+<link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide cover" id="cover">
+    <div class="shape shape-circle" style="width:560px;height:560px;right:60px;top:80px;background:var(--ipw-color-accent);"></div>
+    <div class="slide-inner">
+      <div class="rule" style="width:220px;"></div>
+      <div class="kicker" style="margin-top:28px;" data-ipw-text="cover.kicker">design language system · release</div>
+      <h1 style="font-size:80px;margin-top:20px;" data-ipw-text="cover.title">设计语言<br />体系发布会</h1>
+      <p class="sub" data-ipw-text="cover.sub">form follows function —— 让几何成为产品的语言</p>
+      <div class="meta" data-ipw-text="cover.meta">产品营销部 · 韩立 · 2026 年 8 月</div>
+    </div>
+    <div class="footer">
+      <span data-ipw-text="cover.stamp">bauhaus · 包豪斯现代主义</span>
+      <span class="pagenum">01</span>
+    </div>
+  </section>
+
+  <!-- 2 Agenda -->
+  <section class="slide" id="toc">
+    <div class="shape" style="width:400px;height:400px;right:110px;top:160px;background:var(--ipw-color-secondary);"></div>
+    <div class="slide-inner">
+      <div class="rule" style="width:120px;"></div>
+      <div class="kicker" style="margin-top:24px;" data-ipw-text="toc.kicker">contents</div>
+      <h1 style="font-size:56px;margin-top:12px;" data-ipw-text="toc.title">目录</h1>
+      <ol class="toc-list">
+        <li><span class="num">01</span><div><h4 data-ipw-text="toc.i1t">为什么需要设计语言</h4><p data-ipw-text="toc.i1d">从产品营销的一致性危机说起</p></div></li>
+        <li><span class="num">02</span><div><h4 data-ipw-text="toc.i2t">三原色与几何原形</h4><p data-ipw-text="toc.i2d">圆、方、三角的语义分工</p></div></li>
+        <li><span class="num">03</span><div><h4 data-ipw-text="toc.i3t">组件与版式规则</h4><p data-ipw-text="toc.i3d">网格、规则线与留白的纪律</p></div></li>
+        <li><span class="num">04</span><div><h4 data-ipw-text="toc.i4t">落地与治理机制</h4><p data-ipw-text="toc.i4d">模板库、评审流程与考核挂钩</p></div></li>
+      </ol>
+    </div>
+    <div class="footer"><span>bauhaus · 包豪斯现代主义</span><span class="pagenum">02</span></div>
+  </section>
+
+  <!-- 3 Content: principles -->
+  <section class="slide" id="principles">
+    <div class="shape shape-tri" style="width:460px;height:420px;right:100px;top:170px;background:var(--ipw-color-accent-2);"></div>
+    <div class="slide-inner">
+      <div class="rule" style="width:120px;"></div>
+      <div class="kicker" style="margin-top:24px;" data-ipw-text="p.kicker">principles</div>
+      <h1 style="font-size:44px;margin-top:12px;max-width:600px;" data-ipw-text="p.title">四条设计原则</h1>
+      <ul class="points">
+        <li><h4 data-ipw-text="p.p1t">形式追随功能</h4><p data-ipw-text="p.p1d">每个元素都必须回答「它解决什么问题」</p></li>
+        <li><h4 data-ipw-text="p.p2t">少即是多</h4><p data-ipw-text="p.p2d">删掉不能提供信息的装饰，留白即内容</p></li>
+        <li><h4 data-ipw-text="p.p3t">网格即秩序</h4><p data-ipw-text="p.p3d">所有版面落在同一套网格上，杜绝随意摆放</p></li>
+        <li><h4 data-ipw-text="p.p4t">材料诚实</h4><p data-ipw-text="p.p4d">颜色保持纯度，字体保持本色，不做渐变伪装</p></li>
+      </ul>
+    </div>
+    <div class="footer"><span>bauhaus · 包豪斯现代主义</span><span class="pagenum">03</span></div>
+  </section>
+
+  <!-- 4 Content: shape legend system -->
+  <section class="slide" id="system">
+    <div class="slide-inner">
+      <div class="rule" style="width:120px;"></div>
+      <div class="kicker" style="margin-top:24px;" data-ipw-text="sys.kicker">the system</div>
+      <h1 style="font-size:44px;margin-top:12px;" data-ipw-text="sys.title">三个原形，一套语言</h1>
+      <div class="legend">
+        <div class="cell">
+          <div class="mini shape-circle" style="background:var(--ipw-color-accent);"></div>
+          <h4 data-ipw-text="sys.c1t">圆形 · 聚焦</h4>
+          <p data-ipw-text="sys.c1d">用于品牌时刻与核心信息，凝聚视线，一页只出现一个</p>
+        </div>
+        <div class="cell">
+          <div class="mini" style="background:var(--ipw-color-secondary);"></div>
+          <h4 data-ipw-text="sys.c2t">方形 · 秩序</h4>
+          <p data-ipw-text="sys.c2d">用于信息骨架与数据版式，建立稳定可预期的结构</p>
+        </div>
+        <div class="cell">
+          <div class="mini shape-tri" style="background:var(--ipw-color-accent-2);"></div>
+          <h4 data-ipw-text="sys.c3t">三角 · 动势</h4>
+          <p data-ipw-text="sys.c3d">用于行动引导与趋势表达，为版面指明方向</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>bauhaus · 包豪斯现代主义</span><span class="pagenum">04</span></div>
+  </section>
+
+  <!-- 5 Divider -->
+  <section class="slide divider" id="divider">
+    <div class="shape shape-circle" style="width:480px;height:480px;right:120px;top:120px;background:var(--ipw-color-bg);"></div>
+    <div class="slide-inner">
+      <div class="rule" style="width:120px;"></div>
+      <div class="kicker" style="margin-top:24px;" data-ipw-text="div.kicker">part 04</div>
+      <h2 data-ipw-text="div.title">落地与治理：<br />让规则长进流程里</h2>
+    </div>
+    <div class="footer"><span>bauhaus · 包豪斯现代主义</span><span class="pagenum">05</span></div>
+  </section>
+
+  <!-- 6 Ending -->
+  <section class="slide ending" id="ending">
+    <div class="shape" style="width:300px;height:300px;right:180px;top:210px;background:var(--ipw-color-primary);transform:rotate(45deg);"></div>
+    <div class="slide-inner">
+      <div class="rule" style="width:220px;"></div>
+      <h1 style="margin-top:24px;" data-ipw-text="end.title">form follows function.</h1>
+      <p class="sub" data-ipw-text="end.sub">让每一次表达，都经得起「为什么」的追问。</p>
+      <div class="meta" data-ipw-text="end.meta">产品营销部 · 韩立 · 谢谢聆听</div>
+    </div>
+    <div class="footer"><span>bauhaus · 包豪斯现代主义</span><span class="pagenum">06</span></div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.deck.midcentury",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "brand",
+  "style": "retro",
+  "tags": [
+    "midcentury",
+    "retro",
+    "warm",
+    "lifestyle"
+  ],
+  "surface": "design",
+  "title": "中世纪复古",
+  "description": "中世纪现代复古风幻灯片模版：奶油底 + harvest 暖色板（焦橙/芥末黄/牛油果绿/深青），几何人文无衬线字体。签名 motif 为星芒、回旋镖、原子轨道细线矢量，每章节一个；实心填充与细线描边混搭，大圆角有机形状。适合复古生活方式品牌、文创、消费品企划提案。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "iPolloWork",
+    "license": "MIT",
+    "attribution": "Designed for iPolloWork as a midcentury modern retro presentation template; visual system and editable variables by iPolloWork."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (burnt orange 焦橙)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (avocado 牛油果绿)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (mustard 芥末黄)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-deep",
+        "label": "Deep (deep teal 深青)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background (cream 奶油)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface (deep cream 深奶油)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text (ink 墨色)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text (warm taupe 暖灰)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border (warm hairline 暖描边)",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font (Futura geometric)",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-serif",
+        "label": "CJK serif accent (Songti)",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-type-scale",
+        "label": "Type scale",
+        "type": "number",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-body-line-height",
+        "label": "Body line height",
+        "type": "number",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius (organic)",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow (offset print)",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案全部替换为真实企划内容，标题保持结论句，不要写成词组。",
+    "Guard：harvest 四色（焦橙 / 芥末黄 / 牛油果绿 / 深青）就是风格身份——禁止粉彩化，也禁止再引入第五个亮色。",
+    "星芒、回旋镖、原子轨道是响亮 motif，每个章节只用一个，不要每页都放；页角小星芒 register mark 是系统回声，可以每页保留。",
+    "实心填充与细线描边混搭使用：大色块配 1.5-2px 细线，卡片与编号保持大圆角有机形状。",
+    "拉丁用 Futura / Avenir Next 几何无衬线，中文走 PingFang SC / Heiti SC 系统栈，Songti SC 只做个别词语的衬线点缀。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

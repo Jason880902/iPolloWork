@@ -1,0 +1,20 @@
+:root {
+  --ipw-color-primary: #1A2B45;
+  --ipw-color-secondary: #1F8A70;
+  --ipw-color-accent: #C9A227;
+  --ipw-color-risk: #C0492E;
+  --ipw-color-neutral: #64748B;
+  --ipw-color-bg: #FFFFFF;
+  --ipw-color-surface: #F5F7FA;
+  --ipw-color-text: #1A2B45;
+  --ipw-color-muted: #5A6B82;
+  --ipw-color-border: #D9E0E8;
+  --ipw-font-display: Arial, "Microsoft YaHei", "PingFang SC", sans-serif;
+  --ipw-font-body: Arial, "Microsoft YaHei", "PingFang SC", sans-serif;
+  --ipw-type-scale: 1.25;
+  --ipw-body-line-height: 1.6;
+  --ipw-card-bg: #FFFFFF;
+  --ipw-card-border: #D9E0E8;
+  --ipw-card-radius: 8px;
+  --ipw-card-shadow: 0 1px 3px rgba(26, 43, 69, 0.08);
+}

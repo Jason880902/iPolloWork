@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>中世纪复古 — Mid-century 品牌企划模版</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8ECF1;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: var(--ipw-body-line-height);
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(42, 37, 30, 0.12);
+    flex-shrink: 0;
+  }
+  .slide-inner { position: absolute; inset: 56px 72px 64px; display: flex; flex-direction: column; }
+
+  /* harvest palette utilities (SVG/CSS share the same tokens) */
+  .fill-o { fill: var(--ipw-color-primary); }
+  .fill-m { fill: var(--ipw-color-accent); }
+  .fill-t { fill: var(--ipw-color-secondary); }
+  .fill-d { fill: var(--ipw-color-deep); }
+  .fill-cream { fill: var(--ipw-color-bg); }
+  .fill-ink { fill: var(--ipw-color-text); }
+  .stroke-o { stroke: var(--ipw-color-primary); }
+  .stroke-m { stroke: var(--ipw-color-accent); }
+  .stroke-t { stroke: var(--ipw-color-secondary); }
+  .stroke-d { stroke: var(--ipw-color-deep); }
+  .stroke-ink { stroke: var(--ipw-color-text); }
+  .stroke-cream { stroke: var(--ipw-color-bg); }
+
+  /* quiet register mark — a small corner starburst echo allowed on every page */
+  .register { position: absolute; right: 48px; top: 44px; width: 40px; height: 40px;
+    color: var(--ipw-color-muted); opacity: 0.6; }
+  .slide.divider .register { color: var(--ipw-color-bg); opacity: 0.55; }
+
+  .kicker { display: flex; align-items: center; gap: 12px;
+    font-family: var(--ipw-font-display); font-size: 13px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase; color: var(--ipw-color-primary);
+    margin-bottom: 16px; }
+  .kicker::before { content: ""; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--ipw-color-primary); flex-shrink: 0; }
+  h1.action-title { font-family: var(--ipw-font-display); font-size: 33px; font-weight: 700;
+    line-height: 1.4; max-width: 1020px; letter-spacing: 0.5px; }
+  h1.action-title em { font-family: var(--ipw-font-serif); font-style: normal; color: var(--ipw-color-secondary); }
+
+  .footer { position: absolute; left: 72px; right: 72px; bottom: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--ipw-color-muted);
+    border-top: 1.5px solid var(--ipw-color-border); padding-top: 10px; }
+  .footer .stamp { letter-spacing: 2px; font-weight: 700; }
+  .pagenum { font-family: var(--ipw-font-display); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* ── cover ── */
+  .slide.cover .slide-inner { justify-content: center; }
+  .cover h1 { font-family: var(--ipw-font-display); font-size: 68px; font-weight: 700;
+    line-height: 1.28; letter-spacing: 2px; max-width: 640px; }
+  .cover h1 em { font-family: var(--ipw-font-serif); font-style: normal; color: var(--ipw-color-primary); }
+  .cover .sub { margin-top: 26px; font-size: 18px; color: var(--ipw-color-muted); max-width: 560px; }
+  .cover .meta { margin-top: 54px; display: flex; align-items: center; gap: 18px;
+    font-size: 13px; letter-spacing: 1.5px; color: var(--ipw-color-muted); }
+  .cover .meta .dots { display: flex; gap: 8px; }
+  .cover .meta .dots span { width: 13px; height: 13px; border-radius: 50%; }
+  .hero-starburst { position: absolute; right: 30px; top: 90px; width: 560px; height: 560px; }
+
+  /* ── agenda ── */
+  .toc { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 64px; margin-top: 24px;
+    flex: 1; align-content: center; }
+  .toc-item { display: flex; align-items: flex-start; gap: 22px; padding-bottom: 28px;
+    border-bottom: 1.5px solid var(--ipw-color-border); }
+  .toc-item .num { width: 62px; height: 62px; flex-shrink: 0; display: flex;
+    align-items: center; justify-content: center;
+    font-family: var(--ipw-font-display); font-size: 24px; font-weight: 700; color: var(--ipw-color-bg); }
+  .toc-item:nth-child(1) .num { background: var(--ipw-color-primary); border-radius: 48% 52% 55% 45% / 52% 46% 54% 48%; }
+  .toc-item:nth-child(2) .num { background: var(--ipw-color-accent); border-radius: 55% 45% 48% 52% / 45% 55% 45% 55%; }
+  .toc-item:nth-child(3) .num { background: var(--ipw-color-secondary); border-radius: 50%; }
+  .toc-item:nth-child(4) .num { background: var(--ipw-color-deep); border-radius: 38% 62% 42% 58% / 55% 40% 60% 45%; }
+  .toc-item h3 { font-size: 19px; font-weight: 700; margin: 6px 0 6px; letter-spacing: 1px; }
+  .toc-item p { font-size: 13.5px; color: var(--ipw-color-muted); }
+
+  /* ── content: atomic orbit + bullets ── */
+  .split { display: grid; grid-template-columns: 1fr 470px; gap: 48px; margin-top: 8px;
+    flex: 1; align-items: center; }
+  .bullets { list-style: none; }
+  .bullets li { position: relative; font-size: 15.5px; padding: 13px 0 13px 26px;
+    border-bottom: 1.5px solid var(--ipw-color-border); }
+  .bullets li::before { content: ""; position: absolute; left: 0; top: 22px;
+    width: 11px; height: 11px; border-radius: 50%; }
+  .bullets li:nth-child(1)::before { background: var(--ipw-color-primary); }
+  .bullets li:nth-child(2)::before { background: var(--ipw-color-accent); }
+  .bullets li:nth-child(3)::before { background: var(--ipw-color-secondary); }
+  .bullets li:nth-child(4)::before { background: var(--ipw-color-deep); }
+  .orbit-box { position: relative; }
+  .orbit-box .cap { margin-top: 10px; text-align: center; font-size: 12.5px;
+    letter-spacing: 2px; color: var(--ipw-color-muted); }
+
+  /* ── content: data cards ── */
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 24px;
+    flex: 1; align-content: center; }
+  .card {
+    background: var(--ipw-card-bg); border: 1.5px solid var(--ipw-card-border);
+    border-radius: var(--ipw-card-radius); box-shadow: var(--ipw-card-shadow);
+    padding: 26px 24px 24px; }
+  .card .blob { width: 108px; height: 108px; display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px; color: var(--ipw-color-bg); }
+  .card .blob .v { font-family: var(--ipw-font-display); font-size: 42px; font-weight: 700; line-height: 1; }
+  .card .blob .u { font-size: 15px; font-weight: 700; margin-left: 3px; align-self: flex-end; padding-bottom: 18px; }
+  .card:nth-child(1) .blob { background: var(--ipw-color-primary); border-radius: 48% 52% 55% 45% / 52% 46% 54% 48%; }
+  .card:nth-child(2) .blob { background: var(--ipw-color-accent); border-radius: 55% 45% 48% 52% / 45% 55% 45% 55%; }
+  .card:nth-child(3) .blob { background: var(--ipw-color-secondary); border-radius: 50%; }
+  .card:nth-child(4) .blob { background: var(--ipw-color-deep); border-radius: 38% 62% 42% 58% / 55% 40% 60% 45%; }
+  .card .label { font-size: 16px; font-weight: 700; letter-spacing: 1px; }
+  .card .desc { font-size: 12.5px; color: var(--ipw-color-muted); margin-top: 7px; line-height: 1.55; }
+  .note { margin-top: 30px; padding-top: 14px; border-top: 1.5px solid var(--ipw-color-border);
+    font-size: 12px; color: var(--ipw-color-muted); letter-spacing: 1px; }
+
+  /* ── divider: boomerang ── */
+  .slide.divider { background: var(--ipw-color-deep); color: var(--ipw-color-bg); }
+  .divider .slide-inner { justify-content: center; }
+  .divider .kicker { color: var(--ipw-color-accent); }
+  .divider .kicker::before { background: var(--ipw-color-accent); }
+  .divider h2 { font-size: 46px; font-weight: 700; line-height: 1.35; letter-spacing: 1.5px;
+    max-width: 640px; position: relative; }
+  .divider .sub { margin-top: 22px; font-size: 15px; letter-spacing: 2px; color: var(--ipw-color-accent); }
+  .divider .bignum { position: absolute; left: 56px; bottom: 40px;
+    font-family: var(--ipw-font-display); font-size: 200px; font-weight: 700; line-height: 1;
+    color: rgba(244, 237, 221, 0.10); }
+  .hero-boomerang { position: absolute; right: 40px; top: 130px; width: 600px; height: 444px; }
+  .divider .footer { border-top-color: rgba(244, 237, 221, 0.25); color: rgba(244, 237, 221, 0.6); }
+
+  /* ── ending ── */
+  .slide.ending .slide-inner { justify-content: center; }
+  .ending h2 { font-family: var(--ipw-font-display); font-size: 56px; font-weight: 700; letter-spacing: 2px; }
+  .ending h2 em { font-family: var(--ipw-font-serif); font-style: normal; color: var(--ipw-color-primary); }
+  .ending .contact { margin-top: 30px; font-size: 15px; color: var(--ipw-color-muted); letter-spacing: 1px; }
+  .ending .dots { display: flex; gap: 12px; margin-top: 46px; }
+  .ending .dots span { width: 16px; height: 16px; border-radius: 50%; }
+</style>
+<link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover：奶油底 + 大星芒 motif + 几何大标题 -->
+  <section class="slide cover" id="cover">
+    <svg class="register" viewBox="-20 -20 40 40" aria-hidden="true">
+      <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none">
+        <line x1="6" y1="0" x2="15" y2="0"/><line x1="-6" y1="0" x2="-15" y2="0"/>
+        <line x1="0" y1="6" x2="0" y2="15"/><line x1="0" y1="-6" x2="0" y2="-15"/>
+        <line x1="4.2" y1="4.2" x2="10.6" y2="10.6"/><line x1="-4.2" y1="-4.2" x2="-10.6" y2="-10.6"/>
+        <line x1="4.2" y1="-4.2" x2="10.6" y2="-10.6"/><line x1="-4.2" y1="4.2" x2="-10.6" y2="10.6"/>
+      </g>
+    </svg>
+    <svg class="hero-starburst" viewBox="-210 -210 420 420" aria-hidden="true">
+      <ellipse class="stroke-t" rx="200" ry="70" transform="rotate(-18)" fill="none" stroke-width="2" opacity="0.5"/>
+      <circle class="fill-t" cx="-132" cy="90" r="8"/>
+      <circle class="fill-m" cx="132" cy="-90" r="8"/>
+      <g fill="none" stroke-linecap="round">
+        <line class="stroke-o" x1="30" y1="0" x2="176" y2="0" stroke-width="4.5" transform="rotate(0)"/>
+        <line class="stroke-m" x1="30" y1="0" x2="104" y2="0" stroke-width="3" transform="rotate(20)"/>
+        <line class="stroke-t" x1="30" y1="0" x2="176" y2="0" stroke-width="4.5" transform="rotate(40)"/>
+        <line class="stroke-o" x1="30" y1="0" x2="104" y2="0" stroke-width="3" transform="rotate(60)"/>
+        <line class="stroke-m" x1="30" y1="0" x2="176" y2="0" stroke-width="4.5" transform="rotate(80)"/>
+        <line class="stroke-d" x1="30" y1="0" x2="104" y2="0" stroke-width="3" transform="rotate(100)"/>
+        <line class="stroke-t" x1="30" y1="0" x2="176" y2="0" stroke-width="4.5" transform="rotate(120)"/>
+        <line class="stroke-m" x1="30" y1="0" x2="104" y2="0" stroke-width="3" transform="rotate(140)"/>
+        <line class="stroke-o" x1="30" y1="0" x2="176" y2="0" stroke-width="4.5" transform="rotate(160)"/>
+        <line class="stroke-t" x1="30" y1="0" x2="104" y2="0" stroke-width="3" transform="rotate(180)"/>
+        <line class="stroke-m" x1="30" y1="0" x2="176" y2="0" stroke-width="4.5" transform="rotate(200)"/>
+        <line class="stroke-o" x1="30" y1="0" x2="104" y2="0" stroke-width="3" transform="rotate(220)"/>
+        <line class="stroke-d" x1="30" y1="0" x2="176" y2="0" stroke-width="4.5" transform="rotate(240)"/>
+        <line class="stroke-t" x1="30" y1="0" x2="104" y2="0" stroke-width="3" transform="rotate(260)"/>
+        <line class="stroke-o" x1="30" y1="0" x2="176" y2="0" stroke-width="4.5" transform="rotate(280)"/>
+        <line class="stroke-m" x1="30" y1="0" x2="104" y2="0" stroke-width="3" transform="rotate(300)"/>
+        <line class="stroke-t" x1="30" y1="0" x2="176" y2="0" stroke-width="4.5" transform="rotate(320)"/>
+        <line class="stroke-d" x1="30" y1="0" x2="104" y2="0" stroke-width="3" transform="rotate(340)"/>
+      </g>
+      <g>
+        <circle class="fill-o" cx="176" cy="0" r="7" transform="rotate(0)"/>
+        <circle class="fill-t" cx="176" cy="0" r="7" transform="rotate(40)"/>
+        <circle class="fill-m" cx="176" cy="0" r="7" transform="rotate(80)"/>
+        <circle class="fill-t" cx="176" cy="0" r="7" transform="rotate(120)"/>
+        <circle class="fill-o" cx="176" cy="0" r="7" transform="rotate(160)"/>
+        <circle class="fill-m" cx="176" cy="0" r="7" transform="rotate(200)"/>
+        <circle class="fill-d" cx="176" cy="0" r="7" transform="rotate(240)"/>
+        <circle class="fill-o" cx="176" cy="0" r="7" transform="rotate(280)"/>
+        <circle class="fill-t" cx="176" cy="0" r="7" transform="rotate(320)"/>
+      </g>
+      <circle class="fill-o" r="19"/>
+    </svg>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="cover.kicker">RETRO LIVING · ANNUAL PROPOSAL 2027</div>
+      <h1 data-ipw-text="cover.title">复古生活方式品牌<br /><em>年度企划</em></h1>
+      <p class="sub" data-ipw-text="cover.sub">产品目录 · 定价体系 · 渠道建设 · 宣传推广：把 1950-60 年代的生活美学，做成今天过日子的日常器物</p>
+      <div class="meta">
+        <span class="dots"><span class="fill-o"></span><span class="fill-m"></span><span class="fill-t"></span><span class="fill-d"></span></span>
+        <span data-ipw-text="cover.meta">产品营销部 · 韩立 · 2026 年 8 月</span>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="stamp" data-ipw-text="cover.stamp">产品营销部 · 内部资料</span>
+      <span class="pagenum">01</span>
+    </div>
+  </section>
+
+  <!-- 2 目录：四色编号章节 -->
+  <section class="slide" id="toc">
+    <svg class="register" viewBox="-20 -20 40 40" aria-hidden="true">
+      <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none">
+        <line x1="6" y1="0" x2="15" y2="0"/><line x1="-6" y1="0" x2="-15" y2="0"/>
+        <line x1="0" y1="6" x2="0" y2="15"/><line x1="0" y1="-6" x2="0" y2="-15"/>
+        <line x1="4.2" y1="4.2" x2="10.6" y2="10.6"/><line x1="-4.2" y1="-4.2" x2="-10.6" y2="-10.6"/>
+        <line x1="4.2" y1="-4.2" x2="10.6" y2="-10.6"/><line x1="-4.2" y1="4.2" x2="-10.6" y2="10.6"/>
+      </g>
+    </svg>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="toc.kicker">CONTENTS · 目录</div>
+      <h1 class="action-title" data-ipw-text="toc.title">四个章节，讲清楚这一年怎么打</h1>
+      <div class="toc">
+        <div class="toc-item">
+          <div class="num" data-ipw-text="toc.i1n">01</div>
+          <div><h3 data-ipw-text="toc.i1t">品牌定位</h3><p data-ipw-text="toc.i1d">人群、价值主张与价格带：先想清楚卖给谁</p></div>
+        </div>
+        <div class="toc-item">
+          <div class="num" data-ipw-text="toc.i2n">02</div>
+          <div><h3 data-ipw-text="toc.i2t">产品企划</h3><p data-ipw-text="toc.i2d">年度产品目录、定价体系与上市节奏</p></div>
+        </div>
+        <div class="toc-item">
+          <div class="num" data-ipw-text="toc.i3n">03</div>
+          <div><h3 data-ipw-text="toc.i3t">渠道与传播</h3><p data-ipw-text="toc.i3d">渠道建设、内容日历与投放原则</p></div>
+        </div>
+        <div class="toc-item">
+          <div class="num" data-ipw-text="toc.i4n">04</div>
+          <div><h3 data-ipw-text="toc.i4t">组织协同</h3><p data-ipw-text="toc.i4d">考核激励、跨部门机制与落地保障</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">产品营销部 · 内部资料</span><span class="pagenum">02</span></div>
+  </section>
+
+  <!-- 3 内容页：原子轨道 motif + 要点 -->
+  <section class="slide" id="positioning">
+    <svg class="register" viewBox="-20 -20 40 40" aria-hidden="true">
+      <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none">
+        <line x1="6" y1="0" x2="15" y2="0"/><line x1="-6" y1="0" x2="-15" y2="0"/>
+        <line x1="0" y1="6" x2="0" y2="15"/><line x1="0" y1="-6" x2="0" y2="-15"/>
+        <line x1="4.2" y1="4.2" x2="10.6" y2="10.6"/><line x1="-4.2" y1="-4.2" x2="-10.6" y2="-10.6"/>
+        <line x1="4.2" y1="-4.2" x2="10.6" y2="-10.6"/><line x1="-4.2" y1="4.2" x2="-10.6" y2="10.6"/>
+      </g>
+    </svg>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="pos.kicker">01 · 品牌定位 BRAND POSITIONING</div>
+      <h1 class="action-title" data-ipw-text="pos.title">定位一句话：不做博物馆里的复古，做<em>过日子</em>的复古</h1>
+      <div class="split">
+        <ul class="bullets">
+          <li data-ipw-text="pos.b1">核心人群：28-40 岁城市家庭，为「耐用、耐看、可传承」付费</li>
+          <li data-ipw-text="pos.b2">价值主张：1950-60 年代设计语汇 × 当代工艺与供应链</li>
+          <li data-ipw-text="pos.b3">价格带：主力 299-899 元，对标轻奢家居入门档</li>
+          <li data-ipw-text="pos.b4">竞争卡位：避开快消低价，不与中古店拼稀缺</li>
+        </ul>
+        <div class="orbit-box">
+          <svg viewBox="0 0 420 300" width="470" height="336" aria-hidden="true">
+            <ellipse class="stroke-t" cx="210" cy="150" rx="180" ry="60" transform="rotate(-20 210 150)" fill="none" stroke-width="2"/>
+            <ellipse class="stroke-d" cx="210" cy="150" rx="180" ry="60" transform="rotate(20 210 150)" fill="none" stroke-width="2" opacity="0.8"/>
+            <ellipse class="stroke-m" cx="210" cy="150" rx="180" ry="60" transform="rotate(70 210 150)" fill="none" stroke-width="2"/>
+            <circle class="fill-m stroke-cream" cx="372" cy="118" r="9" stroke-width="2.5"/>
+            <circle class="fill-o stroke-cream" cx="58" cy="73" r="9" stroke-width="2.5"/>
+            <circle class="fill-d stroke-cream" cx="130" cy="83" r="9" stroke-width="2.5"/>
+            <circle class="fill-o" cx="210" cy="150" r="16"/>
+          </svg>
+          <div class="cap" data-ipw-text="pos.cap">品牌资产 = 产品 × 内容 × 渠道</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">产品营销部 · 内部资料</span><span class="pagenum">03</span></div>
+  </section>
+
+  <!-- 4 内容页：数据卡片（圆角有机形状，四色各一） -->
+  <section class="slide" id="goals">
+    <svg class="register" viewBox="-20 -20 40 40" aria-hidden="true">
+      <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none">
+        <line x1="6" y1="0" x2="15" y2="0"/><line x1="-6" y1="0" x2="-15" y2="0"/>
+        <line x1="0" y1="6" x2="0" y2="15"/><line x1="0" y1="-6" x2="0" y2="-15"/>
+        <line x1="4.2" y1="4.2" x2="10.6" y2="10.6"/><line x1="-4.2" y1="-4.2" x2="-10.6" y2="-10.6"/>
+        <line x1="4.2" y1="-4.2" x2="10.6" y2="-10.6"/><line x1="-4.2" y1="4.2" x2="-10.6" y2="10.6"/>
+      </g>
+    </svg>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="goal.kicker">02 · 年度目标 ANNUAL TARGETS</div>
+      <h1 class="action-title" data-ipw-text="goal.title">四个数字，给这一年定调</h1>
+      <div class="cards">
+        <div class="card">
+          <div class="blob"><span class="v" data-ipw-text="goal.c1v">12</span><span class="u" data-ipw-text="goal.c1u">款</span></div>
+          <div class="label" data-ipw-text="goal.c1l">新品上市</div>
+          <div class="desc" data-ipw-text="goal.c1d">春秋两季主推，单款打爆再复制</div>
+        </div>
+        <div class="card">
+          <div class="blob"><span class="v" data-ipw-text="goal.c2v">3.2</span><span class="u" data-ipw-text="goal.c2u">亿</span></div>
+          <div class="label" data-ipw-text="goal.c2l">销售额目标</div>
+          <div class="desc" data-ipw-text="goal.c2d">同比 +38%，线上占比 65%</div>
+        </div>
+        <div class="card">
+          <div class="blob"><span class="v" data-ipw-text="goal.c3v">85</span><span class="u" data-ipw-text="goal.c3u">家</span></div>
+          <div class="label" data-ipw-text="goal.c3l">渠道门店</div>
+          <div class="desc" data-ipw-text="goal.c3d">新增 20 家，重点布局华东</div>
+        </div>
+        <div class="card">
+          <div class="blob"><span class="v" data-ipw-text="goal.c4v">40</span><span class="u" data-ipw-text="goal.c4u">万</span></div>
+          <div class="label" data-ipw-text="goal.c4l">会员规模</div>
+          <div class="desc" data-ipw-text="goal.c4d">复购率目标 32%</div>
+        </div>
+      </div>
+      <div class="note" data-ipw-text="goal.note">数据口径：FY2027 年度目标，已与经营会对齐。</div>
+    </div>
+    <div class="footer"><span class="stamp">产品营销部 · 内部资料</span><span class="pagenum">04</span></div>
+  </section>
+
+  <!-- 5 Divider：回旋镖 motif 章节页 -->
+  <section class="slide divider" id="divider">
+    <svg class="register" viewBox="-20 -20 40 40" aria-hidden="true">
+      <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none">
+        <line x1="6" y1="0" x2="15" y2="0"/><line x1="-6" y1="0" x2="-15" y2="0"/>
+        <line x1="0" y1="6" x2="0" y2="15"/><line x1="0" y1="-6" x2="0" y2="-15"/>
+        <line x1="4.2" y1="4.2" x2="10.6" y2="10.6"/><line x1="-4.2" y1="-4.2" x2="-10.6" y2="-10.6"/>
+        <line x1="4.2" y1="-4.2" x2="10.6" y2="-10.6"/><line x1="-4.2" y1="4.2" x2="-10.6" y2="10.6"/>
+      </g>
+    </svg>
+    <div class="bignum" data-ipw-text="div.num">03</div>
+    <svg class="hero-boomerang" viewBox="0 0 460 340" aria-hidden="true">
+      <path class="stroke-m" d="M 60 250 Q 230 30 400 170 Q 240 120 140 280 Z"
+        fill="none" stroke-width="4" stroke-linejoin="round"/>
+      <path class="fill-o" d="M 130 305 Q 265 160 415 255 Q 275 235 195 325 Z" opacity="0.95"/>
+      <circle class="fill-m" cx="425" cy="120" r="9"/>
+      <circle class="stroke-cream" cx="70" cy="110" r="14" fill="none" stroke-width="2" opacity="0.6"/>
+    </svg>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="div.kicker">PART 03 · 渠道与传播</div>
+      <h2 data-ipw-text="div.title">渠道与传播：<br />让复古成为日常话题</h2>
+      <div class="sub" data-ipw-text="div.sub">宣传渠道建设 · 内容节奏 · 投放原则</div>
+    </div>
+    <div class="footer"><span class="stamp">产品营销部 · 内部资料</span><span class="pagenum">05</span></div>
+  </section>
+
+  <!-- 6 Ending 结尾页 -->
+  <section class="slide ending" id="ending">
+    <svg class="register" viewBox="-20 -20 40 40" aria-hidden="true">
+      <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none">
+        <line x1="6" y1="0" x2="15" y2="0"/><line x1="-6" y1="0" x2="-15" y2="0"/>
+        <line x1="0" y1="6" x2="0" y2="15"/><line x1="0" y1="-6" x2="0" y2="-15"/>
+        <line x1="4.2" y1="4.2" x2="10.6" y2="10.6"/><line x1="-4.2" y1="-4.2" x2="-10.6" y2="-10.6"/>
+        <line x1="4.2" y1="-4.2" x2="10.6" y2="-10.6"/><line x1="-4.2" y1="4.2" x2="-10.6" y2="10.6"/>
+      </g>
+    </svg>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="end.kicker">THANKS · 谢谢聆听</div>
+      <h2 data-ipw-text="end.title">让好设计，<em>回到日常</em>。</h2>
+      <div class="contact" data-ipw-text="end.contact">产品营销部 · 韩立 · 会后一周内提交渠道细则与内容日历</div>
+      <div class="dots"><span class="fill-o"></span><span class="fill-m"></span><span class="fill-t"></span><span class="fill-d"></span></div>
+    </div>
+    <div class="footer"><span class="stamp">产品营销部 · 内部资料</span><span class="pagenum">06</span></div>
+  </section>
+
+</div>
+</body>
+</html>

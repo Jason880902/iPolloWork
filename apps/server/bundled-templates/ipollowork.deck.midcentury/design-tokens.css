@@ -1,0 +1,20 @@
+:root {
+  --ipw-color-primary: #C55A2A;
+  --ipw-color-secondary: #4A7A6A;
+  --ipw-color-accent: #D6A02C;
+  --ipw-color-deep: #2D4E5C;
+  --ipw-color-bg: #F4EDDD;
+  --ipw-color-surface: #EAE1CB;
+  --ipw-color-text: #2A251E;
+  --ipw-color-muted: #786C5A;
+  --ipw-color-border: #D9CCAF;
+  --ipw-font-display: "Futura", "Avenir Next", "Heiti SC", "PingFang SC", sans-serif;
+  --ipw-font-body: "Futura", "Avenir Next", "Heiti SC", "PingFang SC", sans-serif;
+  --ipw-font-serif: "Songti SC", "Noto Serif CJK SC", serif;
+  --ipw-type-scale: 1.25;
+  --ipw-body-line-height: 1.6;
+  --ipw-card-bg: #FBF6E9;
+  --ipw-card-border: #2A251E;
+  --ipw-card-radius: 28px;
+  --ipw-card-shadow: 4px 4px 0 rgba(42, 37, 30, 0.14);
+}

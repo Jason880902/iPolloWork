@@ -1,0 +1,24 @@
+:root {
+  --ipw-color-primary: #4F9CF5;
+  --ipw-color-secondary: #33C2A6;
+  --ipw-color-accent: #F2A33C;
+  --ipw-color-accent-2: #E0556E;
+  --ipw-color-accent-3: #A98BF0;
+  --ipw-color-neutral: #8A96AC;
+  --ipw-color-bg: #0C1320;
+  --ipw-color-surface: #141E30;
+  --ipw-color-text: #E8EDF5;
+  --ipw-color-muted: #8A96AC;
+  --ipw-color-border: #24314A;
+  --ipw-font-display: Arial, "Microsoft YaHei", "PingFang SC", sans-serif;
+  --ipw-font-body: Arial, "Microsoft YaHei", "PingFang SC", sans-serif;
+  --ipw-font-mono: "SF Mono", Consolas, monospace;
+  --ipw-type-scale: 1.25;
+  --ipw-body-line-height: 1.6;
+  --ipw-card-bg: #141E30;
+  --ipw-card-border: #24314A;
+  --ipw-card-radius: 8px;
+  --ipw-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --ipw-island-bg: #FFFFFF;
+  --ipw-island-ink: #182338;
+}

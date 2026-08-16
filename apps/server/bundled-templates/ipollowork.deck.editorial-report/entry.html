@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>深色财经简报 — FT/Bloomberg 数据简报模版</title>
+<link rel="stylesheet" href="assets/fonts.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8ECF1;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: var(--ipw-body-line-height);
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(14, 14, 18, 0.25);
+    flex-shrink: 0;
+  }
+  .slide-inner { position: absolute; inset: 64px 80px 72px; display: flex; flex-direction: column; }
+
+  /* signature: uppercase mono kicker + hairline + serif headline */
+  .kicker {
+    font-family: var(--ipw-font-mono); font-size: 12px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--ipw-color-secondary); margin-bottom: 14px;
+  }
+  .hairline { height: 1px; background: var(--ipw-color-border); border: 0; margin: 18px 0 26px; }
+  .headline {
+    font-family: var(--ipw-font-display); font-weight: 800;
+    font-size: 34px; line-height: 1.4; max-width: 1020px; color: var(--ipw-color-text);
+  }
+  .headline r { color: var(--ipw-color-primary); font-style: normal; }
+  .headline a { color: var(--ipw-color-secondary); font-style: normal; }
+
+  /* footer: mono source line */
+  .source {
+    position: absolute; left: 80px; right: 80px; bottom: 26px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--ipw-font-mono); font-size: 11px; letter-spacing: 0.5px;
+    color: var(--ipw-color-muted);
+    border-top: 1px solid var(--ipw-color-border); padding-top: 12px;
+  }
+  .source .pagenum { font-variant-numeric: tabular-nums; color: var(--ipw-color-muted); }
+
+  /* CSS bar chart */
+  .chart-block { margin-top: 44px; display: flex; gap: 56px; align-items: flex-end; }
+  .chart { flex: 1; display: flex; align-items: flex-end; gap: 28px; height: 300px;
+    border-bottom: 1px solid var(--ipw-color-border); padding-bottom: 0; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .bar-col .val { font-family: var(--ipw-font-mono); font-size: 13px; color: var(--ipw-color-muted); margin-bottom: 10px; }
+  .bar-col .bar { width: 100%; max-width: 88px; background: var(--ipw-color-surface);
+    border: 1px solid var(--ipw-color-border); border-bottom: 0; }
+  .bar-col.hot .bar { background: var(--ipw-color-secondary); border-color: var(--ipw-color-secondary); }
+  .bar-col.hot .val { color: var(--ipw-color-secondary); font-weight: 700; }
+  .bar-col .cat { font-size: 12px; color: var(--ipw-color-muted); margin-top: 12px; text-align: center; }
+  .chart-labels { display: flex; gap: 28px; flex: 1; }
+  .chart-wrap { flex: 1; display: flex; flex-direction: column; }
+
+  /* takeaway rail */
+  .takeaway {
+    width: 320px; flex-shrink: 0; align-self: stretch;
+    border-left: 3px solid var(--ipw-color-secondary); padding: 8px 0 8px 24px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .takeaway .t-kicker { font-family: var(--ipw-font-mono); font-size: 11px; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--ipw-color-muted); margin-bottom: 12px; }
+  .takeaway .t-body { font-family: var(--ipw-font-display); font-size: 21px; font-weight: 600; line-height: 1.55; }
+  .takeaway .t-body r { color: var(--ipw-color-primary); font-style: normal; }
+
+  /* analysis points */
+  .points { margin-top: 40px; display: flex; flex-direction: column; }
+  .point { display: flex; gap: 28px; padding: 22px 0; border-top: 1px solid var(--ipw-color-border); align-items: baseline; }
+  .point:first-child { border-top: 0; padding-top: 8px; }
+  .point .idx { font-family: var(--ipw-font-display); font-size: 22px; font-weight: 600;
+    color: var(--ipw-color-secondary); width: 44px; flex-shrink: 0; }
+  .point .p-body { flex: 1; }
+  .point h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .point p { font-size: 14px; color: var(--ipw-color-muted); max-width: 860px; }
+  .point .p-stat { font-family: var(--ipw-font-display); font-size: 40px; font-weight: 800;
+    width: 200px; flex-shrink: 0; text-align: right; color: var(--ipw-color-text); }
+  .point .p-stat r { color: var(--ipw-color-primary); font-style: normal; }
+  .point .p-stat small { display: block; font-family: var(--ipw-font-mono); font-size: 10px;
+    font-weight: 400; color: var(--ipw-color-muted); letter-spacing: 1px; margin-top: 4px; }
+
+  /* comparison table */
+  .compare { margin-top: 40px; width: 100%; border-collapse: collapse; }
+  .compare th { font-family: var(--ipw-font-mono); font-size: 11px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--ipw-color-muted); font-weight: 400;
+    text-align: left; padding: 0 16px 14px 0; border-bottom: 1px solid var(--ipw-color-secondary); }
+  .compare td { padding: 18px 16px 18px 0; border-bottom: 1px solid var(--ipw-color-border);
+    font-size: 15px; vertical-align: baseline; }
+  .compare td.metric { font-family: var(--ipw-font-display); font-size: 17px; font-weight: 600; width: 26%; }
+  .compare td.num { font-family: var(--ipw-font-mono); font-size: 15px; width: 16%; }
+  .compare td.num r { color: var(--ipw-color-primary); font-style: normal; font-weight: 700; }
+  .compare td.note { color: var(--ipw-color-muted); font-size: 13.5px; }
+
+  /* cover */
+  .slide.cover .slide-inner { justify-content: center; }
+  .cover .masthead { display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--ipw-font-mono); font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--ipw-color-muted); margin-bottom: 0; }
+  .cover .masthead b { color: var(--ipw-color-secondary); font-weight: 400; }
+  .cover h1 { font-family: var(--ipw-font-display); font-size: 64px; font-weight: 800;
+    line-height: 1.3; max-width: 980px; }
+  .cover h1 r { color: var(--ipw-color-primary); font-style: normal; }
+  .cover .sub { margin-top: 28px; font-size: 17px; color: var(--ipw-color-muted); max-width: 720px; }
+  .cover .meta { margin-top: 64px; font-family: var(--ipw-font-mono); font-size: 12px;
+    letter-spacing: 1.5px; color: var(--ipw-color-muted); }
+
+  /* divider */
+  .slide.divider .slide-inner { justify-content: center; }
+  .divider .roman { font-family: var(--ipw-font-display); font-size: 200px; font-weight: 800;
+    line-height: 1; color: var(--ipw-color-secondary); opacity: 0.9; }
+  .divider h2 { font-family: var(--ipw-font-display); font-size: 42px; font-weight: 800;
+    line-height: 1.4; max-width: 820px; margin-top: 24px; }
+  .divider .d-sub { margin-top: 20px; font-size: 15px; color: var(--ipw-color-muted); max-width: 640px; }
+
+  /* ending */
+  .slide.ending .slide-inner { justify-content: center; }
+  .ending h2 { font-family: var(--ipw-font-display); font-size: 46px; font-weight: 800; line-height: 1.4; max-width: 900px; }
+  .ending h2 a { color: var(--ipw-color-secondary); font-style: normal; }
+  .ending .contact { margin-top: 36px; font-family: var(--ipw-font-mono); font-size: 12px;
+    letter-spacing: 1.5px; color: var(--ipw-color-muted); }
+</style>
+<link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide cover" id="cover">
+    <div class="slide-inner">
+      <div class="masthead"><b data-ipw-text="cover.kicker">CONSUMER BRIEFING · 2026 H2</b><span data-ipw-text="cover.issue">NO. 08 · 内部简报</span></div>
+      <hr class="hairline" />
+      <h1 data-ipw-text="cover.title">2026 H2 消费品市场洞察简报：<br />存量时代的<r>结构性机会</r></h1>
+      <p class="sub" data-ipw-text="cover.sub">增长不再来自大盘，来自品类分化、渠道迁移与价格带的重新排序</p>
+      <div class="meta" data-ipw-text="cover.meta">产品营销部 · 韩立 · 2026 年 8 月 16 日</div>
+    </div>
+    <div class="source"><span data-ipw-text="cover.source">Source: 国家统计局 · 尼尔森 IQ · 公司内部经营数据</span><span class="pagenum">01</span></div>
+  </section>
+
+  <!-- 2 Chart page -->
+  <section class="slide" id="chart">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="chart.kicker">I · CATEGORY DIVERGENCE</div>
+      <h1 class="headline" data-ipw-text="chart.title">品类分化加剧：健康功能型消费以 21.4% 的增速一骑绝尘，传统大单品进入<a>个位数时代</a></h1>
+      <hr class="hairline" />
+      <div class="chart-block">
+        <div class="chart-wrap">
+          <div class="chart">
+            <div class="bar-col hot"><div class="val" data-ipw-text="chart.v1">21.4%</div><div class="bar" style="height:86%;"></div></div>
+            <div class="bar-col"><div class="val" data-ipw-text="chart.v2">9.8%</div><div class="bar" style="height:40%;"></div></div>
+            <div class="bar-col"><div class="val" data-ipw-text="chart.v3">6.2%</div><div class="bar" style="height:26%;"></div></div>
+            <div class="bar-col"><div class="val" data-ipw-text="chart.v4">3.1%</div><div class="bar" style="height:14%;"></div></div>
+            <div class="bar-col"><div class="val" data-ipw-text="chart.v5">-1.8%</div><div class="bar" style="height:8%;"></div></div>
+          </div>
+          <div class="chart-labels">
+            <div style="flex:1;text-align:center;font-size:12px;color:var(--ipw-color-secondary);font-weight:700;" data-ipw-text="chart.l1">健康功能</div>
+            <div style="flex:1;text-align:center;font-size:12px;color:var(--ipw-color-muted);" data-ipw-text="chart.l2">悦己体验</div>
+            <div style="flex:1;text-align:center;font-size:12px;color:var(--ipw-color-muted);" data-ipw-text="chart.l3">性价比白牌</div>
+            <div style="flex:1;text-align:center;font-size:12px;color:var(--ipw-color-muted);" data-ipw-text="chart.l4">传统大单品</div>
+            <div style="flex:1;text-align:center;font-size:12px;color:var(--ipw-color-muted);" data-ipw-text="chart.l5">高端溢价</div>
+          </div>
+        </div>
+        <div class="takeaway">
+          <div class="t-kicker" data-ipw-text="chart.tk">TAKEAWAY</div>
+          <div class="t-body" data-ipw-text="chart.takeaway">资源应从「高端溢价」叙事撤出，all-in <r>健康功能</r>赛道的产品组合重构。</div>
+        </div>
+      </div>
+    </div>
+    <div class="source"><span data-ipw-text="chart.source">Source: 尼尔森 IQ 零研数据（2026.01–06），同比增长率，% · 高亮柱为本报告焦点品类</span><span class="pagenum">02</span></div>
+  </section>
+
+  <!-- 3 Analysis page -->
+  <section class="slide" id="analysis">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="ana.kicker">I · WHY IT MATTERS</div>
+      <h1 class="headline" data-ipw-text="ana.title">分化的本质不是消费升级或降级，而是「信任预算」的重新分配</h1>
+      <hr class="hairline" />
+      <div class="points">
+        <div class="point">
+          <div class="idx" data-ipw-text="ana.i1">01</div>
+          <div class="p-body">
+            <h3 data-ipw-text="ana.h1">成分与功效成为新的决策入口</h3>
+            <p data-ipw-text="ana.p1">消费者先查成分表再看品牌，营销叙事让位于可验证的产品证据链。</p>
+          </div>
+          <div class="p-stat" data-ipw-text="ana.s1">63%<small>购买前主动查成分</small></div>
+        </div>
+        <div class="point">
+          <div class="idx" data-ipw-text="ana.i2">02</div>
+          <div class="p-body">
+            <h3 data-ipw-text="ana.h2">渠道信任迁移：从货架到内容场</h3>
+            <p data-ipw-text="ana.p2">直播间与垂类测评承接了原本属于商超货架的「发现—信任」环节。</p>
+          </div>
+          <div class="p-stat" data-ipw-text="ana.s2">47%<small>新客首购来自内容渠道</small></div>
+        </div>
+        <div class="point">
+          <div class="idx" data-ipw-text="ana.i3">03</div>
+          <div class="p-body">
+            <h3 data-ipw-text="ana.h3">价格带腰部塌陷</h3>
+            <p data-ipw-text="ana.p3">80–150 元价格带份额连续四季下滑，资源应向两端（专业高端 / 极致性价比）集中。</p>
+          </div>
+          <div class="p-stat" data-ipw-text="ana.s3"><r>-12%</r><small>腰部价格带份额同比</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="source"><span data-ipw-text="ana.source">Source: 麦肯锡中国消费者调研 2026（n=6,200）· 公司 CRM 新客归因数据</span><span class="pagenum">03</span></div>
+  </section>
+
+  <!-- 4 Divider -->
+  <section class="slide divider" id="divider">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="div.kicker">SECTION</div>
+      <div class="roman" data-ipw-text="div.roman">II</div>
+      <h2 data-ipw-text="div.title">对策：把产品组合、渠道预算与考核口径对齐到同一个事实</h2>
+      <p class="d-sub" data-ipw-text="div.sub">三个对照表：品类押注、渠道迁移、价格带重构</p>
+    </div>
+    <div class="source"><span data-ipw-text="div.source">Source: 产品营销部 H2 规划草案 v3</span><span class="pagenum">04</span></div>
+  </section>
+
+  <!-- 5 Comparison page -->
+  <section class="slide" id="compare">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="cmp.kicker">II · TRADE-OFF MATRIX</div>
+      <h1 class="headline" data-ipw-text="cmp.title">三个维度的资源再平衡：H1 实际投入 vs H2 建议配置</h1>
+      <hr class="hairline" />
+      <table class="compare">
+        <thead>
+          <tr>
+            <th data-ipw-text="cmp.th1">维度</th>
+            <th data-ipw-text="cmp.th2">H1 投入占比</th>
+            <th data-ipw-text="cmp.th3">H2 建议</th>
+            <th data-ipw-text="cmp.th4">调整逻辑</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="metric" data-ipw-text="cmp.m1">品类组合</td>
+            <td class="num" data-ipw-text="cmp.h1a">高端线 38%</td>
+            <td class="num" data-ipw-text="cmp.h1b"><r>健康功能 45%</r></td>
+            <td class="note" data-ipw-text="cmp.n1">跟随增速与毛利双高象限</td>
+          </tr>
+          <tr>
+            <td class="metric" data-ipw-text="cmp.m2">渠道预算</td>
+            <td class="num" data-ipw-text="cmp.h2a">传统媒介 52%</td>
+            <td class="num" data-ipw-text="cmp.h2b">内容场 55%</td>
+            <td class="note" data-ipw-text="cmp.n2">信任入口迁移，预算随入口走</td>
+          </tr>
+          <tr>
+            <td class="metric" data-ipw-text="cmp.m3">价格带</td>
+            <td class="num" data-ipw-text="cmp.h3a">腰部为主 61%</td>
+            <td class="num" data-ipw-text="cmp.h3b">两端布局 70%</td>
+            <td class="note" data-ipw-text="cmp.n3">腰部塌陷，主动撤出而非被动失守</td>
+          </tr>
+          <tr>
+            <td class="metric" data-ipw-text="cmp.m4">考核口径</td>
+            <td class="num" data-ipw-text="cmp.h4a">GMV 单一指标</td>
+            <td class="num" data-ipw-text="cmp.h4b">GMV + 新客质量</td>
+            <td class="note" data-ipw-text="cmp.n4">避免用促销冲量透支品牌资产</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="source"><span data-ipw-text="cmp.source">Source: 公司财务口径 2026 H1 决算 · 产品营销部测算</span><span class="pagenum">05</span></div>
+  </section>
+
+  <!-- 6 Ending -->
+  <section class="slide ending" id="ending">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="end.kicker">CLOSING</div>
+      <hr class="hairline" />
+      <h2 data-ipw-text="end.title">简报完毕。<br />请决策：H2 资源再平衡方案<a>下周进入评审</a>。</h2>
+      <div class="contact" data-ipw-text="end.contact">产品营销部 · 韩立 · 评审材料 8 月 22 日前提交经营管理会</div>
+    </div>
+    <div class="source"><span data-ipw-text="end.source">Source: 本简报全部数据口径见附录 · 转载请注明来源</span><span class="pagenum">06</span></div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+:root {
+  --ipw-color-primary: #46B4E8;
+  --ipw-color-secondary: #8FA6C4;
+  --ipw-color-accent: #F1764E;
+  --ipw-color-bg: #0A1B38;
+  --ipw-color-surface: #10254A;
+  --ipw-color-text: #EAF2FF;
+  --ipw-color-muted: #8FA6C4;
+  --ipw-color-border: #2A4568;
+  --ipw-color-grid: #16305A;
+  --ipw-font-display: Arial, "Heiti SC", "PingFang SC", sans-serif;
+  --ipw-font-body: Arial, "Heiti SC", "PingFang SC", sans-serif;
+  --ipw-font-mono: "SF Mono", Consolas, monospace;
+  --ipw-type-scale: 1.25;
+  --ipw-body-line-height: 1.6;
+  --ipw-card-bg: #10254A;
+  --ipw-card-border: #46B4E8;
+  --ipw-card-radius: 0px;
+  --ipw-card-shadow: none;
+}

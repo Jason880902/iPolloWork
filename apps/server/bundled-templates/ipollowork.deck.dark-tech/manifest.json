@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.deck.dark-tech",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "technology",
+  "style": "dark",
+  "tags": [
+    "dark",
+    "tech",
+    "ai",
+    "engineering"
+  ],
+  "surface": "design",
+  "title": "Dark Tech 技术宣讲",
+  "description": "沉稳近黑工程风幻灯片模版：深蓝底 #0C1320、语义五强调色（blue=架构 / teal=性能 / amber=成本亮点 / red=风险 / purple=生态）、白色 diagram island 图示面板、amber→blue 渐变规则线、等宽字体 eyebrow 与终端 \">_\" 品牌细节。适合 AI、基础设施与工程产品的技术宣讲、方案汇报与立项评审。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "iPolloWork",
+    "license": "MIT",
+    "attribution": "Designed for iPolloWork as a dark tech engineering presentation template; visual system and editable variables by iPolloWork."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (blue)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (teal)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (amber)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent-2",
+        "label": "Accent 2 (red)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent-3",
+        "label": "Accent 3 (purple)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-neutral",
+        "label": "Neutral (slate)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface (dark panel)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-mono",
+        "label": "Mono font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-island-bg",
+        "label": "Diagram island background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-island-ink",
+        "label": "Diagram island text",
+        "type": "color",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案全部替换为真实宣讲内容。",
+    "图示与架构框图必须放进白色 diagram island 面板，禁止直接画在深蓝底上。",
+    "一个概念固定一个强调色：blue=架构 / teal=性能 / amber=成本亮点 / red=风险 / purple=生态，中途不要换色。",
+    "eyebrow、页脚、Figure 说明与终端 \">_\" 品牌标记必须使用等宽字体（mono），不要换成正文 font。",
+    "insight 强调块左侧 4px 竖条颜色必须与内容语义一致，每页最多一组。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

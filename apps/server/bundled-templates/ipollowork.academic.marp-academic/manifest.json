@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.academic.marp-academic",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "education",
+  "style": "editorial",
+  "tags": [
+    "academic",
+    "education",
+    "marp",
+    "thesis",
+    "defense"
+  ],
+  "surface": "design",
+  "title": "学术答辩 Academic",
+  "description": "Marp academic 主题的 HTML 移植版：白底、栗色（#800000）章节横带白字、右下角 n/N 粗体页码、底部虚线脚注；封面为论文题录版式（栗色标题左置、落款信息右置），章节页与致谢页沿用同一 lead 语法。适合学位论文答辩、课题汇报、实验室组会等中文学术场景。移植自 kaisugi/marp-theme-academic（MIT License）。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "kaisugi/marp-theme-academic",
+    "repository": "https://github.com/kaisugi/marp-theme-academic",
+    "license": "MIT",
+    "attribution": "Ported from the Marp theme 'academic' by Kaito Sugimoto to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (maroon)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (ink)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (light maroon)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted (footnote)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface (formula panel)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-math",
+        "label": "Math/formula font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border / baseline series",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把占位题录信息（答辩人、导师、单位、日期、邮箱、基金号）全部替换为真实内容。",
+    "保持「白底 + 栗色 #800000 + 深灰正文」的克制学术配色，不要新增高饱和强调色。",
+    "内容页顶部栗色横带只写章节名（名词短语），不要写成长句标题。",
+    "底部虚线区域只放脚注与资料来源，正文用栗色上标数字与之对应。",
+    "图表语义不要改派：浅灰=基准/对照组，栗色=实验/AI 组。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

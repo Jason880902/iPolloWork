@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.deck.luxury-dark",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "brand",
+  "style": "cinematic",
+  "tags": [
+    "luxury",
+    "dark",
+    "brand",
+    "premium"
+  ],
+  "surface": "design",
+  "title": "暗黑奢华鉴赏",
+  "description": "暗黑奢华编辑风幻灯片模版：近黑底（#0A0A0A）、唯一香槟金强调色（#C9A96E，深色变体 #8B7355 仅用于发丝线与 kicker）、Playfair Display 衬线大标题与大数字、中英双语 lockup（重磅中文大标 + 宽字距全大写英文小字）、深色渐变摄影位占位与大量负空间。适合高端品牌鉴赏会、奢侈品发布、私享品鉴与高端产品线推介。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "iPolloWork",
+    "license": "MIT",
+    "attribution": "Designed for iPolloWork as a dark luxury brand showcase presentation template; visual system and editable variables by iPolloWork."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (champagne)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (deep champagne)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (champagne)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background (near black)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text (warm ink)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border (hairline)",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font (serif)",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-type-scale",
+        "label": "Type scale",
+        "type": "number",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-body-line-height",
+        "label": "Body line height",
+        "type": "number",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "全篇只使用香槟金一个强调色系（#C9A96E 及其深色变体 #8B7355），不得引入第二种对比色。",
+    "香槟金只用于衬线数字、kicker 与发丝线，绝不大面积填充；背景保持近黑。",
+    "保持大量负空间，每页文字宁少勿多，不要把版面塞满。",
+    "摄影位占位块替换为真实产品图时，保持深色基调与香槟金发丝线描边。",
+    "替换示例文案后，保留「重磅中文大标 + 宽字距全大写英文小字」的双语 lockup 结构。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

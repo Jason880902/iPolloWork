@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.deck.bauhaus",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "design",
+  "style": "bold",
+  "tags": [
+    "bauhaus",
+    "geometric",
+    "modernism",
+    "design"
+  ],
+  "surface": "design",
+  "title": "包豪斯几何",
+  "description": "包豪斯现代主义幻灯片模版：暖白底上圆/方/三角三原色几何作为版面结构主角，小写几何无衬线标题、粗黑规则线、45° 旋转元素、零装饰大留白。适合设计语言发布、品牌升级提案、设计评审与方法论宣讲。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "iPolloWork",
+    "license": "MIT",
+    "attribution": "Designed for iPolloWork as a Bauhaus geometric modernism presentation template; visual system and editable variables by iPolloWork."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (ink black)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Bauhaus blue",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Bauhaus red",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent-2",
+        "label": "Bauhaus yellow",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background (warm white)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Rule / border (ink)",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-type-scale",
+        "label": "Type scale",
+        "type": "number",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-body-line-height",
+        "label": "Body line height",
+        "type": "number",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案替换为真实发布会内容，英文标题保持小写。",
+    "每页只保留一个主角几何原形（圆/方/三角其一），禁止碎形堆砌。",
+    "三原色保持纯度（#D52B1E / #F7B500 / #005AA8），禁止渐变与浅色变体。",
+    "除圆形外所有元素 radius 保持 0，规则线保持 2-3px 粗黑。",
+    "保留大留白，不要为填满页面而加装饰。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

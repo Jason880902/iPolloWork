@@ -1,0 +1,27 @@
+:root {
+  --ipw-color-primary: #5B8DEF;
+  --ipw-color-secondary: #3DDDFC;
+  --ipw-color-accent: #A26BFA;
+  --ipw-color-accent-2: #FB7185;
+  --ipw-color-accent-3: #4ADE80;
+  --ipw-color-neutral: #AEB7CC;
+  --ipw-color-bg: #0A0E27;
+  --ipw-color-surface: #12173A;
+  --ipw-color-text: #F2F5FC;
+  --ipw-color-muted: #AEB7CC;
+  --ipw-color-border: rgba(255, 255, 255, 0.12);
+  --ipw-font-display: Arial, "PingFang SC", sans-serif;
+  --ipw-font-body: Arial, "PingFang SC", sans-serif;
+  --ipw-font-mono: "SF Mono", Consolas, monospace;
+  --ipw-type-scale: 1.25;
+  --ipw-body-line-height: 1.6;
+  --ipw-card-bg: rgba(255, 255, 255, 0.06);
+  --ipw-card-border: rgba(255, 255, 255, 0.14);
+  --ipw-card-radius: 18px;
+  --ipw-card-shadow: 0 8px 32px rgba(4, 8, 30, 0.45);
+  --ipw-glass-bg: rgba(255, 255, 255, 0.06);
+  --ipw-glass-border: rgba(255, 255, 255, 0.16);
+  --ipw-glass-blur: 18px;
+  --ipw-glow-blue: rgba(91, 141, 239, 0.35);
+  --ipw-glow-violet: rgba(162, 107, 250, 0.28);
+}

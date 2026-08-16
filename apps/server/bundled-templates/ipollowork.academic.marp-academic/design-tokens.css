@@ -1,0 +1,17 @@
+:root {
+  --ipw-color-primary: #800000;
+  --ipw-color-secondary: #333333;
+  --ipw-color-accent: #A33E3E;
+  --ipw-color-bg: #FFFFFF;
+  --ipw-color-surface: #FBF7F4;
+  --ipw-color-text: #333333;
+  --ipw-color-muted: #555555;
+  --ipw-color-border: #C9BFB8;
+  --ipw-font-display: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --ipw-font-body: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --ipw-font-math: "STIX Two Math", "Latin Modern Math", "Times New Roman", "Songti SC", serif;
+  --ipw-card-bg: #FFFFFF;
+  --ipw-card-border: #C9BFB8;
+  --ipw-card-radius: 2px;
+  --ipw-card-shadow: 0 1px 3px rgba(51, 51, 51, 0.08);
+}

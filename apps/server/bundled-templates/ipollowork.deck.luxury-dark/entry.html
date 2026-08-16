@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>暗黑奢华鉴赏 — 品牌私享会模版</title>
+<link rel="stylesheet" href="assets/fonts.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8ECF1;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: var(--ipw-body-line-height);
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(10, 10, 10, 0.25);
+    flex-shrink: 0;
+  }
+  .slide-inner { position: absolute; inset: 72px 96px 80px; display: flex; flex-direction: column; }
+
+  /* signature: champagne hairline, serif numerals, bilingual lockup */
+  .kicker { font-size: 12px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--ipw-color-secondary); font-weight: 400; }
+  .hairline { width: 72px; height: 1px; background: var(--ipw-color-secondary); }
+  .hairline.wide { width: 100%; }
+  .en-lockup { font-size: 13px; letter-spacing: 6px; text-transform: uppercase;
+    color: var(--ipw-color-primary); font-weight: 400; }
+  .serif-num { font-family: var(--ipw-font-display); color: var(--ipw-color-primary);
+    font-weight: 600; line-height: 1; }
+
+  .footer { position: absolute; left: 96px; right: 96px; bottom: 28px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 11px; letter-spacing: 2px; color: var(--ipw-color-muted);
+    border-top: 1px solid var(--ipw-color-border); padding-top: 12px; }
+  .footer .stamp { text-transform: uppercase; }
+  .footer .pagenum { font-family: var(--ipw-font-display); font-size: 13px;
+    color: var(--ipw-color-primary); letter-spacing: 1px; }
+
+  /* 1 cover */
+  .cover .slide-inner { justify-content: center; }
+  .cover .kicker { margin-bottom: 28px; }
+  .cover .hairline { margin-bottom: 40px; }
+  .cover h1 { font-family: var(--ipw-font-display); font-size: 72px; font-weight: 600;
+    line-height: 1.25; letter-spacing: 2px; color: var(--ipw-color-text); }
+  .cover .en-lockup { margin-top: 36px; }
+  .cover .meta { margin-top: 88px; font-size: 13px; letter-spacing: 3px;
+    color: var(--ipw-color-muted); }
+
+  /* 2 narrative */
+  .narrative .slide-inner { justify-content: center; max-width: 880px; }
+  .narrative .kicker { margin-bottom: 24px; }
+  .narrative .hairline { margin-bottom: 48px; }
+  .narrative .statement { font-family: var(--ipw-font-display); font-size: 44px;
+    font-weight: 600; line-height: 1.6; color: var(--ipw-color-text); }
+  .narrative .statement em { font-style: italic; color: var(--ipw-color-primary); }
+  .narrative .support { margin-top: 48px; font-size: 15px; line-height: 2;
+    color: var(--ipw-color-muted); max-width: 640px; }
+
+  /* 3 product */
+  .product .slide-inner { display: grid; grid-template-columns: 640px 1fr;
+    gap: 72px; align-items: center; }
+  .photo-slot { position: relative; height: 480px;
+    background: linear-gradient(155deg, #241F19 0%, #14110D 48%, #070606 100%);
+    box-shadow: inset 0 0 0 1px rgba(139, 115, 85, 0.35);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+  .photo-slot .ph-mark { width: 48px; height: 1px; background: var(--ipw-color-secondary); }
+  .photo-slot .ph-text { font-size: 12px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--ipw-color-muted); }
+  .product-notes .kicker { margin-bottom: 20px; }
+  .product-notes h2 { font-family: var(--ipw-font-display); font-size: 32px;
+    font-weight: 600; line-height: 1.4; color: var(--ipw-color-text); margin-bottom: 40px; }
+  .note-item { display: flex; gap: 24px; align-items: baseline;
+    padding: 18px 0; border-top: 1px solid var(--ipw-color-border); }
+  .note-item:last-child { border-bottom: 1px solid var(--ipw-color-border); }
+  .note-item .serif-num { font-size: 26px; min-width: 48px; }
+  .note-item .note-body .note-title { font-size: 15px; font-weight: 600;
+    color: var(--ipw-color-text); margin-bottom: 4px; }
+  .note-item .note-body .note-desc { font-size: 13px; color: var(--ipw-color-muted); }
+
+  /* 4 craft / data */
+  .craft .slide-inner { justify-content: center; }
+  .craft .kicker { margin-bottom: 20px; }
+  .craft h2 { font-family: var(--ipw-font-display); font-size: 34px; font-weight: 600;
+    line-height: 1.4; color: var(--ipw-color-text); max-width: 760px; }
+  .craft .hairline { margin: 48px 0 56px; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 56px; }
+  .stat { border-top: 1px solid var(--ipw-color-secondary); padding-top: 28px; }
+  .stat .serif-num { font-size: 88px; }
+  .stat .serif-num small { font-size: 28px; font-weight: 400; margin-left: 6px; }
+  .stat .stat-label { margin-top: 18px; font-size: 14px; font-weight: 600;
+    color: var(--ipw-color-text); }
+  .stat .stat-desc { margin-top: 6px; font-size: 12px; line-height: 1.8;
+    color: var(--ipw-color-muted); }
+
+  /* 5 divider */
+  .divider .slide-inner { justify-content: center; }
+  .divider .ghost { position: absolute; right: 64px; top: 50%; transform: translateY(-50%);
+    font-family: var(--ipw-font-display); font-size: 380px; font-weight: 800;
+    line-height: 1; color: rgba(201, 169, 110, 0.07); }
+  .divider .kicker { margin-bottom: 24px; }
+  .divider .hairline { margin-bottom: 40px; }
+  .divider h2 { font-family: var(--ipw-font-display); font-size: 52px; font-weight: 600;
+    line-height: 1.35; color: var(--ipw-color-text); max-width: 720px; }
+  .divider .en-lockup { margin-top: 32px; }
+
+  /* 6 ending */
+  .ending .slide-inner { justify-content: center; }
+  .ending .kicker { margin-bottom: 28px; }
+  .ending .hairline { margin-bottom: 40px; }
+  .ending h2 { font-family: var(--ipw-font-display); font-size: 56px; font-weight: 600;
+    line-height: 1.3; color: var(--ipw-color-text); }
+  .ending .en-lockup { margin-top: 32px; }
+  .ending .contact { margin-top: 88px; font-size: 13px; letter-spacing: 3px;
+    color: var(--ipw-color-muted); }
+</style>
+<link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide cover" id="cover">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="cover.kicker">PRIVATE APPRECIATION · 私享鉴赏</div>
+      <div class="hairline"></div>
+      <h1 data-ipw-text="cover.title">高端产品线<br />品牌鉴赏会</h1>
+      <div class="en-lockup" data-ipw-text="cover.titleEn">THE LUXURY COLLECTION · BRAND SHOWCASE</div>
+      <div class="meta" data-ipw-text="cover.meta">2026 年 9 月 20 日 · 上海 · 仅限受邀嘉宾</div>
+    </div>
+    <div class="footer">
+      <span class="stamp" data-ipw-text="cover.stamp">Brand Showcase · 品牌鉴赏会</span>
+      <span class="pagenum">01</span>
+    </div>
+  </section>
+
+  <!-- 2 Narrative -->
+  <section class="slide narrative" id="narrative">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="story.kicker">BRAND STORY · 品牌叙事</div>
+      <div class="hairline"></div>
+      <p class="statement" data-ipw-text="story.statement">真正的高端，不在于被看见，<br />而在于<em>被记住</em>。</p>
+      <p class="support" data-ipw-text="story.support">二十年来，我们只专注一件事：把每一件产品当作可以传世的作品来对待。不追逐潮流，不妥协细节，让时间成为最好的证明。</p>
+    </div>
+    <div class="footer">
+      <span class="stamp">Brand Showcase · 品牌鉴赏会</span>
+      <span class="pagenum">02</span>
+    </div>
+  </section>
+
+  <!-- 3 Product -->
+  <section class="slide product" id="product">
+    <div class="slide-inner">
+      <div class="photo-slot">
+        <div class="ph-mark"></div>
+        <div class="ph-text" data-ipw-text="prod.photoNote">HERO IMAGE · 产品摄影位</div>
+      </div>
+      <div class="product-notes">
+        <div class="kicker" data-ipw-text="prod.kicker">THE COLLECTION · 臻品系列</div>
+        <h2 data-ipw-text="prod.title">本季首发<br />三件代表作</h2>
+        <div class="note-item">
+          <div class="serif-num">01</div>
+          <div class="note-body">
+            <div class="note-title" data-ipw-text="prod.n1t">曜黑 · 旗舰款</div>
+            <div class="note-desc" data-ipw-text="prod.n1d">整料切割，一体成型，全球限量 300 件</div>
+          </div>
+        </div>
+        <div class="note-item">
+          <div class="serif-num">02</div>
+          <div class="note-body">
+            <div class="note-title" data-ipw-text="prod.n2t">鎏金 · 典藏款</div>
+            <div class="note-desc" data-ipw-text="prod.n2d">手工鎏金封边，每一件都有独立编号</div>
+          </div>
+        </div>
+        <div class="note-item">
+          <div class="serif-num">03</div>
+          <div class="note-body">
+            <div class="note-title" data-ipw-text="prod.n3t">素影 · 定制款</div>
+            <div class="note-desc" data-ipw-text="prod.n3d">仅面向黑卡会员开放一对一专属定制</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="stamp">Brand Showcase · 品牌鉴赏会</span>
+      <span class="pagenum">03</span>
+    </div>
+  </section>
+
+  <!-- 4 Craft / Data -->
+  <section class="slide craft" id="craft">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="craft.kicker">CRAFT &amp; HERITAGE · 工艺与传承</div>
+      <h2 data-ipw-text="craft.title">数字背后，是不被看见的功夫</h2>
+      <div class="hairline"></div>
+      <div class="stats">
+        <div class="stat">
+          <div class="serif-num" data-ipw-text="craft.s1v">128</div>
+          <div class="stat-label" data-ipw-text="craft.s1l">道手工工序</div>
+          <div class="stat-desc" data-ipw-text="craft.s1d">由平均工龄十五年以上的匠人逐一完成</div>
+        </div>
+        <div class="stat">
+          <div class="serif-num" data-ipw-text="craft.s2v">0.01<small>mm</small></div>
+          <div class="stat-label" data-ipw-text="craft.s2l">公差标准</div>
+          <div class="stat-desc" data-ipw-text="craft.s2d">相当于发丝直径的七分之一，逐件全检</div>
+        </div>
+        <div class="stat">
+          <div class="serif-num" data-ipw-text="craft.s3v">72<small>小时</small></div>
+          <div class="stat-label" data-ipw-text="craft.s3l">静置熟成</div>
+          <div class="stat-desc" data-ipw-text="craft.s3d">恒温恒湿窖藏环境，让材质抵达最佳状态</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="stamp">Brand Showcase · 品牌鉴赏会</span>
+      <span class="pagenum">04</span>
+    </div>
+  </section>
+
+  <!-- 5 Divider -->
+  <section class="slide divider" id="divider">
+    <div class="ghost" data-ipw-text="div.num">02</div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="div.kicker">CHAPTER 02 · 篇章</div>
+      <div class="hairline"></div>
+      <h2 data-ipw-text="div.title">巡展品鉴<br />与私享定制</h2>
+      <div class="en-lockup" data-ipw-text="div.titleEn">THE PRIVATE VIEWING &amp; BESPOKE SERVICE</div>
+    </div>
+    <div class="footer">
+      <span class="stamp">Brand Showcase · 品牌鉴赏会</span>
+      <span class="pagenum">05</span>
+    </div>
+  </section>
+
+  <!-- 6 Ending -->
+  <section class="slide ending" id="ending">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="end.kicker">WITH GRATITUDE · 致谢</div>
+      <div class="hairline"></div>
+      <h2 data-ipw-text="end.title">期待与您相见</h2>
+      <div class="en-lockup" data-ipw-text="end.titleEn">WE LOOK FORWARD TO YOUR PRESENCE</div>
+      <div class="contact" data-ipw-text="end.contact">产品营销部 · 韩立 · RSVP 截至 9 月 10 日 · 席位有限，敬请回复</div>
+    </div>
+    <div class="footer">
+      <span class="stamp">Brand Showcase · 品牌鉴赏会</span>
+      <span class="pagenum">06</span>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
