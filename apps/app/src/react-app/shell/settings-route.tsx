@@ -1597,6 +1597,7 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
     await engineStart(selectedWorkspaceRoot, {
       preferSidecar: true,
       runtime: "direct",
+      forceRestart: true,
       workspacePaths,
       ipolloworkRemoteAccess: ipolloworkServerSnapshot.ipolloworkServerSettings.remoteAccessEnabled === true,
     });
