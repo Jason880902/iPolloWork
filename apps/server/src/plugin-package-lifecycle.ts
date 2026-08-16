@@ -316,9 +316,97 @@ function integrityForManifest(
   return { sha256: digest, status: declared ? "verified" : "unsigned" };
 }
 
+const LEGACY_RESOURCE_PATH_PREFIXES: ReadonlyArray<readonly [string, string]> = [
+  [".opencode/skills/", "skills/"],
+  [".opencode/mcps/", "mcp/"],
+  [".opencode/agents/", "agents/"],
+  [".opencode/commands/", "commands/"],
+  [".opencode/service/", "service/"],
+];
+
+function migrateLegacyManifestPath(path: string): string {
+  for (const [legacy, current] of LEGACY_RESOURCE_PATH_PREFIXES) {
+    if (path.startsWith(legacy)) return `${current}${path.slice(legacy.length)}`;
+  }
+  return path.startsWith(".opencode/") ? path.slice(".opencode/".length) : path;
+}
+
+/**
+ * 把 schemaVersion=1 的插件 manifest 就地迁移为 v2 结构，兼容升级前安装的旧插件：
+ * - schemaVersion 1 -> 2
+ * - 移除 package.compatibility.opencode（v2 只保留 ipollowork）
+ * - 移除 package.entrypoints（v2 已废弃）
+ * - 资源路径去掉 .opencode/ 前缀（.opencode/skills/ -> skills/，.opencode/mcps/ -> mcp/ 等）
+ */
+function migrateLegacyManifest(value: unknown): unknown {
+  if (!isRecord(value)) return value;
+  if (value.schemaVersion !== 1) return value;
+
+  const normalized: Record<string, unknown> = { ...value, schemaVersion: 2 };
+
+  if (isRecord(value.package)) {
+    const nextPackage: Record<string, unknown> = { ...value.package };
+    if (isRecord(nextPackage.compatibility)) {
+      const nextCompatibility: Record<string, unknown> = { ...nextPackage.compatibility };
+      delete nextCompatibility.opencode;
+      nextPackage.compatibility = nextCompatibility;
+    }
+    delete nextPackage.entrypoints;
+    normalized.package = nextPackage;
+  }
+
+  if (Array.isArray(value.resources)) {
+    normalized.resources = value.resources.map((resource) => {
+      if (!isRecord(resource) || typeof resource.path !== "string") return resource;
+      return { ...resource, path: migrateLegacyManifestPath(resource.path) };
+    });
+  }
+
+  return normalized;
+}
+
+/**
+ * 把 schemaVersion=1 的插件包状态文件就地迁移为 v2 结构。
+ * 覆盖已安装插件历史版本里遗留的 v1 manifest。
+ */
+function migrateLegacyState(value: unknown): unknown {
+  if (!isRecord(value)) return value;
+  if (value.schemaVersion !== 1) return value;
+
+  if (isRecord(value.packages)) {
+    const nextPackages: Record<string, unknown> = {};
+    for (const [pluginId, installedPackage] of Object.entries(value.packages)) {
+      if (!isRecord(installedPackage)) {
+        nextPackages[pluginId] = installedPackage;
+        continue;
+      }
+      const nextPackage: Record<string, unknown> = { ...installedPackage };
+      if (isRecord(installedPackage.versions)) {
+        const nextVersions: Record<string, unknown> = {};
+        for (const [versionId, installedVersion] of Object.entries(installedPackage.versions)) {
+          if (!isRecord(installedVersion)) {
+            nextVersions[versionId] = installedVersion;
+            continue;
+          }
+          nextVersions[versionId] = {
+            ...installedVersion,
+            manifest: migrateLegacyManifest(installedVersion.manifest),
+          };
+        }
+        nextPackage.versions = nextVersions;
+      }
+      nextPackages[pluginId] = nextPackage;
+    }
+    value.packages = nextPackages;
+  }
+
+  return { ...value, schemaVersion: 2 };
+}
+
 async function readState(config: ServerConfig, workspaceId: string): Promise<LifecycleState> {
   try {
-    return lifecycleStateSchema.parse(JSON.parse(await readFile(statePath(config, workspaceId), "utf8")));
+    const raw = JSON.parse(await readFile(statePath(config, workspaceId), "utf8")) as unknown;
+    return lifecycleStateSchema.parse(migrateLegacyState(raw));
   } catch (error) {
     if (errorCode(error) === "ENOENT") return emptyState();
     throw error;

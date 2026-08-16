@@ -648,6 +648,9 @@ describe("plugin package lifecycle", () => {
           { pluginId: "context7", version: "1.0.2", installedVersion: null, updateAvailable: false },
           { pluginId: "github", version: "0.1.2", installedVersion: null, updateAvailable: false },
           { pluginId: "wechat-official", version: "0.1.2", installedVersion: null, updateAvailable: false },
+          { pluginId: "lark", version: "1.1.0", installedVersion: null, updateAvailable: false },
+          { pluginId: "dingtalk", version: "1.0.0", installedVersion: null, updateAvailable: false },
+          { pluginId: "wecom", version: "1.0.0", installedVersion: null, updateAvailable: false },
           { pluginId: "design-agent", version: "0.1.2", installedVersion: null, updateAvailable: false },
           { pluginId: "video-agent", version: "0.1.3", installedVersion: null, updateAvailable: false },
           { pluginId: "deepseek-harness", version: "0.3.5", installedVersion: null, updateAvailable: false },
@@ -935,5 +938,59 @@ describe("plugin package lifecycle", () => {
 
     await lifecycle.uninstallPluginPackage({ serverConfig: config, workspaceId: WORKSPACE_ID, pluginId: "acme-research", workspaceRoot });
     expect((await readRuntimeOpencodeConfig(config, WORKSPACE_ID)).mcp?.["acme-research"]).toBeUndefined();
+  });
+
+  test("migrates legacy schemaVersion=1 installed state to v2 on read", async () => {
+    const lifecycle = await import("./plugin-package-lifecycle.js");
+    const workspaceRoot = await createRoot("ipollowork-legacy-state-");
+    const config = serverConfig(workspaceRoot);
+    const stateDirectory = join(workspaceRoot, "plugin-packages", WORKSPACE_ID);
+    await mkdir(stateDirectory, { recursive: true });
+    await writeFile(join(stateDirectory, "state.json"), JSON.stringify({
+      schemaVersion: 1,
+      packages: {
+        "legacy-plugin": {
+          pluginId: "legacy-plugin",
+          enabled: true,
+          disabledResourceIds: [],
+          currentVersion: "1.0.0",
+          previousVersion: null,
+          versions: {
+            "1.0.0": {
+              version: "1.0.0",
+              manifest: {
+                schemaVersion: 1,
+                id: "legacy-plugin",
+                name: "旧插件",
+                description: "旧插件",
+                category: "测试",
+                source: { format: "ipollowork-extension-manifest", trusted: true, origin: "builtin" },
+                package: {
+                  version: "1.0.0",
+                  publisher: { id: "ipollowork", name: "iPolloWork" },
+                  compatibility: { ipollowork: ">=0.18.0", opencode: ">=1.18.0" },
+                  updateId: "ipollowork/legacy-plugin",
+                  entrypoints: {},
+                },
+                resources: [
+                  { type: "skill", id: "legacy-skill", label: "旧技能", path: ".opencode/skills/legacy/SKILL.md", required: true },
+                  { type: "mcp", id: "legacy-mcp", path: ".opencode/mcps/legacy.json", mcpServerName: "legacy" },
+                ],
+              },
+              files: [],
+              installedAt: 1700000000000,
+            },
+          },
+        },
+      },
+    }, null, 2), "utf8");
+
+    const installed = await lifecycle.listInstalledPluginPackages({ serverConfig: config, workspaceId: WORKSPACE_ID });
+    expect(installed).toHaveLength(1);
+    expect(installed[0].pluginId).toBe("legacy-plugin");
+    expect(installed[0].manifest.schemaVersion).toBe(2);
+    expect(installed[0].manifest.resources.map((resource) => resource.path))
+      .toEqual(["skills/legacy/SKILL.md", "mcp/legacy.json"]);
+    expect(installed[0].manifest.package?.compatibility).toEqual({ ipollowork: ">=0.18.0" });
   });
 });

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "dingtalk",
   "name": "钉钉",
   "description": "钉钉 MCP：通讯录、部门、机器人消息/DING、待办、日程、工作通知、日志等能力。扫码登录即可用，无需创建应用。",
@@ -48,7 +48,8 @@
           "process": {
             "reason": "Run the local dingtalk-mcp server via npx."
           }
-        }
+        },
+        "name": "DingTalk"
       }
     }
   },
@@ -59,11 +60,9 @@
       "name": "iPolloWork"
     },
     "compatibility": {
-      "ipollowork": ">=0.18.0",
-      "opencode": ">=1.18.0"
+      "ipollowork": ">=0.18.0"
     },
-    "updateId": "ipollowork/dingtalk",
-    "entrypoints": {}
+    "updateId": "ipollowork/dingtalk"
   },
   "permissions": [
     {
@@ -81,7 +80,7 @@
       "id": "dingtalk-mcp",
       "label": "钉钉 MCP",
       "description": "通讯录、部门、机器人消息/DING、待办、日程、工作通知、日志等。",
-      "path": ".opencode/mcps/dingtalk.json",
+      "path": "mcp/dingtalk.json",
       "mcpServerName": "dingtalk",
       "oauth": false,
       "required": true

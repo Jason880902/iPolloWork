@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "wecom",
   "name": "企业微信",
   "description": "企业微信 MCP：通讯录、审批、微盘、文档与智能表格等 79 项工具。",
@@ -48,7 +48,8 @@
           "process": {
             "reason": "Run the local wecom-mcp server via npx."
           }
-        }
+        },
+        "name": "WeCom"
       }
     }
   },
@@ -59,11 +60,9 @@
       "name": "iPolloWork"
     },
     "compatibility": {
-      "ipollowork": ">=0.18.0",
-      "opencode": ">=1.18.0"
+      "ipollowork": ">=0.18.0"
     },
-    "updateId": "ipollowork/wecom",
-    "entrypoints": {}
+    "updateId": "ipollowork/wecom"
   },
   "permissions": [
     {
@@ -81,7 +80,7 @@
       "id": "wecom-mcp",
       "label": "企业微信 MCP",
       "description": "通讯录、审批、微盘、文档与智能表格等企业微信能力。",
-      "path": ".opencode/mcps/wecom.json",
+      "path": "mcp/wecom.json",
       "mcpServerName": "wecom",
       "oauth": false,
       "required": true
