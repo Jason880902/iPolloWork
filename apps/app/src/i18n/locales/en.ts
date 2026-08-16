@@ -1478,7 +1478,7 @@ export default {
   "mcp.quick_connect_lark_title": "Lark",
   "mcp.quick_connect_lark_desc": "Official Lark OpenAPI MCP: messages, docs, calendar, todos, approvals. Requires LARK_APP_ID / LARK_APP_SECRET env vars.",
   "mcp.quick_connect_dingtalk_title": "DingTalk",
-  "mcp.quick_connect_dingtalk_desc": "DingTalk MCP: contacts, robot messages, todos, calendar, work notices. Requires DINGTALK_CLIENT_ID / DINGTALK_CLIENT_SECRET env vars.",
+  "mcp.quick_connect_dingtalk_desc": "DingTalk MCP: contacts, robot messages, todos, calendar, work notices. Scan-to-login via dws CLI — no app creation needed.",
   "mcp.quick_connect_wecom_title": "WeCom",
   "mcp.quick_connect_wecom_desc": "WeCom MCP: contacts, approvals, drive, docs and sheets. Requires WECOM_CORP_ID / WECOM_CORP_SECRET / WECOM_ADMIN_USERID env vars.",
   "mcp.quick_connect_context7_title": "Context7",

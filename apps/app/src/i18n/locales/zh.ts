@@ -1317,7 +1317,7 @@ export default {
   "mcp.quick_connect_lark_title": "飞书",
   "mcp.quick_connect_lark_desc": "飞书官方 OpenAPI MCP：消息、文档、日历、待办、审批。需在环境变量中配置 LARK_APP_ID / LARK_APP_SECRET。",
   "mcp.quick_connect_dingtalk_title": "钉钉",
-  "mcp.quick_connect_dingtalk_desc": "钉钉 MCP：通讯录、机器人消息、待办、日程、工作通知。需在环境变量中配置 DINGTALK_CLIENT_ID / DINGTALK_CLIENT_SECRET。",
+  "mcp.quick_connect_dingtalk_desc": "钉钉 MCP：通讯录、机器人消息、待办、日程、工作通知。扫码登录即可用，无需创建应用（先装 dws CLI 并 dws auth login）。",
   "mcp.quick_connect_wecom_title": "企业微信",
   "mcp.quick_connect_wecom_desc": "企业微信 MCP：通讯录、审批、微盘、文档与表格。需在环境变量中配置 WECOM_CORP_ID / WECOM_CORP_SECRET / WECOM_ADMIN_USERID。",
   "mcp.quick_connect_context7_title": "Context7",

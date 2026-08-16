@@ -1,10 +1,5 @@
 {
   "type": "local",
-  "command": ["npx", "-y", "dingtalk-mcp@latest"],
-  "environment": {
-    "DINGTALK_Client_ID": "{env:DINGTALK_CLIENT_ID}",
-    "DINGTALK_Client_Secret": "{env:DINGTALK_CLIENT_SECRET}",
-    "ACTIVE_PROFILES": "ALL"
-  },
+  "command": ["npx", "-y", "@sputnicyoji/dingtalk-workspace-mcp"],
   "enabled": true
 }
