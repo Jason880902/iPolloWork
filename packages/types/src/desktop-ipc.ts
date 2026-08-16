@@ -123,6 +123,22 @@ export type PetSetEnabledInput = {
   enabled: boolean;
 };
 
+// ---- 飞书 lark-cli 授权引导 ----
+
+export type LarkAuthStatusResult = {
+  ok: boolean;
+  available: boolean;
+  configured: boolean;
+  authenticated: boolean;
+  hint?: string;
+};
+
+export type LarkAuthStartResult = {
+  ok: boolean;
+  verificationUrl?: string;
+  hint?: string;
+};
+
 export type PetIntegrationsStateResult = {
   autoCheck: boolean;
 };
@@ -535,6 +551,14 @@ export type DesktopCommandMap = {
   petSetAutoCheck: {
     args: [input: PetSetAutoCheckInput];
     result: PetSetAutoCheckResult;
+  };
+  larkAuthStatus: {
+    args: [];
+    result: LarkAuthStatusResult;
+  };
+  larkAuthStart: {
+    args: [];
+    result: LarkAuthStartResult;
   };
   listSystemFontFamilies: { args: []; result: string[] };
   getUiControlBridgeInfo: { args: []; result: UiControlBridgeInfo | null };

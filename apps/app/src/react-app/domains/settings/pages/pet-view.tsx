@@ -7,6 +7,9 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
 import {
+  larkAuthStart,
+  larkAuthStatus,
+  openDesktopUrl,
   petGetConfig,
   petGetIntegrations,
   petGetState,
@@ -14,6 +17,7 @@ import {
   petSetConfig,
   petSetEnabled,
 } from "@/app/lib/desktop";
+import type { LarkAuthStatusResult } from "@ipollowork/types/desktop-ipc";
 import { isDesktopRuntime } from "@/app/utils";
 import { t } from "@/i18n";
 import { PET_NAME_MAX_LENGTH } from "../../../../pet/whale-contract";
@@ -51,6 +55,48 @@ export function PetView({ onOpenProviderAuth, onOpenExtensions }: {
   const [templateId, setTemplateId] = useState<string | null>(null);
   const [nickname, setNickname] = useState("");
   const [nicknameSaved, setNicknameSaved] = useState(false);
+  const [larkStatus, setLarkStatus] = useState<LarkAuthStatusResult | null>(null);
+  const [larkBusy, setLarkBusy] = useState(false);
+  const [larkMessage, setLarkMessage] = useState<string | null>(null);
+
+  const refreshLarkStatus = async () => {
+    setLarkBusy(true);
+    try {
+      const result = await larkAuthStatus();
+      setLarkStatus(result);
+      setLarkMessage(result.hint ?? null);
+    } catch (error) {
+      setLarkMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setLarkBusy(false);
+    }
+  };
+
+  const startLarkAuth = async () => {
+    setLarkBusy(true);
+    try {
+      const result = await larkAuthStart();
+      if (result.ok && result.verificationUrl) {
+        try {
+          await navigator.clipboard.writeText(result.verificationUrl);
+          setLarkMessage(t("settings.pet.lark_copied"));
+        } catch {
+          setLarkMessage(result.verificationUrl);
+        }
+        void openDesktopUrl(result.verificationUrl).catch(() => undefined);
+      } else {
+        setLarkMessage(result.hint ?? "");
+      }
+    } catch (error) {
+      setLarkMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setLarkBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    void refreshLarkStatus();
+  }, []);
 
   useEffect(() => {
     const refreshModelLabel = () => {
@@ -298,6 +344,31 @@ export function PetView({ onOpenProviderAuth, onOpenExtensions }: {
                 onClick={onOpenExtensions}
               >
                 {t("settings.pet.mcp_configure")}
+              </Button>
+            </LayoutSectionItemHeaderActions>
+          </LayoutSectionItemHeader>
+        </LayoutSectionItem>
+        <LayoutSectionItem>
+          <LayoutSectionItemHeader>
+            <LayoutSectionItemTitle>{t("settings.pet.lark_title")}</LayoutSectionItemTitle>
+            <LayoutSectionItemDescription>
+              {!larkStatus
+                ? t("settings.pet.lark_status_unknown")
+                : !larkStatus.available
+                  ? t("settings.pet.lark_status_unavailable")
+                  : !larkStatus.configured
+                    ? t("settings.pet.lark_status_unconfigured")
+                    : !larkStatus.authenticated
+                      ? t("settings.pet.lark_status_configured")
+                      : t("settings.pet.lark_status_authenticated")}
+              {larkMessage ? ` · ${larkMessage}` : ""}
+            </LayoutSectionItemDescription>
+            <LayoutSectionItemHeaderActions>
+              <Button size="sm" variant="outline" disabled={larkBusy} onClick={() => void startLarkAuth()}>
+                {t("settings.pet.lark_start_auth")}
+              </Button>
+              <Button size="sm" variant="ghost" disabled={larkBusy} onClick={() => void refreshLarkStatus()}>
+                {t("settings.pet.lark_refresh")}
               </Button>
             </LayoutSectionItemHeaderActions>
           </LayoutSectionItemHeader>

@@ -34,6 +34,7 @@ import { createBrowserPanel } from "./browser-panel.mjs";
 import { createPetWindow } from "./pet-window.mjs";
 import { createPetAssistant } from "./pet-assistant.mjs";
 import { createPetIntegrations } from "./pet-integrations.mjs";
+import { getLarkAuthStatus, startLarkAuth } from "./lark-auth.mjs";
 import { createWorkspaceStore } from "./workspace-store.mjs";
 import { openExternalUrl } from "./open-external.mjs";
 import { protectOutputStreamFromBrokenPipe } from "./stdio-safety.mjs";
@@ -2361,6 +2362,12 @@ const desktopCommandHandlers = {
   },
   "petSetAutoCheck": async (event, ...args) => {
       return petIntegrations.setAutoCheck(args[0] ?? {});
+  },
+  "larkAuthStatus": async () => {
+      return getLarkAuthStatus();
+  },
+  "larkAuthStart": async () => {
+      return startLarkAuth();
   },
   "listSystemFontFamilies": async (event, ...args) => {
       try {
