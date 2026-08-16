@@ -67,6 +67,7 @@ export function createPetIntegrations({ petWindow, getMainWindow }) {
       kind: "decision",
       text: text.slice(0, 140),
       ttlMs: 15_000,
+      action: { type: "open-url", url: "dingtalk://" },
     });
   }
 

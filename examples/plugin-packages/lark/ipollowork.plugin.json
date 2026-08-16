@@ -2,96 +2,80 @@
   "schemaVersion": 1,
   "id": "lark",
   "name": "飞书",
-  "description": "飞书官方 OpenAPI MCP：消息、文档、日历、待办、审批等飞书开放能力一站式接入。",
+  "description": "飞书待办、日程、消息、审批接入：用 lark-cli 扫码/桌面客户端授权一次即可，无需在开放平台手动创建应用。",
   "category": "办公协作",
   "source": {
     "format": "ipollowork-extension-manifest",
     "origin": "builtin",
     "trusted": true,
-    "reference": "https://github.com/larksuite/lark-openapi-mcp"
+    "reference": "https://github.com/larksuite/cli"
   },
-  "icon": {
-    "simpleIconSlug": "lark"
-  },
-  "composer": {
-    "prompt": "使用飞书插件查询或处理消息、文档、日历、待办和审批，涉及写操作前先确认范围。"
-  },
+  "icon": { "simpleIconSlug": "lark" },
+  "composer": { "prompt": "使用飞书 lark-cli 查询或处理待办、日程、消息和审批，涉及写操作前先确认范围。" },
   "setup": {
-    "instructions": "在飞书开放平台创建自建应用并获取 App ID 与 App Secret，按使用场景开通权限；然后在 设置 → 环境变量 中配置 LARK_APP_ID 和 LARK_APP_SECRET，安装后自动生效。需要用户身份调用时请先按官方文档完成 OAuth 授权。",
-    "primaryCta": "打开飞书开放平台",
-    "secondaryCta": "查看 lark-mcp 文档"
+    "instructions": "免控制台：先在终端安装并初始化 lark-cli（npm i -g @larksuite/cli），运行 lark-cli config init --new，按提示在浏览器完成自动建应用；再运行 lark-cli auth login --domain task,calendar,im,approval，用飞书扫码/桌面客户端授权一次即可。之后小珀就能直接查你的待办、日程和消息。",
+    "primaryCta": "查看 lark-cli 使用指南",
+    "secondaryCta": "GitHub: larksuite/cli"
   },
   "localization": {
     "defaultLocale": "zh",
     "translations": {
       "en": {
-        "description": "Official Feishu/Lark OpenAPI MCP: messages, docs, calendar, todos, approvals, and more.",
+        "description": "Feishu/Lark todos, calendar, messages, approvals via lark-cli — authorize once with scan/desktop login, no manual app creation on the console.",
         "category": "Work Collaboration",
-        "composer": {
-          "prompt": "Use the Lark plugin to query or handle messages, docs, calendar, todos, and approvals; confirm scope before write actions."
-        },
+        "composer": { "prompt": "Use lark-cli to query or handle todos, calendar, messages, and approvals; confirm scope before write actions." },
         "setup": {
-          "instructions": "Create a custom app on the Lark Open Platform to get an App ID and App Secret, grant the permissions you need, then set LARK_APP_ID and LARK_APP_SECRET in Settings → Environment Variables. For user-identity calls, complete OAuth as described in the official docs.",
-          "primaryCta": "Open Lark Open Platform",
-          "secondaryCta": "View lark-mcp docs"
+          "instructions": "No console needed: install lark-cli (npm i -g @larksuite/cli), run `lark-cli config init --new` and finish the browser verification to auto-provision an app, then run `lark-cli auth login --domain task,calendar,im,approval` and authorize once with a scan/desktop login.",
+          "primaryCta": "View lark-cli guide",
+          "secondaryCta": "GitHub: larksuite/cli"
         },
         "resources": {
+          "lark-cli": {
+            "label": "lark-cli 飞书助手",
+            "description": "Drives the official lark-cli to query and manage todos, calendar, messages, and approvals."
+          },
           "lark-mcp": {
-            "label": "Feishu/Lark Official MCP",
-            "description": "Official OpenAPI MCP covering messages, docs, calendar, todos, approvals, and more."
+            "label": "Feishu/Lark MCP (advanced)",
+            "description": "Optional OpenAPI MCP; requires an app's App ID/Secret in Settings → Environment Variables."
           }
         },
         "permissions": {
-          "network": {
-            "reason": "Call the Feishu/Lark OpenAPI endpoints requested by the user."
-          },
-          "process": {
-            "reason": "Run the local lark-mcp server via npx."
-          }
+          "process": { "reason": "Run the official lark-cli for Feishu/Lark operations." },
+          "network": { "reason": "Call the Feishu/Lark OpenAPI endpoints requested by the user." }
         }
       }
     }
   },
   "package": {
-    "version": "1.0.0",
-    "publisher": {
-      "id": "ipollowork",
-      "name": "iPolloWork"
-    },
-    "compatibility": {
-      "ipollowork": ">=0.18.0",
-      "opencode": ">=1.18.0"
-    },
+    "version": "1.1.0",
+    "publisher": { "id": "ipollowork", "name": "iPolloWork" },
+    "compatibility": { "ipollowork": ">=0.18.0", "opencode": ">=1.18.0" },
     "updateId": "ipollowork/lark",
     "entrypoints": {}
   },
   "permissions": [
-    {
-      "id": "network",
-      "reason": "调用用户请求的飞书开放平台 API。"
-    },
-    {
-      "id": "process",
-      "reason": "通过 npx 运行本地 lark-mcp 服务。"
-    }
+    { "id": "process", "reason": "运行官方 lark-cli 完成飞书操作。" },
+    { "id": "network", "reason": "调用用户请求的飞书开放平台 API。", "optional": true }
   ],
   "resources": [
     {
+      "type": "skill",
+      "id": "lark-cli",
+      "label": "lark-cli 飞书助手",
+      "description": "通过官方 lark-cli 查询和管理待办、日程、消息、审批。",
+      "path": ".opencode/skills/lark-cli/SKILL.md",
+      "provides": ["workflow:lark-cli"],
+      "required": true
+    },
+    {
       "type": "mcp",
       "id": "lark-mcp",
-      "label": "飞书官方 MCP",
-      "description": "飞书官方 OpenAPI MCP，覆盖消息、文档、日历、待办、审批等能力。",
+      "label": "飞书 MCP（高级）",
+      "description": "可选的飞书 OpenAPI MCP；需在环境变量配置应用的 App ID/Secret。",
       "path": ".opencode/mcps/lark.json",
       "mcpServerName": "lark",
       "oauth": false,
-      "required": true
-    }
-  ],
-  "contributions": [
-    {
-      "type": "setup-instructions",
-      "ref": "https://open.feishu.cn/app",
-      "location": "settings-detail"
+      "required": false
     }
   ]
 }

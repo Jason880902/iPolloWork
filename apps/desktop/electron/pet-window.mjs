@@ -212,10 +212,15 @@ export function createPetWindow({ getWindow }) {
   }
 
   const ALLOWED_EXTERNAL_SCHEMES = new Set(["https:", "http:", "dingtalk:", "wxwork:"]);
+  // Custom schemes are allowed only for inert navigation targets, never
+  // message-send or url-proxy deep links (DSH review H3).
+  const ALLOWED_CUSTOM_SCHEME_PREFIXES = ["dingtalk://", "wxwork://"];
 
   function handleBubbleAction(payload) {
     const action = payload && typeof payload === "object" ? payload : {};
     if (action.type === "open-session" && typeof action.sessionId === "string" && action.sessionId) {
+      // Reject anything that does not look like an opencode session id.
+      if (!/^[A-Za-z0-9_-]{8,64}$/.test(action.sessionId)) return;
       const mainWin = getWindow();
       if (!mainWin || mainWin.isDestroyed()) return;
       if (mainWin.isMinimized()) mainWin.restore();
@@ -225,14 +230,19 @@ export function createPetWindow({ getWindow }) {
       return;
     }
     if (action.type === "open-url" && typeof action.url === "string") {
+      const url = action.url.slice(0, 2000);
       let protocol = null;
       try {
-        protocol = new URL(action.url).protocol;
+        protocol = new URL(url).protocol;
       } catch {
         return;
       }
       if (!protocol || !ALLOWED_EXTERNAL_SCHEMES.has(protocol)) return;
-      void shell.openExternal(action.url.slice(0, 2000));
+      if (protocol === "http:") return; // web links open over https only
+      if (protocol === "dingtalk:" || protocol === "wxwork:") {
+        if (!ALLOWED_CUSTOM_SCHEME_PREFIXES.some((prefix) => url.toLowerCase().startsWith(prefix))) return;
+      }
+      void shell.openExternal(url).catch(() => undefined);
     }
   }
 

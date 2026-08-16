@@ -1234,7 +1234,7 @@ export function createConnectionsStore(options: {
       return false;
     }
     const entries = requirements.missing
-      .map((key) => ({ key, value: (values[key] ?? "").trim() }))
+      .map((key) => ({ key, value: (values[key] ?? "").trim().slice(0, 4096) }))
       .filter((entry) => entry.value.length > 0);
     if (entries.length < requirements.missing.length) return false;
     try {

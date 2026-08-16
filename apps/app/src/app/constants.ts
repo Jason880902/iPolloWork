@@ -185,7 +185,7 @@ export const MCP_QUICK_CONNECT: McpDirectoryInfo[] = [
     kind: "mcp",
     pluginPackageId: "lark",
     iconSlug: "lark",
-    helpUrl: "https://open.feishu.cn/app",
+    helpUrl: "https://github.com/larksuite/cli",
   },
   {
     get name() { return t("mcp.quick_connect_dingtalk_title"); },

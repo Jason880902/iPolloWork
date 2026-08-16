@@ -11,7 +11,7 @@ const PET_TASK_TICK_MS = 60_000;
 const TASK_LINE_RE = /^\s*-\s*\[( |x|X)\]\s*(.+?)(?:\s+@due\s+(\d{4}-\d{2}-\d{2})(?:[ T](\d{1,2}):(\d{2}))?)?\s*$/;
 
 function copyForPetEvent(input) {
-  const detail = typeof input.detail === "string" ? input.detail.trim() : "";
+  const detail = typeof input.detail === "string" ? input.detail.trim().slice(0, 200) : "";
   switch (input.type) {
     case "task.completed":
       return { kind: "praise", text: "任务跑完啦，韩大哥出品就是稳！" };
@@ -54,6 +54,7 @@ export function createPetAssistant({ petWindow, taskFilePath }) {
       kind: copy.kind,
       text: copy.text,
       ttlMs: copy.kind === "decision" ? 12_000 : 8_000,
+      ...(sessionId ? { action: { type: "open-session", sessionId } } : {}),
     });
     return { ok: true };
   }
