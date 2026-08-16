@@ -1319,7 +1319,7 @@ export default {
   "mcp.quick_connect_dingtalk_title": "钉钉",
   "mcp.quick_connect_dingtalk_desc": "钉钉 MCP：通讯录、机器人消息、待办、日程、工作通知。扫码登录即可用，无需创建应用（先装 dws CLI 并 dws auth login）。",
   "mcp.quick_connect_wecom_title": "企业微信",
-  "mcp.quick_connect_wecom_desc": "企业微信 MCP：通讯录、审批、微盘、文档与表格。需在环境变量中配置 WECOM_CORP_ID / WECOM_CORP_SECRET / WECOM_ADMIN_USERID。",
+  "mcp.quick_connect_wecom_desc": "企业微信：通讯录、审批、微盘、文档与表格。推荐 wecom-cli 扫码接入（免建应用）；常驻 MCP 才需配 WECOM_CORP_ID / WECOM_CORP_SECRET / WECOM_ADMIN_USERID。",
   "mcp.quick_connect_context7_title": "Context7",
   "mcp.quick_connect_figma_desc": "通过 Figma Desktop 内运行的官方 MCP 服务，使用你独立登录的 Figma 账号。",
   "mcp.quick_connect_figma_title": "Figma",
