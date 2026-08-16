@@ -309,16 +309,11 @@ export function PetView({ onOpenProviderAuth, onOpenExtensions }: {
       </LayoutSection>
 
       <LayoutSection>
-        <LayoutSectionHeader>
-          <LayoutSectionTitle>{t("settings.pet.ai_title")}</LayoutSectionTitle>
-          <LayoutSectionDescription>{t("settings.pet.ai_desc")}</LayoutSectionDescription>
-        </LayoutSectionHeader>
         <LayoutSectionItem>
           <LayoutSectionItemHeader>
             <LayoutSectionItemTitle>
-              {modelLabel ?? t("settings.pet.ai_model_none")}
+              {t("settings.pet.ai_title")}：{modelLabel ?? t("settings.pet.ai_model_none")}
             </LayoutSectionItemTitle>
-            <LayoutSectionItemDescription>{t("settings.pet.ai_model_desc")}</LayoutSectionItemDescription>
             <LayoutSectionItemHeaderActions>
               <Button size="sm" variant="outline" onClick={onOpenProviderAuth}>
                 {t("settings.pet.ai_configure")}

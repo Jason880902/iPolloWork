@@ -88,7 +88,7 @@ export const PET_TEMPLATES: readonly PetTemplate[] = [
     kind: "live2d",
     defaultName: "小珀",
     tagline: "Live2D 经典形象，会眨眼、跟随、回应你的抚摸",
-    previewUrl: "pet-models/hiyori/preview.png",
+    previewUrl: "pet-models/hiyori/preview.gif",
     modelUrl: "pet-models/hiyori/Hiyori.model3.json",
     activityAnimation: false,
   },
