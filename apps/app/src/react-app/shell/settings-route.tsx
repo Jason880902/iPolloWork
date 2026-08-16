@@ -76,6 +76,7 @@ import { SettingsStack } from "@/react-app/domains/settings/settings-section";
 import { AdvancedView } from "@/react-app/domains/settings/pages/advanced-view";
 import { RemotePreviewView } from "@/react-app/domains/settings/pages/remote-preview-view";
 import { AppearanceView } from "@/react-app/domains/settings/pages/appearance-view";
+import { PetView } from "@/react-app/domains/settings/pages/pet-view";
 import { CloudAccountView } from "@/react-app/domains/settings/pages/cloud-account-view";
 import { ConnectView } from "@/react-app/domains/settings/pages/connect-view";
 import { CloudMarketplacesView } from "@/react-app/domains/settings/pages/cloud-marketplaces-view";
@@ -242,6 +243,7 @@ export function parseSettingsPath(pathname: string): {
     case "general":
     case "ai":
     case "preferences":
+    case "pet":
     case "permissions":
     case "shell":
     case "advanced":
@@ -689,6 +691,23 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
       platform.openLink(getDenInferenceUrl(cloudSession.baseUrl));
     }, 0);
   }, [cloudSession.baseUrl, navigate, platform, providerAuthStore, selectedWorkspaceId]);
+
+  const [mcpEnvSaving, setMcpEnvSaving] = useState(false);
+  const [mcpEnvError, setMcpEnvError] = useState<string | null>(null);
+  const handleSubmitMcpEnv = useCallback(async (values: Record<string, string>) => {
+    setMcpEnvSaving(true);
+    setMcpEnvError(null);
+    try {
+      const ok = await connectionsStore.submitMcpEnvRequirements(values);
+      if (!ok) {
+        setMcpEnvError(t("mcp.env_modal_save_failed"));
+      }
+    } catch (error) {
+      setMcpEnvError(error instanceof Error ? error.message : t("mcp.env_modal_save_failed"));
+    } finally {
+      setMcpEnvSaving(false);
+    }
+  }, [connectionsStore]);
 
   const handleOpenProviderAuth = useCallback(() => {
     if (checkDesktopRestriction({ restriction: "allowCustomProviders" })) {
@@ -1580,6 +1599,7 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
     await engineStart(selectedWorkspaceRoot, {
       preferSidecar: true,
       runtime: "direct",
+      forceRestart: true,
       workspacePaths,
       ipolloworkRemoteAccess: ipolloworkServerSnapshot.ipolloworkServerSettings.remoteAccessEnabled === true,
     });
@@ -1969,6 +1989,13 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
             toggleHideTitlebar={() => setHideTitlebar((current) => !current)}
           />
         );
+      case "pet":
+        return (
+          <PetView
+            onOpenProviderAuth={handleOpenProviderAuth}
+            onOpenExtensions={() => navigateSettingsPath("extensions")}
+          />
+        );
       case "updates":
         return (
           <UpdatesView
@@ -2113,9 +2140,17 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
           mcpAuthModalOpen: connectionsSnapshot.mcpAuthModalOpen,
           mcpAuthEntry: connectionsSnapshot.mcpAuthEntry,
           mcpAuthNeedsReload: connectionsSnapshot.mcpAuthNeedsReload,
+          mcpEnvRequirements: connectionsSnapshot.mcpEnvRequirements,
+          mcpEnvSaving,
+          mcpEnvError,
         }}
         onCloseMcpAuthModal={() => connectionsStore.closeMcpAuthModal()}
         onCompleteMcpAuthModal={() => connectionsStore.completeMcpAuthModal()}
+        onSubmitMcpEnv={handleSubmitMcpEnv}
+        onCloseMcpEnv={() => {
+          setMcpEnvError(null);
+          connectionsStore.dismissMcpEnvRequirements();
+        }}
       />
       <ModelPickerModal
         open={modelPicker.open}

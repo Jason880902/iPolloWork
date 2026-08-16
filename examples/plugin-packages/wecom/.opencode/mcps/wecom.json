@@ -1,0 +1,10 @@
+{
+  "type": "local",
+  "command": ["npx", "-y", "@qwang007/wecom-mcp"],
+  "environment": {
+    "WECOM_CORP_ID": "{env:WECOM_CORP_ID}",
+    "WECOM_CORP_SECRET": "{env:WECOM_CORP_SECRET}",
+    "WECOM_ADMIN_USERID": "{env:WECOM_ADMIN_USERID}"
+  },
+  "enabled": true
+}

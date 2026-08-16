@@ -176,6 +176,7 @@ export const SETTINGS_TAB_VALUES = [
   "general",
   "ai",
   "preferences",
+  "pet",
   "permissions",
   "shell",
   "cloud-account",

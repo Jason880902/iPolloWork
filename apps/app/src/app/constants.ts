@@ -36,6 +36,10 @@ export type McpDirectoryInfo = {
   url?: string;
   type?: "remote" | "local";
   command?: string[];
+  /** Static env for local MCPs. Values may reference {env:VAR} placeholders. */
+  environment?: Record<string, string>;
+  /** Deep link to the platform console for credential setup guidance. */
+  helpUrl?: string;
   oauth: boolean;
   oauthConfig?: {
     clientId?: string;
@@ -170,6 +174,47 @@ export const MCP_QUICK_CONNECT: McpDirectoryInfo[] = [
     pluginPackageId: "context7",
     iconSlug: "semanticscholar",
     iconSrc: publicAssetUrl("ext-context7.svg"),
+  },
+  {
+    get name() { return t("mcp.quick_connect_lark_title"); },
+    serverName: "lark",
+    get description() { return t("mcp.quick_connect_lark_desc"); },
+    type: "local",
+    command: ["npx", "-y", "@larksuiteoapi/lark-mcp", "mcp", "-a", "{env:LARK_APP_ID}", "-s", "{env:LARK_APP_SECRET}"],
+    oauth: false,
+    kind: "mcp",
+    pluginPackageId: "lark",
+    iconSlug: "lark",
+    helpUrl: "https://github.com/larksuite/cli",
+  },
+  {
+    get name() { return t("mcp.quick_connect_dingtalk_title"); },
+    serverName: "dingtalk",
+    get description() { return t("mcp.quick_connect_dingtalk_desc"); },
+    type: "local",
+    command: ["npx", "-y", "@sputnicyoji/dingtalk-workspace-mcp"],
+    oauth: false,
+    kind: "mcp",
+    pluginPackageId: "dingtalk",
+    iconSlug: "dingtalk",
+    helpUrl: "https://github.com/DingTalk-Real-AI/dingtalk-workspace-cli",
+  },
+  {
+    get name() { return t("mcp.quick_connect_wecom_title"); },
+    serverName: "wecom",
+    get description() { return t("mcp.quick_connect_wecom_desc"); },
+    type: "local",
+    command: ["npx", "-y", "@qwang007/wecom-mcp"],
+    environment: {
+      WECOM_CORP_ID: "{env:WECOM_CORP_ID}",
+      WECOM_CORP_SECRET: "{env:WECOM_CORP_SECRET}",
+      WECOM_ADMIN_USERID: "{env:WECOM_ADMIN_USERID}",
+    },
+    oauth: false,
+    kind: "mcp",
+    pluginPackageId: "wecom",
+    iconSlug: "wechat",
+    helpUrl: "https://work.weixin.qq.com/wework_admin/frame",
   },
   {
     get name() { return t("mcp.quick_connect_ipollowork_cloud_title"); },

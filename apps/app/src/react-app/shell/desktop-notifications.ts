@@ -1,4 +1,4 @@
-import { desktopNotificationShow } from "@/app/lib/desktop";
+import { desktopNotificationShow, petEvent } from "@/app/lib/desktop";
 import { isDesktopRuntime } from "@/app/utils";
 import {
   DEFAULT_DESKTOP_NOTIFICATION_PREFERENCE,
@@ -83,6 +83,17 @@ function copyForEvent(event: DesktopNotificationEvent): NotificationCopy {
 
 export function notifyDesktopEvent(event: DesktopNotificationEvent): void {
   if (!isDesktopRuntime()) return;
+  // The pet is an ambient surface that is always visible, so it gets every
+  // event regardless of the system-notification preference/foreground gates.
+  void petEvent({
+    type: event.type,
+    sessionId: event.sessionId,
+    detail:
+      (event.type === "task.failed" ? event.errorText : undefined) ??
+      (event.type === "permission.asked" ? event.detail : undefined) ??
+      (event.type === "question.asked" ? event.question : undefined),
+  }).catch(() => undefined);
+
   const copy = copyForEvent(event);
   if (!shouldNotify(readDesktopNotificationPreference(), copy.importance)) return;
   if (isAppInView()) return;
