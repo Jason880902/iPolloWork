@@ -39,6 +39,48 @@
           "dingtalk-mcp": {
             "label": "DingTalk MCP",
             "description": "Contacts, departments, robot messages/DING, todos, calendar, work notices, and reports."
+          },
+          "dingtalk-aisearch": {
+            "label": "DingTalk AI Search"
+          },
+          "dingtalk-aitable": {
+            "label": "DingTalk AITable"
+          },
+          "dingtalk-calendar": {
+            "label": "DingTalk Calendar"
+          },
+          "dingtalk-chat": {
+            "label": "DingTalk Chat"
+          },
+          "dingtalk-contact": {
+            "label": "DingTalk Contacts"
+          },
+          "dingtalk-doc": {
+            "label": "DingTalk Docs"
+          },
+          "dingtalk-drive": {
+            "label": "DingTalk Drive"
+          },
+          "dingtalk-event": {
+            "label": "DingTalk Event Stream"
+          },
+          "dingtalk-mail": {
+            "label": "DingTalk Mail"
+          },
+          "dingtalk-minutes": {
+            "label": "DingTalk Minutes"
+          },
+          "dingtalk-misc": {
+            "label": "DingTalk Misc"
+          },
+          "dingtalk-shared": {
+            "label": "DingTalk Shared Entry"
+          },
+          "dingtalk-todo": {
+            "label": "DingTalk Todos"
+          },
+          "dingtalk-wiki": {
+            "label": "DingTalk Wiki"
           }
         },
         "permissions": {
@@ -75,6 +117,90 @@
     }
   ],
   "resources": [
+    {
+      "type": "skill",
+      "id": "dingtalk-aisearch",
+      "label": "AI搜问",
+      "path": "skills/dingtalk-aisearch/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-aitable",
+      "label": "钉钉 AI 表格（多维表）",
+      "path": "skills/dingtalk-aitable/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-calendar",
+      "label": "钉钉日历与会议室",
+      "path": "skills/dingtalk-calendar/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-chat",
+      "label": "钉钉群聊与消息",
+      "path": "skills/dingtalk-chat/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-contact",
+      "label": "钉钉通讯录精确查询",
+      "path": "skills/dingtalk-contact/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-doc",
+      "label": "钉钉在线文档",
+      "path": "skills/dingtalk-doc/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-drive",
+      "label": "钉钉文件管理（存储层，覆盖钉盘与文档空间两个存储",
+      "path": "skills/dingtalk-drive/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-event",
+      "label": "钉钉个人 IM 与 OA 审批事件长连接监听",
+      "path": "skills/dingtalk-event/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-mail",
+      "label": "钉钉邮箱读写、搜索、回复与转发",
+      "path": "skills/dingtalk-mail/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-minutes",
+      "label": "钉钉 AI 听记",
+      "path": "skills/dingtalk-minutes/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-misc",
+      "label": "长尾产品集合技能，覆盖低频钉钉产品",
+      "path": "skills/dingtalk-misc/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-shared",
+      "label": "钉钉共享入口",
+      "path": "skills/dingtalk-shared/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-todo",
+      "label": "钉钉待办 / TODO",
+      "path": "skills/dingtalk-todo/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "dingtalk-wiki",
+      "label": "钉钉知识库与空间管理",
+      "path": "skills/dingtalk-wiki/SKILL.md"
+    },
     {
       "type": "mcp",
       "id": "dingtalk-mcp",
