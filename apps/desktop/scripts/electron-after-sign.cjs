@@ -46,13 +46,18 @@ function verifyComputerUseHelper(appPath, requireDistributionSignature) {
 async function afterSign(context) {
   if (context.electronPlatformName !== "darwin") return;
 
+  const appName = `${context.packager.appInfo.productFilename}.app`;
+  const appPath = path.join(context.appOutDir, appName);
+
   if (process.env.MACOS_NOTARIZE !== "true") {
-    console.warn("[electron-after-sign] MACOS_NOTARIZE is not true; skipping notarization.");
+    // Unsigned builds leave the main binary linker-signed only, which macOS 15
+    // reports as "damaged" (no "Open Anyway" affordance). Re-sign the whole
+    // bundle ad-hoc so Gatekeeper surfaces the standard "Open Anyway" path.
+    console.warn("[electron-after-sign] MACOS_NOTARIZE is not true; ad-hoc signing the bundle.");
+    run("codesign", ["--force", "--deep", "--sign", "-", appPath]);
     return;
   }
 
-  const appName = `${context.packager.appInfo.productFilename}.app`;
-  const appPath = path.join(context.appOutDir, appName);
   verifyComputerUseHelper(appPath, process.env.MACOS_NOTARIZE === "true");
 
   const notaryTempDir = mkdtempSync(path.join(tmpdir(), "ipollowork-electron-notary-"));
