@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Cloud, Loader2, RefreshCw, ShieldCheck } from "lucide-react";
 
-import type { DenMarketplacePlugin } from "@/app/lib/den";
+import { DenApiError, type DenMarketplacePlugin } from "@/app/lib/den";
 import type { iPolloWorkPluginPackageItem, iPolloWorkServerClient } from "@/app/lib/ipollowork-server";
 import { Button } from "@/components/ui/button";
 import { currentLocale, t } from "@/i18n";
@@ -132,12 +132,20 @@ export function CloudMarketplacesView({
     setLoading(true);
     setError(null);
     try {
-      const [marketplaceItems, localPackages] = await Promise.all([
-        cloud.client.listMarketplacePlugins(),
-        client && workspaceId ? client.listPluginPackages(workspaceId) : Promise.resolve({ items: [] }),
-      ]);
-      setItems(marketplaceItems);
+      const localPackages = client && workspaceId
+        ? await client.listPluginPackages(workspaceId)
+        : { items: [] };
       setInstalled(Object.fromEntries(localPackages.items.map((item) => [item.pluginId, item])));
+      try {
+        setItems(await cloud.client.listMarketplacePlugins());
+      } catch (marketplaceCause) {
+        // 云端尚未提供 marketplace API（404）时优雅降级为空市场，不阻塞已安装插件展示
+        if (marketplaceCause instanceof DenApiError && marketplaceCause.status === 404) {
+          setItems([]);
+        } else {
+          throw marketplaceCause;
+        }
+      }
     } catch (cause) {
       setError(formatPluginPlatformError(cause, t("settings.marketplace.load_failed")));
     } finally {
