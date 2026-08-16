@@ -2,7 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { app, BrowserWindow, screen } from "electron";
+import { app, BrowserWindow, screen, shell } from "electron";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -11,6 +11,8 @@ const PET_WINDOW_WIDTH = 380;
 const PET_WINDOW_HEIGHT = 520;
 const PET_STATE_FILE = "pet-state.json";
 const PET_DRAG_POLL_MS = 16;
+const PET_DEFAULT_TEMPLATE_ID = "whale-girl";
+const PET_NAME_MAX_LENGTH = 20;
 
 export function createPetWindow({ getWindow }) {
   let petWindow = null;
@@ -26,10 +28,14 @@ export function createPetWindow({ getWindow }) {
     const enabled = Reflect.get(value, "enabled");
     const x = Number(Reflect.get(value, "x"));
     const y = Number(Reflect.get(value, "y"));
+    const templateId = Reflect.get(value, "templateId");
+    const nickname = Reflect.get(value, "nickname");
     return {
       enabled: typeof enabled === "boolean" ? enabled : true,
       x: Number.isFinite(x) ? Math.round(x) : null,
       y: Number.isFinite(y) ? Math.round(y) : null,
+      templateId: typeof templateId === "string" && templateId.trim() !== "" ? templateId.trim() : null,
+      nickname: typeof nickname === "string" && nickname.trim() !== "" ? nickname.trim().slice(0, PET_NAME_MAX_LENGTH) : null,
     };
   }
 
@@ -205,6 +211,66 @@ export function createPetWindow({ getWindow }) {
     win.webContents.send("ipollowork:pet:bubble", bubble);
   }
 
+  const ALLOWED_EXTERNAL_SCHEMES = new Set(["https:", "http:", "dingtalk:", "wxwork:"]);
+
+  function handleBubbleAction(payload) {
+    const action = payload && typeof payload === "object" ? payload : {};
+    if (action.type === "open-session" && typeof action.sessionId === "string" && action.sessionId) {
+      const mainWin = getWindow();
+      if (!mainWin || mainWin.isDestroyed()) return;
+      if (mainWin.isMinimized()) mainWin.restore();
+      mainWin.show();
+      mainWin.focus();
+      mainWin.webContents.send("ipollowork:pet:open-session", { sessionId: action.sessionId.slice(0, 64) });
+      return;
+    }
+    if (action.type === "open-url" && typeof action.url === "string") {
+      let protocol = null;
+      try {
+        protocol = new URL(action.url).protocol;
+      } catch {
+        return;
+      }
+      if (!protocol || !ALLOWED_EXTERNAL_SCHEMES.has(protocol)) return;
+      void shell.openExternal(action.url.slice(0, 2000));
+    }
+  }
+
+  function sendActivity(activity) {
+    const win = petWindow;
+    if (!win || win.isDestroyed()) return;
+    win.webContents.send("ipollowork:pet:activity", activity);
+  }
+
+  async function getConfig() {
+    const state = await readPetState();
+    return {
+      templateId: state?.templateId ?? PET_DEFAULT_TEMPLATE_ID,
+      nickname: state?.nickname ?? "",
+    };
+  }
+
+  function broadcastConfig(config) {
+    const win = petWindow;
+    if (!win || win.isDestroyed()) return;
+    win.webContents.send("ipollowork:pet:config", config);
+  }
+
+  async function setConfig(patch) {
+    const next = {};
+    if (typeof patch?.templateId === "string" && patch.templateId.trim() !== "") {
+      next.templateId = patch.templateId.trim();
+    }
+    if (typeof patch?.nickname === "string") {
+      // Empty string clears the nickname back to the template default.
+      next.nickname = patch.nickname.trim().slice(0, PET_NAME_MAX_LENGTH) || null;
+    }
+    await writePetState(next);
+    const config = await getConfig();
+    broadcastConfig(config);
+    return { ok: true, ...config };
+  }
+
   function sendChatReply(reply) {
     const win = petWindow;
     if (!win || win.isDestroyed()) return;
@@ -212,6 +278,7 @@ export function createPetWindow({ getWindow }) {
   }
 
   function registerIpc(ipcMain) {
+    ipcMain.handle("ipollowork:pet:get-config", () => getConfig());
     ipcMain.on("ipollowork:pet:ready", (event) => {
       const win = petWindow;
       if (!win || win.isDestroyed() || event.sender !== win.webContents) return;
@@ -259,6 +326,11 @@ export function createPetWindow({ getWindow }) {
       // Relay to the main renderer, which owns the authenticated engine client.
       mainWin.webContents.send("ipollowork:pet:chat-request", { id, text });
     });
+    ipcMain.on("ipollowork:pet:action", (event, payload) => {
+      const win = petWindow;
+      if (!win || win.isDestroyed() || event.sender !== win.webContents) return;
+      handleBubbleAction(payload);
+    });
     ipcMain.on("ipollowork:pet:focus", (event) => {
       const win = petWindow;
       if (!win || win.isDestroyed() || event.sender !== win.webContents) return;
@@ -266,6 +338,16 @@ export function createPetWindow({ getWindow }) {
       // macOS; without this the chat input cannot receive keyboard focus.
       app.focus({ steal: true });
       win.focus();
+    });
+    ipcMain.on("ipollowork:pet:hide", (event) => {
+      const win = petWindow;
+      if (!win || win.isDestroyed() || event.sender !== win.webContents) return;
+      void setEnabled(false);
+    });
+    ipcMain.on("ipollowork:pet:set-config", (event, payload) => {
+      const win = petWindow;
+      if (!win || win.isDestroyed() || event.sender !== win.webContents) return;
+      void setConfig(payload ?? {});
     });
   }
 
@@ -289,8 +371,11 @@ export function createPetWindow({ getWindow }) {
     destroyWindow,
     getState,
     setEnabled,
+    getConfig,
+    setConfig,
     registerIpc,
     showBubble,
+    sendActivity,
     sendChatReply,
     isActive: () => Boolean(petWindow && !petWindow.isDestroyed()),
   };

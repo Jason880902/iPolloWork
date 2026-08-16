@@ -1,18 +1,42 @@
 /** @jsxImportSource react */
 import * as React from "react";
 import ReactDOM from "react-dom/client";
-import * as PIXI from "pixi.js";
-import { Live2DModel } from "pixi-live2d-display-lipsyncpatch/cubism4";
 
 import { bootstrapTheme } from "../app/theme";
 import "../app/index.css";
+import { petTemplateById, type PetTemplate } from "../react-app/kernel/pet-templates";
+import {
+  REACTION_FEED_EMPTY,
+  REACTION_PET_COOLDOWN,
+  type ActivityPhase,
+  type PetAnimation,
+} from "./whale-contract";
+import {
+  PetStateMachine,
+  applyInteraction,
+  applyTurnReward,
+  consumeTreat,
+  settleTreatGrants,
+} from "./whale-machine";
+import {
+  loadWhaleCompanion,
+  saveWhaleCompanion,
+  type WhaleCompanionState,
+} from "./whale-persist";
+import { Live2DSprite } from "./Live2DSprite";
+import { WhaleSprite, type WhaleFeedback } from "./WhaleSprite";
 
 type PetBubble = {
   id: string;
   kind: "greeting" | "reminder" | "decision" | "praise";
   text: string;
   ttlMs?: number;
+  action?: PetBubbleAction;
 };
+
+type PetBubbleAction =
+  | { type: "open-session"; sessionId: string }
+  | { type: "open-url"; url: string };
 
 type PetChatMessage = {
   id: string;
@@ -20,13 +44,30 @@ type PetChatMessage = {
   text: string;
 };
 
+type PetActivityPayload = {
+  phase: ActivityPhase;
+  line?: string;
+  turnCompleted?: boolean;
+};
+
+type PetConfig = {
+  templateId: string;
+  nickname: string;
+};
+
 type PetApi = {
   ready: () => void;
   onBubble: (callback: (bubble: PetBubble) => void) => () => void;
+  onActivity?: (callback: (activity: PetActivityPayload) => void) => () => void;
+  getConfig?: () => Promise<PetConfig>;
+  setConfig?: (patch: Partial<PetConfig>) => void;
+  onConfig?: (callback: (config: PetConfig) => void) => () => void;
   setInteractive: (interactive: boolean) => void;
   dragStart: () => void;
   dragEnd: () => void;
+  hide?: () => void;
   openSettings: () => void;
+  performAction: (action: PetBubbleAction) => void;
   chat: (message: { id: string; text: string }) => void;
   focusWindow: () => void;
   onChatReply: (callback: (reply: { id: string; text: string }) => void) => () => void;
@@ -35,129 +76,15 @@ type PetApi = {
 declare global {
   interface Window {
     __IPOLLOWORK_PET__?: PetApi;
-    PIXI?: typeof PIXI;
-    Live2DCubismCore?: unknown;
   }
 }
 
-window.PIXI = PIXI;
-
 const DEFAULT_BUBBLE_TTL_MS = 6000;
-const PET_MODEL_URL = "pet-models/hiyori/Hiyori.model3.json";
+const TREAT_SETTLE_TICK_MS = 60_000;
+const MACHINE_RENDER_TICK_MS = 500;
+const REACTION_ANIMATION_MS = 1400;
 
-function FallbackAvatar({ excited }: { excited: boolean }) {
-  return (
-    <svg
-      viewBox="0 0 160 200"
-      className={`h-44 w-36 drop-shadow-lg ${excited ? "pet-bounce" : "pet-float"}`}
-      aria-label="iPolloWork assistant"
-      role="img"
-    >
-      <ellipse cx="80" cy="188" rx="42" ry="8" fill="rgba(15,23,42,0.18)" />
-      <path d="M40 92 Q34 160 52 176 Q80 190 108 176 Q126 160 120 92 Z" fill="#6366f1" />
-      <path d="M52 176 Q80 190 108 176 L104 168 Q80 180 56 168 Z" fill="#4f46e5" />
-      <circle cx="80" cy="78" r="46" fill="#ffe4d6" />
-      <path d="M34 78 Q30 30 80 28 Q130 30 126 78 Q126 96 118 104 Q124 60 104 48 Q112 76 100 82 Q108 52 80 46 Q52 52 60 82 Q48 76 56 48 Q36 60 42 104 Q34 96 34 78 Z" fill="#3b3561" />
-      <g className="pet-eyes">
-        <ellipse cx="64" cy="82" rx="6.5" ry="8.5" fill="#2d2a45" />
-        <ellipse cx="96" cy="82" rx="6.5" ry="8.5" fill="#2d2a45" />
-        <circle cx="66.5" cy="79" r="2.2" fill="#ffffff" />
-        <circle cx="98.5" cy="79" r="2.2" fill="#ffffff" />
-      </g>
-      <ellipse cx="54" cy="96" rx="7" ry="4" fill="#ffb3c1" opacity="0.7" />
-      <ellipse cx="106" cy="96" rx="7" ry="4" fill="#ffb3c1" opacity="0.7" />
-      {excited ? (
-        <path d="M70 100 Q80 112 90 100 Q80 106 70 100 Z" fill="#e11d48" />
-      ) : (
-        <path d="M72 100 Q80 107 88 100" stroke="#e11d48" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      )}
-      <path d="M118 104 Q128 120 124 138" stroke="#3b3561" strokeWidth="10" fill="none" strokeLinecap="round" />
-      <path d="M42 104 Q32 120 36 138" stroke="#3b3561" strokeWidth="10" fill="none" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-let live2dState: { app: PIXI.Application; model: Live2DModel } | "failed" | null = null;
-let live2dInitPromise: Promise<typeof live2dState> | null = null;
-
-const LIVE2D_INIT_MAX_ATTEMPTS = 6;
-const LIVE2D_INIT_RETRY_DELAY_MS = 500;
-
-async function initLive2D(): Promise<typeof live2dState> {
-  if (live2dState) return live2dState;
-  // The lib's own Cubism-framework startup retry window is only ~200ms, which
-  // is easy to exhaust during page load in dev/HMR. Retry the whole init with
-  // a longer backoff so the pet still comes up when the first attempt loses
-  // the race.
-  live2dInitPromise ??= (async () => {
-    for (let attempt = 1; attempt <= LIVE2D_INIT_MAX_ATTEMPTS; attempt++) {
-      try {
-        const canvas = document.createElement("canvas");
-        const app = new PIXI.Application({
-          view: canvas,
-          backgroundAlpha: 0,
-          antialias: true,
-          autoDensity: true,
-          resolution: window.devicePixelRatio || 1,
-        });
-        const model = await Live2DModel.from(PET_MODEL_URL, { autoHitTest: true, autoFocus: false });
-        app.stage.addChild(model);
-        live2dState = { app, model };
-        return live2dState;
-      } catch (error) {
-        console.warn(`[pet] Live2D init attempt ${attempt}/${LIVE2D_INIT_MAX_ATTEMPTS} failed`, error);
-        if (attempt === LIVE2D_INIT_MAX_ATTEMPTS) {
-          console.warn("[pet] Live2D init failed, using fallback avatar");
-          live2dState = "failed";
-          return live2dState;
-        }
-        await new Promise((resolve) => setTimeout(resolve, LIVE2D_INIT_RETRY_DELAY_MS));
-      }
-    }
-    return live2dState;
-  })();
-  return live2dInitPromise;
-}
-
-function layoutLive2D(state: { app: PIXI.Application; model: Live2DModel }, host: HTMLElement) {
-  const bounds = host.getBoundingClientRect();
-  state.app.renderer.resize(bounds.width, bounds.height);
-  const scale = Math.min((bounds.width * 0.96) / state.model.width, (bounds.height * 0.96) / state.model.height);
-  state.model.scale.set(scale);
-  state.model.anchor.set(0.5, 1);
-  state.model.x = bounds.width / 2;
-  state.model.y = bounds.height;
-}
-
-function Live2DAvatar({ onReady }: { onReady: (model: Live2DModel | null) => void }) {
-  const hostRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    const host = hostRef.current;
-    if (!host || !window.Live2DCubismCore) {
-      onReady(null);
-      return;
-    }
-    let cancelled = false;
-    void initLive2D().then((state) => {
-      if (cancelled) return;
-      if (state && state !== "failed") {
-        host.appendChild(state.app.view as HTMLCanvasElement);
-        layoutLive2D(state, host);
-        onReady(state.model);
-      } else {
-        onReady(null);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [onReady]);
-
-  return <div ref={hostRef} className="h-full w-full [&>canvas]:h-full [&>canvas]:w-full" />;
-}
-
-function BubbleView({ bubble }: { bubble: PetBubble }) {
+function BubbleView({ bubble, onAction }: { bubble: PetBubble; onAction: (action: PetBubbleAction) => void }) {
   const accent =
     bubble.kind === "decision"
       ? "border-amber-400"
@@ -166,21 +93,33 @@ function BubbleView({ bubble }: { bubble: PetBubble }) {
         : bubble.kind === "reminder"
           ? "border-indigo-400"
           : "border-slate-300";
+  const interactive = Boolean(bubble.action);
   return (
-    <div className="pet-bubble-in pointer-events-auto relative mx-auto mb-2 w-56 rounded-2xl border bg-white/95 px-3 py-2 text-[13px] leading-snug text-slate-800 shadow-xl backdrop-blur dark:bg-slate-900/95 dark:text-slate-100">
+    <div
+      className={`pet-bubble-in pointer-events-auto relative mx-auto mb-2 w-56 rounded-2xl border bg-white/95 px-3 py-2 text-[13px] leading-snug text-slate-800 shadow-xl backdrop-blur dark:bg-slate-900/95 dark:text-slate-100 ${interactive ? "cursor-pointer transition-shadow hover:shadow-2xl hover:ring-2 hover:ring-indigo-300" : ""}`}
+      onClick={() => {
+        if (bubble.action) onAction(bubble.action);
+      }}
+      role={interactive ? "button" : undefined}
+    >
       <div className={`absolute inset-0 rounded-2xl border-2 ${accent}`} />
       {bubble.text}
+      {interactive ? (
+        <div className="mt-1 text-right text-[11px] font-medium text-indigo-500">查看 →</div>
+      ) : null}
       <div className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-b border-r bg-white/95 dark:bg-slate-900/95" />
     </div>
   );
 }
 
 function ChatPanel({
+  name,
   messages,
   pending,
   onSend,
   onClose,
 }: {
+  name: string;
   messages: PetChatMessage[];
   pending: boolean;
   onSend: (text: string) => void;
@@ -198,9 +137,9 @@ function ChatPanel({
   }, [messages, pending]);
 
   return (
-    <div className="pointer-events-auto absolute inset-x-3 top-2 flex max-h-[270px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white/95 shadow-2xl backdrop-blur dark:border-slate-700 dark:bg-slate-900/95">
+    <div className="pointer-events-auto absolute inset-x-3 top-2 z-20 flex max-h-[270px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white/95 shadow-2xl backdrop-blur dark:border-slate-700 dark:bg-slate-900/95">
       <div className="flex items-center justify-between border-b border-slate-100 px-3 py-1.5 dark:border-slate-800">
-        <span className="text-[12px] font-medium text-slate-500 dark:text-slate-400">和小珀聊聊</span>
+        <span className="text-[12px] font-medium text-slate-500 dark:text-slate-400">和{name}聊聊</span>
         <button
           type="button"
           onClick={onClose}
@@ -225,11 +164,12 @@ function ChatPanel({
             {message.text}
           </div>
         ))}
-        {pending ? <div className="mr-8 self-start text-[12px] text-slate-400">小珀正在想…</div> : null}
+        {pending ? <div className="mr-8 self-start text-[12px] text-slate-400">{name}正在想…</div> : null}
       </div>
       <form
         className="flex gap-1.5 border-t border-slate-100 p-2 dark:border-slate-800"
-        onSubmit={(event) => {          event.preventDefault();
+        onSubmit={(event) => {
+          event.preventDefault();
           const input = event.currentTarget.elements.namedItem("pet-chat-input");
           if (!(input instanceof HTMLInputElement)) return;
           const text = input.value.trim();
@@ -259,56 +199,184 @@ function ChatPanel({
 
 function PetApp() {
   const [bubble, setBubble] = React.useState<PetBubble | null>(null);
-  const [excited, setExcited] = React.useState(false);
-  const [live2dReady, setLive2dReady] = React.useState(false);
   const [chatOpen, setChatOpen] = React.useState(false);
   const [messages, setMessages] = React.useState<PetChatMessage[]>([]);
   const [pending, setPending] = React.useState(false);
-  const modelRef = React.useRef<Live2DModel | null>(null);
+  const [companion, setCompanion] = React.useState<WhaleCompanionState>(() => loadWhaleCompanion());
+  const [feedback, setFeedback] = React.useState<WhaleFeedback | null>(null);
+  const [activityAnim, setActivityAnim] = React.useState<PetAnimation>("idle");
+  const [statusBubble, setStatusBubble] = React.useState<string | undefined>(undefined);
+  const [reactionAnim, setReactionAnim] = React.useState<{ track: PetAnimation; until: number } | null>(null);
+  const [happySignal, setHappySignal] = React.useState(0);
+  const [config, setConfig] = React.useState<PetConfig | null>(null);
+  const machineRef = React.useRef<PetStateMachine | null>(null);
   const api = window.__IPOLLOWORK_PET__;
 
-  const playHappy = React.useCallback(() => {
-    const model = modelRef.current;
-    if (model) {
-      void model.motion("TapBody").catch(() => undefined);
-    }
+  if (machineRef.current === null) {
+    machineRef.current = new PetStateMachine();
+  }
+
+  const template: PetTemplate = petTemplateById(config?.templateId);
+  const petName = config?.nickname?.trim() || template.defaultName;
+
+  const updateCompanion = React.useCallback(
+    (updater: (current: WhaleCompanionState) => WhaleCompanionState) => {
+      setCompanion((current) => {
+        const next = updater(current);
+        if (next !== current) saveWhaleCompanion(next);
+        return next;
+      });
+    },
+    [],
+  );
+
+  const showFeedback = React.useCallback((text: string, kind: WhaleFeedback["kind"]) => {
+    setFeedback({ text, kind, at: Date.now() });
   }, []);
 
-  const handleModelReady = React.useCallback((model: Live2DModel | null) => {
-    modelRef.current = model;
-    setLive2dReady(Boolean(model));
+  const playReaction = React.useCallback((track: PetAnimation) => {
+    setReactionAnim({ track, until: Date.now() + REACTION_ANIMATION_MS });
+    setHappySignal((value) => value + 1);
   }, []);
 
+  // Config: initial load + live updates from the settings page.
   React.useEffect(() => {
     if (!api) return;
-    const unsubscribe = api.onBubble((next) => {
+    let cancelled = false;
+    void api.getConfig?.().then((next) => {
+      if (!cancelled && next) setConfig(next);
+    }).catch(() => undefined);
+    const unsubscribe = api.onConfig?.((next) => {
+      if (next) setConfig(next);
+    });
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
+  }, [api]);
+
+  // Host pushes (event bubbles / chat replies / activity feed).
+  React.useEffect(() => {
+    if (!api) return;
+    const unsubscribeBubble = api.onBubble((next) => {
       setBubble(next);
-      setExcited(true);
-      playHappy();
+      playReaction(next.kind === "praise" ? "jumping" : "waving");
     });
     const unsubscribeChat = api.onChatReply((reply) => {
       setPending(false);
       setMessages((prev) => [...prev, { id: reply.id, from: "pet", text: reply.text }]);
-      playHappy();
+      playReaction("waving");
+    });
+    const unsubscribeActivity = api.onActivity?.((payload) => {
+      const machine = machineRef.current;
+      if (!machine) return;
+      machine.onActivity({ phase: payload.phase, line: payload.line });
+      if (payload.turnCompleted) {
+        updateCompanion((current) => {
+          const rewarded = applyTurnReward(current.affinity);
+          const settled = settleTreatGrants(current.treats, rewarded.turns);
+          return { ...current, affinity: rewarded, treats: settled.ledger };
+        });
+      }
+      const snapshot = machine.render();
+      setActivityAnim(snapshot.animation);
+      setStatusBubble(snapshot.bubble);
     });
     api.ready();
     api.setInteractive(true);
     return () => {
-      unsubscribe();
+      unsubscribeBubble();
       unsubscribeChat();
+      unsubscribeActivity?.();
     };
-  }, [api, playHappy]);
+  }, [api, playReaction, updateCompanion]);
+
+  // Machine render tick: celebration windows expire and one-shot reaction
+  // animations fall back to the activity track without new pushes.
+  React.useEffect(() => {
+    const timer = window.setInterval(() => {
+      const snapshot = machineRef.current?.render();
+      if (!snapshot) return;
+      setActivityAnim(snapshot.animation);
+      setStatusBubble(snapshot.bubble);
+      setReactionAnim((current) => (current && Date.now() >= current.until ? null : current));
+    }, MACHINE_RENDER_TICK_MS);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  // Lazy treat settlement: wall-clock grants accrue while the pet idles.
+  React.useEffect(() => {
+    const settle = () => {
+      updateCompanion((current) => {
+        const settled = settleTreatGrants(current.treats, current.affinity.turns);
+        return settled.ledger === current.treats ? current : { ...current, treats: settled.ledger };
+      });
+    };
+    settle();
+    const timer = window.setInterval(settle, TREAT_SETTLE_TICK_MS);
+    return () => window.clearInterval(timer);
+  }, [updateCompanion]);
 
   React.useEffect(() => {
     if (!bubble) return;
-    const timer = setTimeout(() => {
-      setBubble(null);
-      setExcited(false);
-    }, bubble.ttlMs ?? DEFAULT_BUBBLE_TTL_MS);
+    const timer = setTimeout(() => setBubble(null), bubble.ttlMs ?? DEFAULT_BUBBLE_TTL_MS);
     return () => clearTimeout(timer);
   }, [bubble]);
 
   if (!api) return null;
+
+  const handlePet = () => {
+    const outcome = applyInteraction(companion.affinity, "pet");
+    if (outcome.accepted) {
+      updateCompanion((current) => ({ ...current, affinity: outcome.affinity }));
+      playReaction("waving");
+    }
+    showFeedback(outcome.reaction.replaceAll("{name}", petName), "pet");
+  };
+
+  const handleFeed = () => {
+    // Feeding settles first, then gates on the cooldown before spending
+    // stock — a feed inside the cooldown must not burn a treat for nothing.
+    const settled = settleTreatGrants(companion.treats, companion.affinity.turns);
+    const outcome = applyInteraction(companion.affinity, "feed");
+    if (!outcome.accepted) {
+      if (settled.ledger !== companion.treats) {
+        updateCompanion((current) => ({ ...current, treats: settled.ledger }));
+      }
+      showFeedback(outcome.reaction, "feed");
+      return;
+    }
+    const consume = consumeTreat(settled.ledger);
+    if (!consume.ok) {
+      if (settled.ledger !== companion.treats) {
+        updateCompanion((current) => ({ ...current, treats: settled.ledger }));
+      }
+      showFeedback(REACTION_FEED_EMPTY, "feed");
+      return;
+    }
+    updateCompanion((current) => ({ ...current, affinity: outcome.affinity, treats: consume.ledger }));
+    playReaction("jumping");
+    showFeedback(outcome.reaction, "feed");
+  };
+
+  const handleRename = (name: string) => {
+    if (api.setConfig) {
+      api.setConfig({ nickname: name });
+      setConfig((current) => ({
+        templateId: current?.templateId ?? template.id,
+        nickname: name,
+      }));
+    }
+    showFeedback(`以后叫我「${name}」吧～`, "pet");
+  };
+
+  const handleHide = () => {
+    if (api.hide) {
+      api.hide();
+    } else {
+      api.openSettings();
+    }
+  };
 
   const sendChat = (text: string) => {
     const id = crypto.randomUUID();
@@ -317,54 +385,73 @@ function PetApp() {
     api.chat({ id, text });
   };
 
+  const animation = reactionAnim && Date.now() < reactionAnim.until ? reactionAnim.track : activityAnim;
+  const spriteTemplate = template.kind === "spritesheet" ? template : null;
+
   return (
-    <div className="relative flex h-dvh flex-col items-center justify-end pb-1">
+    <div className="relative flex h-dvh flex-col items-center justify-end pb-6">
       {chatOpen ? (
-        <ChatPanel messages={messages} pending={pending} onSend={sendChat} onClose={() => setChatOpen(false)} />
+        <ChatPanel
+          name={petName}
+          messages={messages}
+          pending={pending}
+          onSend={sendChat}
+          onClose={() => setChatOpen(false)}
+        />
       ) : null}
-      {!chatOpen && bubble ? <BubbleView bubble={bubble} /> : null}
-      <div
-        className="relative h-[336px] w-[312px] cursor-grab touch-none active:cursor-grabbing"
-        onContextMenu={(event) => {
-          event.preventDefault();
-          api.openSettings();
-        }}
-        onPointerDown={(event) => {
-          event.currentTarget.setPointerCapture(event.pointerId);
-          api.dragStart();
-        }}
-        onPointerUp={() => api.dragEnd()}
-        onPointerCancel={() => api.dragEnd()}
-        onClick={() => {
-          playHappy();
-          if (!bubble) {
-            setBubble({ id: `local-${Date.now()}`, kind: "greeting", text: "韩大哥，我在这里呢～有我在，进度和决策都不会漏掉！" });
-            setExcited(true);
-          }
-        }}
-        onDoubleClick={() => {
-          setChatOpen((open) => {
-            if (!open) api.focusWindow();
-            return !open;
-          });
-        }}
-      >
-        <Live2DAvatar onReady={handleModelReady} />
-        {!live2dReady ? (
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center">
-            <FallbackAvatar excited={excited} />
-          </div>
-        ) : null}
-      </div>
+      {!chatOpen && bubble ? <BubbleView bubble={bubble} onAction={(action) => api.performAction(action)} /> : null}
+      {spriteTemplate?.sprite ? (
+        <WhaleSprite
+          sprite={spriteTemplate.sprite}
+          animation={animation}
+          statusBubble={statusBubble}
+          feedback={feedback}
+          name={petName}
+          affinityPoints={companion.affinity.points}
+          treatsStocked={companion.treats.treats}
+          onPet={handlePet}
+          onFeed={handleFeed}
+          onHide={handleHide}
+          onRename={handleRename}
+          onFeedbackDone={() => setFeedback(null)}
+          onDragStart={() => api.dragStart()}
+          onDragEnd={() => api.dragEnd()}
+          onOpenChat={() => {
+            setChatOpen((open) => {
+              if (!open) api.focusWindow();
+              return !open;
+            });
+          }}
+          onOpenSettings={() => api.openSettings()}
+        />
+      ) : (
+        <Live2DSprite
+          modelUrl={template.modelUrl ?? ""}
+          statusBubble={statusBubble}
+          feedback={feedback}
+          name={petName}
+          affinityPoints={companion.affinity.points}
+          treatsStocked={companion.treats.treats}
+          happySignal={happySignal}
+          onPet={handlePet}
+          onFeed={handleFeed}
+          onHide={handleHide}
+          onRename={handleRename}
+          onFeedbackDone={() => setFeedback(null)}
+          onDragStart={() => api.dragStart()}
+          onDragEnd={() => api.dragEnd()}
+          onOpenChat={() => {
+            setChatOpen((open) => {
+              if (!open) api.focusWindow();
+              return !open;
+            });
+          }}
+          onOpenSettings={() => api.openSettings()}
+        />
+      )}
       <style>{`
-        @keyframes pet-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-        @keyframes pet-bounce { 0%, 100% { transform: translateY(0) scale(1); } 30% { transform: translateY(-14px) scale(1.04); } 60% { transform: translateY(0) scale(0.98); } }
         @keyframes pet-bubble-in { from { opacity: 0; transform: translateY(8px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes pet-blink { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.08); } }
-        .pet-float { animation: pet-float 3.2s ease-in-out infinite; }
-        .pet-bounce { animation: pet-bounce 0.7s ease-in-out; }
         .pet-bubble-in { animation: pet-bubble-in 0.25s ease-out; }
-        .pet-eyes { transform-origin: 80px 82px; animation: pet-blink 4.6s ease-in-out infinite; }
       `}</style>
     </div>
   );

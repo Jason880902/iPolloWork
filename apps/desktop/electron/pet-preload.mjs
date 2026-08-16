@@ -3,6 +3,8 @@ import { contextBridge, ipcRenderer } from "electron";
 let latestBubble = null;
 let bubbleCallback = null;
 let chatReplyCallback = null;
+let activityCallback = null;
+let configCallback = null;
 
 ipcRenderer.on("ipollowork:pet:bubble", (_event, bubble) => {
   latestBubble = bubble;
@@ -11,6 +13,14 @@ ipcRenderer.on("ipollowork:pet:bubble", (_event, bubble) => {
 
 ipcRenderer.on("ipollowork:pet:chat-reply", (_event, payload) => {
   chatReplyCallback?.(payload);
+});
+
+ipcRenderer.on("ipollowork:pet:activity", (_event, payload) => {
+  activityCallback?.(payload);
+});
+
+ipcRenderer.on("ipollowork:pet:config", (_event, payload) => {
+  configCallback?.(payload);
 });
 
 contextBridge.exposeInMainWorld("__IPOLLOWORK_PET__", {
@@ -40,6 +50,9 @@ contextBridge.exposeInMainWorld("__IPOLLOWORK_PET__", {
   openSettings() {
     ipcRenderer.send("ipollowork:pet:open-settings");
   },
+  performAction(action) {
+    ipcRenderer.send("ipollowork:pet:action", action);
+  },
   chat(message) {
     ipcRenderer.send("ipollowork:pet:chat", message);
   },
@@ -53,5 +66,30 @@ contextBridge.exposeInMainWorld("__IPOLLOWORK_PET__", {
         chatReplyCallback = null;
       }
     };
+  },
+  onActivity(callback) {
+    activityCallback = callback;
+    return () => {
+      if (activityCallback === callback) {
+        activityCallback = null;
+      }
+    };
+  },
+  getConfig() {
+    return ipcRenderer.invoke("ipollowork:pet:get-config");
+  },
+  setConfig(patch) {
+    ipcRenderer.send("ipollowork:pet:set-config", patch ?? {});
+  },
+  onConfig(callback) {
+    configCallback = callback;
+    return () => {
+      if (configCallback === callback) {
+        configCallback = null;
+      }
+    };
+  },
+  hide() {
+    ipcRenderer.send("ipollowork:pet:hide");
   },
 });

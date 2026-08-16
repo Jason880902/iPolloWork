@@ -2319,6 +2319,24 @@ const desktopCommandHandlers = {
   "petEvent": async (event, ...args) => {
       return petAssistant.handleDesktopEvent(args[0] ?? {});
   },
+  "petActivity": async (event, ...args) => {
+      const input = args[0] ?? {};
+      if (typeof input.phase !== "string") {
+        return { ok: false, reason: "invalid activity payload" };
+      }
+      petWindow.sendActivity({
+        phase: input.phase,
+        ...(typeof input.line === "string" ? { line: input.line.slice(0, 140) } : {}),
+        ...(input.turnCompleted === true ? { turnCompleted: true } : {}),
+      });
+      return { ok: true };
+  },
+  "petGetConfig": async () => {
+      return petWindow.getConfig();
+  },
+  "petSetConfig": async (event, ...args) => {
+      return petWindow.setConfig(args[0] ?? {});
+  },
   "petChatReply": async (event, ...args) => {
       const input = args[0] ?? {};
       if (typeof input.id !== "string" || typeof input.text !== "string") {

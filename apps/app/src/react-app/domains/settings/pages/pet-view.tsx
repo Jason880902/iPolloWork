@@ -2,17 +2,22 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
 import {
+  petGetConfig,
   petGetIntegrations,
   petGetState,
   petSetAutoCheck,
+  petSetConfig,
   petSetEnabled,
 } from "@/app/lib/desktop";
 import { isDesktopRuntime } from "@/app/utils";
 import { t } from "@/i18n";
+import { PET_NAME_MAX_LENGTH } from "../../../../pet/whale-contract";
+import { PET_TEMPLATES } from "../../../kernel/pet-templates";
 import {
   PET_PERSONA_PROMPT,
   PET_PERSONA_STORAGE_KEY,
@@ -43,6 +48,9 @@ export function PetView({ onOpenProviderAuth, onOpenExtensions }: {
   const [personaSaved, setPersonaSaved] = useState(false);
   const [autoCheck, setAutoCheck] = useState<boolean | null>(null);
   const [modelLabel, setModelLabel] = useState<string | null>(null);
+  const [templateId, setTemplateId] = useState<string | null>(null);
+  const [nickname, setNickname] = useState("");
+  const [nicknameSaved, setNicknameSaved] = useState(false);
 
   useEffect(() => {
     const refreshModelLabel = () => {
@@ -89,6 +97,12 @@ export function PetView({ onOpenProviderAuth, onOpenExtensions }: {
     void petGetIntegrations()
       .then((state) => setAutoCheck(state.autoCheck))
       .catch(() => undefined);
+    void petGetConfig()
+      .then((config) => {
+        setTemplateId(config.templateId);
+        setNickname(config.nickname);
+      })
+      .catch(() => undefined);
     try {
       const custom = window.localStorage.getItem(PET_PERSONA_STORAGE_KEY)?.trim();
       if (custom) setPersona(custom);
@@ -120,6 +134,26 @@ export function PetView({ onOpenProviderAuth, onOpenExtensions }: {
     }
   };
 
+  const flashSaved = () => {
+    setNicknameSaved(true);
+    setTimeout(() => setNicknameSaved(false), 2000);
+  };
+
+  const saveNickname = (value: string) => {
+    const trimmed = value.trim();
+    void petSetConfig({ ...(trimmed ? { nickname: trimmed } : { nickname: "" }) })
+      .then((result) => {
+        if (result.ok) setNickname(result.nickname);
+      })
+      .catch(() => undefined);
+    flashSaved();
+  };
+
+  const switchTemplate = (next: string) => {
+    setTemplateId(next);
+    void petSetConfig({ templateId: next }).catch(() => undefined);
+  };
+
   return (
     <LayoutStack>
       <LayoutSection>
@@ -142,6 +176,90 @@ export function PetView({ onOpenProviderAuth, onOpenExtensions }: {
             </LayoutSectionItemHeaderActions>
           </LayoutSectionItemHeader>
         </LayoutSectionItem>
+
+        <LayoutSectionItem>
+          <LayoutSectionItemHeader>
+            <LayoutSectionItemTitle>{t("settings.pet.nickname")}</LayoutSectionItemTitle>
+            <LayoutSectionItemDescription>{t("settings.pet.nickname_desc")}</LayoutSectionItemDescription>
+            <LayoutSectionItemHeaderActions>
+              <div className="flex items-center gap-2">
+                <Input
+                  aria-label={t("settings.pet.nickname")}
+                  value={nickname}
+                  maxLength={PET_NAME_MAX_LENGTH}
+                  placeholder={t("settings.pet.nickname_placeholder")}
+                  className="w-40 text-[13px]"
+                  onChange={(event) => setNickname(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      saveNickname(nickname);
+                    } else if (event.key === "Escape") {
+                      void petGetConfig().then((config) => setNickname(config.nickname)).catch(() => undefined);
+                    }
+                  }}
+                  onBlur={() => saveNickname(nickname)}
+                />
+                <span className="text-[12px] text-emerald-500">{nicknameSaved ? t("settings.pet.config_saved") : ""}</span>
+              </div>
+            </LayoutSectionItemHeaderActions>
+          </LayoutSectionItemHeader>
+        </LayoutSectionItem>
+
+        <div className="flex flex-col gap-2 px-4 pb-4">
+          <div>
+            <div className="text-[13px] font-medium">{t("settings.pet.appearance_title")}</div>
+            <div className="text-[12px] text-slate-400">{t("settings.pet.appearance_desc")}</div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {PET_TEMPLATES.map((template) => {
+              const selected = templateId === template.id || (templateId === null && template.id === "whale-girl");
+              return (
+                <button
+                  key={template.id}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => switchTemplate(template.id)}
+                  className={`group flex flex-col items-stretch overflow-hidden rounded-xl border text-left transition-colors ${
+                    selected
+                      ? "border-indigo-500 ring-1 ring-indigo-500"
+                      : "border-slate-200 hover:border-indigo-300 dark:border-slate-700 dark:hover:border-indigo-500/60"
+                  }`}
+                >
+                  <div className="flex h-36 items-center justify-center overflow-hidden bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900">
+                    {template.kind === "spritesheet" ? (
+                      <img src={template.previewUrl} alt={template.defaultName} className="max-h-full max-w-full object-contain" />
+                    ) : (
+                      <img
+                        src={template.previewUrl}
+                        alt={template.defaultName}
+                        className="max-h-full max-w-full object-contain"
+                        style={{ background: "linear-gradient(180deg,#f1f5f9,#e2e8f0)" }}
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-0.5 px-2.5 py-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[13px] font-medium">{template.defaultName}</span>
+                      {selected ? (
+                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-indigo-500 text-[10px] text-white">
+                          ✓
+                        </span>
+                      ) : null}
+                    </div>
+                    <span className="line-clamp-2 text-[11px] leading-snug text-slate-500 dark:text-slate-400">
+                      {template.tagline}
+                    </span>
+                    <span className="mt-1 w-fit rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                      {template.activityAnimation
+                        ? t("settings.pet.template_activity")
+                        : t("settings.pet.template_no_activity")}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </LayoutSection>
 
       <LayoutSection>

@@ -70,6 +70,41 @@ export type PetEventResult =
   | { ok: true }
   | { ok: false; reason: string };
 
+export type PetActivityPhase =
+  | "idle"
+  | "waiting"
+  | "thinking"
+  | "tool"
+  | "review"
+  | "done"
+  | "failed";
+
+export type PetActivityInput = {
+  phase: PetActivityPhase;
+  /** Human-readable status line shown as the pet's status bubble. */
+  line?: string;
+  /** True when this push carries a newly completed turn (affinity reward). */
+  turnCompleted?: boolean;
+};
+
+export type PetActivityResult =
+  | { ok: true }
+  | { ok: false; reason: string };
+
+export type PetConfigResult = {
+  templateId: string;
+  nickname: string;
+};
+
+export type PetSetConfigInput = {
+  templateId?: string;
+  nickname?: string;
+};
+
+export type PetSetConfigResult =
+  | ({ ok: true } & PetConfigResult)
+  | { ok: false; reason: string };
+
 export type PetChatReplyInput = {
   id: string;
   text: string;
@@ -468,6 +503,18 @@ export type DesktopCommandMap = {
   petEvent: {
     args: [input: PetEventInput];
     result: PetEventResult;
+  };
+  petActivity: {
+    args: [input: PetActivityInput];
+    result: PetActivityResult;
+  };
+  petGetConfig: {
+    args: [];
+    result: PetConfigResult;
+  };
+  petSetConfig: {
+    args: [input: PetSetConfigInput];
+    result: PetSetConfigResult;
   };
   petChatReply: {
     args: [input: PetChatReplyInput];

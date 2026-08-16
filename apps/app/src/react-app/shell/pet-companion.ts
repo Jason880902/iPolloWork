@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import { petChatReply } from "@/app/lib/desktop";
+import { petChatReply, petGetConfig } from "@/app/lib/desktop";
 import { isDesktopRuntime } from "@/app/utils";
 import {
   petEngineRequestJson,
@@ -69,6 +69,11 @@ export function usePetCompanionBridge() {
         }
         const sessionId = sessionIdRef.current;
 
+        // The default persona follows the configured nickname; a custom
+        // persona from settings is used verbatim.
+        const petConfig = internal ? null : await petGetConfig().catch(() => null);
+        const nickname = petConfig?.nickname?.trim() || undefined;
+
         // The proxy serves reads under /opencode/api/* but prompts and the
         // live message log must go to /opencode/* (the recipe the app UI uses).
         const directMount = handle.mount.replace(/\/opencode\/api$/, "/opencode");
@@ -77,7 +82,7 @@ export function usePetCompanionBridge() {
           method: "POST",
           headers: handle.headers,
           body: JSON.stringify({
-            system: internal ? PET_CHECK_SYSTEM_PROMPT : readPetPersona(),
+            system: internal ? PET_CHECK_SYSTEM_PROMPT : readPetPersona(nickname),
             parts: [{ type: "text", text }],
           }),
         });
