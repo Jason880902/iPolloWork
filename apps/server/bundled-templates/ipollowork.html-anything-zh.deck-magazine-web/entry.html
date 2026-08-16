@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>杂志特辑 Magazine — 品牌年度特辑模版</title>
+<link rel="stylesheet" href="assets/fonts.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8ECF1;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: var(--ipw-body-line-height);
+    -webkit-font-smoothing: antialiased;
+  }
+  strong { font-weight: 500; }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: var(--ipw-color-bg);
+    color: var(--ipw-color-text);
+    box-shadow: 0 4px 24px rgba(20, 20, 19, 0.12);
+    padding: 80px 96px;
+    display: flex;
+    flex-direction: column;
+  }
+  .slide.dark { background: var(--ipw-color-primary); color: var(--ipw-color-surface); }
+  .slide-inner {
+    width: 100%; height: 100%;
+    display: grid; align-content: center; gap: 24px;
+    position: relative; min-height: 0;
+  }
+
+  /* ---------- per-slide chrome / foot ---------- */
+  .slide-chrome {
+    position: absolute; top: 28px; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 96px;
+    font-family: var(--ipw-font-sans);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.6px; text-transform: uppercase;
+    color: var(--ipw-color-muted);
+    z-index: 4; pointer-events: none;
+  }
+  .slide.dark .slide-chrome { color: rgba(250, 249, 245, 0.55); }
+  .slide-chrome b { color: var(--ipw-color-text); font-weight: 500; }
+  .slide.dark .slide-chrome b { color: var(--ipw-color-surface); }
+  .slide-chrome .left { display: inline-flex; align-items: center; gap: 12px; }
+  .slide-chrome .mark {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid currentColor;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--ipw-font-display); font-weight: 500; font-size: 11px;
+    letter-spacing: 0; opacity: 0.85;
+  }
+  .slide-foot {
+    position: absolute; bottom: 28px; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 96px;
+    font-family: var(--ipw-font-mono);
+    font-size: 10.5px; letter-spacing: 0.4px;
+    color: var(--ipw-color-muted);
+    font-variant-numeric: tabular-nums;
+    z-index: 4; pointer-events: none;
+  }
+  .slide.dark .slide-foot { color: rgba(250, 249, 245, 0.55); }
+  .slide-foot .counter {
+    color: var(--ipw-color-text);
+    background: var(--ipw-color-surface);
+    padding: 4px 8px;
+    border: 1px solid var(--ipw-color-border);
+    border-radius: 4px;
+  }
+  .slide.dark .slide-foot .counter {
+    color: var(--ipw-color-surface);
+    background: rgba(250, 249, 245, 0.08);
+    border-color: rgba(250, 249, 245, 0.22);
+  }
+
+  /* ---------- COVER (dark) ---------- */
+  .s-cover .slide-inner { grid-template-columns: 1fr; align-content: center; gap: 28px; max-width: 980px; }
+  .s-cover .eyebrow {
+    font-family: var(--ipw-font-sans);
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    color: rgba(250, 249, 245, 0.65);
+  }
+  .s-cover h1 {
+    font-family: var(--ipw-font-display);
+    font-weight: 500; font-size: 88px;
+    line-height: 1.08; letter-spacing: -1px;
+    color: var(--ipw-color-surface);
+  }
+  .s-cover h1 .hl { color: var(--ipw-color-accent); }
+  .s-cover .tagline {
+    font-family: var(--ipw-font-body);
+    font-weight: 500; font-size: 20px;
+    color: rgba(250, 249, 245, 0.75);
+    max-width: 46ch; line-height: 1.5;
+  }
+  .s-cover .meta {
+    margin-top: 20px;
+    display: flex; align-items: center; gap: 20px;
+    font-family: var(--ipw-font-mono);
+    font-size: 11px; letter-spacing: 0.4px; text-transform: uppercase;
+    color: rgba(250, 249, 245, 0.6);
+    font-variant-numeric: tabular-nums;
+  }
+  .s-cover .meta .rule { width: 56px; height: 1px; background: rgba(250, 249, 245, 0.4); display: inline-block; }
+
+  /* ---------- CHAPTER (dark) ---------- */
+  .s-chapter .slide-inner { grid-template-columns: 1fr; text-align: center; align-content: center; gap: 32px; }
+  .s-chapter .num {
+    font-family: var(--ipw-font-display);
+    font-weight: 500; font-size: 108px;
+    color: rgba(250, 249, 245, 0.55);
+    letter-spacing: -0.5px; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .s-chapter h2 {
+    font-family: var(--ipw-font-display);
+    font-weight: 500; font-size: 64px;
+    line-height: 1.1; letter-spacing: -0.5px;
+    color: var(--ipw-color-surface);
+    margin: 0 auto; max-width: 22ch;
+  }
+  .s-chapter .lede {
+    font-family: var(--ipw-font-body);
+    font-weight: 500; font-size: 18px;
+    color: rgba(250, 249, 245, 0.7);
+    max-width: 42ch; margin: 0 auto;
+    line-height: 1.55; letter-spacing: 0.05em;
+  }
+
+  /* ---------- CONTENT ---------- */
+  .s-content .slide-inner { grid-template-columns: 1fr 2.4fr; gap: 56px; align-content: center; }
+  .s-content .head { display: flex; flex-direction: column; gap: 16px; }
+  .s-content .num {
+    font-family: var(--ipw-font-display);
+    font-weight: 500; font-size: 14px; letter-spacing: 0.4px;
+    color: var(--ipw-color-primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .s-content h2 {
+    font-family: var(--ipw-font-display);
+    font-weight: 500; font-size: 48px;
+    line-height: 1.12; letter-spacing: 0.3px;
+    color: var(--ipw-color-text);
+    max-width: 14ch;
+  }
+  .s-content .lede {
+    font-family: var(--ipw-font-body);
+    font-weight: 500; font-size: 15px;
+    color: var(--ipw-color-lede);
+    max-width: 28ch; line-height: 1.5;
+  }
+  .s-content .body { display: flex; flex-direction: column; gap: 18px; }
+  .s-content .body p {
+    font-family: var(--ipw-font-body);
+    font-weight: 400; font-size: 17px; line-height: 1.6;
+    color: var(--ipw-color-body); max-width: 62ch;
+  }
+  .s-content .body p strong { color: var(--ipw-color-text); font-weight: 500; }
+  .s-content .body code {
+    font-family: var(--ipw-font-mono);
+    font-size: 14px; color: var(--ipw-color-primary);
+    background: var(--ipw-color-code-bg);
+    padding: 1px 6px; border-radius: 3px;
+  }
+  .s-content ul.dash { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .s-content ul.dash li {
+    position: relative; padding-left: 18px;
+    font-family: var(--ipw-font-body);
+    font-weight: 400; font-size: 16px; line-height: 1.55;
+    color: var(--ipw-color-body);
+  }
+  .s-content ul.dash li::before { content: '\2013'; position: absolute; left: 0; color: var(--ipw-color-primary); }
+  .s-content .tag-row { margin-top: 4px; display: flex; gap: 8px; }
+  .s-content .tag {
+    display: inline-block;
+    font-family: var(--ipw-font-sans);
+    font-size: 12px; font-weight: 500;
+    padding: 2px 8px; border-radius: 4px;
+    color: var(--ipw-color-primary);
+    background: var(--ipw-color-tag-bg);
+    letter-spacing: 0.4px;
+  }
+
+  /* ---------- STATS ---------- */
+  .s-stats .slide-inner { grid-template-columns: 1fr; gap: 40px; }
+  .s-stats .head { display: flex; flex-direction: column; gap: 14px; }
+  .s-stats .num {
+    font-family: var(--ipw-font-display);
+    font-weight: 500; font-size: 14px; letter-spacing: 0.4px;
+    color: var(--ipw-color-primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .s-stats h2 {
+    font-family: var(--ipw-font-display);
+    font-weight: 500; font-size: 52px;
+    line-height: 1.1; letter-spacing: 0.3px;
+    color: var(--ipw-color-text); max-width: 22ch;
+  }
+  .s-stats .grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    border-top: 1px solid var(--ipw-color-border);
+    border-bottom: 1px solid var(--ipw-color-border);
+  }
+  .s-stats .stat {
+    padding: 28px 24px 24px;
+    display: flex; flex-direction: column; gap: 8px;
+    border-right: 1px solid var(--ipw-color-border-soft);
+  }
+  .s-stats .stat:last-child { border-right: 0; }
+  .s-stats .stat .v {
+    font-family: var(--ipw-font-display);
+    font-weight: 500; font-size: 68px;
+    line-height: 1; letter-spacing: -0.8px;
+    color: var(--ipw-color-primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .s-stats .stat .l {
+    font-family: var(--ipw-font-body);
+    font-weight: 500; font-size: 15px;
+    color: var(--ipw-color-text); margin-top: 6px;
+  }
+  .s-stats .stat .s {
+    font-family: var(--ipw-font-body);
+    font-weight: 400; font-size: 13px;
+    color: var(--ipw-color-lede); line-height: 1.5; max-width: 26ch;
+  }
+  .s-stats .caption {
+    font-family: var(--ipw-font-mono);
+    font-size: 11px; color: var(--ipw-color-muted);
+    letter-spacing: 0.4px; font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- QUOTE ---------- */
+  .s-quote .slide-inner { grid-template-columns: 1fr; max-width: 1020px; gap: 32px; align-content: center; }
+  .s-quote blockquote {
+    border-left: 2px solid var(--ipw-color-primary);
+    padding: 6px 0 6px 28px;
+    font-family: var(--ipw-font-display);
+    font-weight: 500; font-size: 36px; line-height: 1.4;
+    color: var(--ipw-color-text);
+    letter-spacing: 0.05em; max-width: 34ch;
+  }
+  .s-quote .author { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+  .s-quote .author .glyph {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--ipw-color-primary); color: var(--ipw-color-surface);
+    font-family: var(--ipw-font-display); font-weight: 500; font-size: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .s-quote .author p {
+    font-family: var(--ipw-font-body);
+    font-weight: 500; font-size: 14px; color: var(--ipw-color-text);
+  }
+  .s-quote .author p span { display: block; color: var(--ipw-color-lede); font-weight: 400; margin-top: 2px; }
+
+  /* ---------- CTA ---------- */
+  .s-cta .slide-inner { grid-template-columns: 1fr; max-width: 980px; gap: 24px; align-content: center; }
+  .s-cta .eyebrow {
+    font-family: var(--ipw-font-sans);
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--ipw-color-primary);
+  }
+  .s-cta h2 {
+    font-family: var(--ipw-font-display);
+    font-weight: 500; font-size: 68px;
+    line-height: 1.08; letter-spacing: -0.5px;
+    color: var(--ipw-color-text);
+  }
+  .s-cta .body {
+    font-family: var(--ipw-font-body);
+    font-weight: 400; font-size: 17px;
+    color: var(--ipw-color-body);
+    max-width: 52ch; line-height: 1.6;
+  }
+  .s-cta .actions { display: inline-flex; gap: 12px; margin-top: 12px; align-items: center; flex-wrap: wrap; }
+  .s-cta .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--ipw-font-sans);
+    font-size: 13px; font-weight: 500; letter-spacing: 0.4px;
+    padding: 10px 16px; border-radius: 8px;
+  }
+  .s-cta .btn-primary { background: var(--ipw-color-primary); color: var(--ipw-color-surface); box-shadow: 0 0 0 1px var(--ipw-color-primary); }
+  .s-cta .btn-ghost { background: transparent; color: var(--ipw-color-primary); box-shadow: 0 0 0 1px var(--ipw-color-primary); }
+
+  /* ---------- END (dark) ---------- */
+  .s-end .slide-inner { grid-template-columns: 1fr; align-content: end; padding-bottom: 24px; gap: 18px; }
+  .s-end .word {
+    font-family: var(--ipw-font-display);
+    font-weight: 500; font-size: 180px;
+    line-height: 1; letter-spacing: -1.2px;
+    color: var(--ipw-color-surface);
+    white-space: nowrap; overflow: hidden;
+  }
+  .s-end .word .hl { color: var(--ipw-color-accent); }
+  .s-end .colophon {
+    border-top: 1px solid rgba(250, 249, 245, 0.22);
+    padding-top: 22px;
+    font-family: var(--ipw-font-sans);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    color: rgba(250, 249, 245, 0.65);
+    font-variant-numeric: tabular-nums;
+  }
+</style><link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 · COVER (dark) -->
+  <section class="slide s-cover dark" id="cover">
+    <div class="slide-chrome">
+      <span class="left"><span class="mark">特</span><b data-ipw-text="cover.chromeBrand">拾光研究所</b><span data-ipw-text="cover.chromeIssue"> · 年度特辑 · 第 01 期</span></span>
+      <span data-ipw-text="cover.chromeRight">品牌故事 · 年度特辑</span>
+    </div>
+    <div class="slide-inner">
+      <span class="eyebrow" data-ipw-text="cover.eyebrow">品牌年度特辑 · Nº 01</span>
+      <h1 data-ipw-text="cover.title">把时间，<br />做成一份<span class="hl">杂志</span>。</h1>
+      <p class="tagline" data-ipw-text="cover.tagline">一个生活方式品牌的十年：从一间街角小店，到一本被反复翻阅的生活刊物。</p>
+      <div class="meta">
+        <span data-ipw-text="cover.metaPlace">上海 · 创刊于 2016</span>
+        <span class="rule"></span>
+        <span data-ipw-text="cover.metaYear">2026 年度刊</span>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span data-ipw-text="cover.foot">上海 · 2026</span>
+      <span class="counter">01 / 07</span>
+    </div>
+  </section>
+
+  <!-- 2 · CHAPTER (dark) -->
+  <section class="slide s-chapter dark" id="chapter">
+    <div class="slide-chrome">
+      <span class="left"><span class="mark">特</span><b data-ipw-text="ch.chromeBrand">拾光研究所</b><span data-ipw-text="ch.chromeIssue"> · 年度特辑 · 第 01 期</span></span>
+      <span data-ipw-text="ch.chromeRight">品牌故事 · 年度特辑</span>
+    </div>
+    <div class="slide-inner">
+      <p class="num" data-ipw-text="ch.num">01</p>
+      <h2 data-ipw-text="ch.title">为什么一个品牌，要做一本杂志？</h2>
+      <p class="lede" data-ipw-text="ch.lede">因为产品会被用完，而故事会被记住。杂志是品牌与时间握手的方式。</p>
+    </div>
+    <div class="slide-foot">
+      <span data-ipw-text="ch.foot">上海 · 2026</span>
+      <span class="counter">02 / 07</span>
+    </div>
+  </section>
+
+  <!-- 3 · CONTENT -->
+  <section class="slide s-content" id="story">
+    <div class="slide-chrome">
+      <span class="left"><span class="mark">特</span><b data-ipw-text="st.chromeBrand">拾光研究所</b><span data-ipw-text="st.chromeIssue"> · 年度特辑 · 第 01 期</span></span>
+      <span data-ipw-text="st.chromeRight">品牌故事 · 年度特辑</span>
+    </div>
+    <div class="slide-inner">
+      <div class="head">
+        <p class="num" data-ipw-text="st.num">01.1</p>
+        <h2 data-ipw-text="st.title">这一年，<br />发生了什么。</h2>
+        <p class="lede" data-ipw-text="st.lede">编辑室的年度笔记：三件值得被记录的事。</p>
+      </div>
+      <div class="body">
+        <p data-ipw-text="st.p1">2026 年，我们把门店从 3 个城市开到 12 个城市，但最重要的事发生在纸张上——<strong>品牌年刊《拾光》创刊号印刷 20,000 册，三周内被索取一空</strong>。读者说，这是他们第一次把一个品牌「读完」。</p>
+        <ul class="dash">
+          <li data-ipw-text="st.li1">春季：发起「城市慢走」计划，12 场线下共读，场均 86 人。</li>
+          <li data-ipw-text="st.li2">夏季：年刊创刊号上市，收录 14 位普通读者的故事。</li>
+          <li data-ipw-text="st.li3">秋冬：与 3 家独立书店共建「拾光角」，杂志进入长销渠道。</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag" data-ipw-text="st.tag1">年度特辑</span>
+          <span class="tag" data-ipw-text="st.tag2">读者共创</span>
+          <span class="tag" data-ipw-text="st.tag3">线下场景</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span data-ipw-text="st.foot">上海 · 2026</span>
+      <span class="counter">03 / 07</span>
+    </div>
+  </section>
+
+  <!-- 4 · STATS -->
+  <section class="slide s-stats" id="numbers">
+    <div class="slide-chrome">
+      <span class="left"><span class="mark">特</span><b data-ipw-text="nb.chromeBrand">拾光研究所</b><span data-ipw-text="nb.chromeIssue"> · 年度特辑 · 第 01 期</span></span>
+      <span data-ipw-text="nb.chromeRight">品牌故事 · 年度特辑</span>
+    </div>
+    <div class="slide-inner">
+      <div class="head">
+        <p class="num" data-ipw-text="nb.num">01.2</p>
+        <h2 data-ipw-text="nb.title">用数字，<br />为这一年落款。</h2>
+      </div>
+      <div class="grid">
+        <div class="stat">
+          <div class="v" data-ipw-text="nb.v1">20,000</div>
+          <div class="l" data-ipw-text="nb.l1">年刊印刷量（册）</div>
+          <div class="s" data-ipw-text="nb.s1">创刊号三周内索取一空，加印一次。</div>
+        </div>
+        <div class="stat">
+          <div class="v" data-ipw-text="nb.v2">12</div>
+          <div class="l" data-ipw-text="nb.l2">覆盖城市</div>
+          <div class="s" data-ipw-text="nb.s2">从 3 城到 12 城，门店即发行网点。</div>
+        </div>
+        <div class="stat">
+          <div class="v" data-ipw-text="nb.v3">86%</div>
+          <div class="l" data-ipw-text="nb.l3">读完率</div>
+          <div class="s" data-ipw-text="nb.s3">读者调研中「完整读完」的比例。</div>
+        </div>
+        <div class="stat">
+          <div class="v" data-ipw-text="nb.v4">14</div>
+          <div class="l" data-ipw-text="nb.l4">读者故事</div>
+          <div class="s" data-ipw-text="nb.s4">创刊号收录的普通人叙事。</div>
+        </div>
+      </div>
+      <p class="caption" data-ipw-text="nb.caption">数据截至 2026 年 12 月 · 来自品牌年度读者调研（n = 3,214）</p>
+    </div>
+    <div class="slide-foot">
+      <span data-ipw-text="nb.foot">上海 · 2026</span>
+      <span class="counter">04 / 07</span>
+    </div>
+  </section>
+
+  <!-- 5 · QUOTE -->
+  <section class="slide s-quote" id="quote">
+    <div class="slide-chrome">
+      <span class="left"><span class="mark">特</span><b data-ipw-text="qt.chromeBrand">拾光研究所</b><span data-ipw-text="qt.chromeIssue"> · 年度特辑 · 第 01 期</span></span>
+      <span data-ipw-text="qt.chromeRight">品牌故事 · 年度特辑</span>
+    </div>
+    <div class="slide-inner">
+      <blockquote data-ipw-text="qt.quote">「我原以为品牌做杂志是营销，读完才发现，是他们在认真地陪读者过日子。」</blockquote>
+      <div class="author">
+        <span class="glyph">沈</span>
+        <p>
+          <span data-ipw-text="qt.authorName" style="display:inline; color:inherit; font-weight:inherit;">沈知遥</span>
+          <span data-ipw-text="qt.authorTitle">独立书店主理人 · 杭州</span>
+        </p>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span data-ipw-text="qt.foot">上海 · 2026</span>
+      <span class="counter">05 / 07</span>
+    </div>
+  </section>
+
+  <!-- 6 · CTA -->
+  <section class="slide s-cta" id="cta">
+    <div class="slide-chrome">
+      <span class="left"><span class="mark">特</span><b data-ipw-text="cta.chromeBrand">拾光研究所</b><span data-ipw-text="cta.chromeIssue"> · 年度特辑 · 第 01 期</span></span>
+      <span data-ipw-text="cta.chromeRight">品牌故事 · 年度特辑</span>
+    </div>
+    <div class="slide-inner">
+      <span class="eyebrow" data-ipw-text="cta.eyebrow">第二期征稿 · Nº 02</span>
+      <h2 data-ipw-text="cta.title">把你的故事，<br />写进下一期。</h2>
+      <p class="body" data-ipw-text="cta.body">2027 年度特辑以「附近」为题，向所有读者征稿：一条你常走的街、一家你常去的店、一段你想留住的时间。来稿请洽品牌编辑部。</p>
+      <div class="actions">
+        <span class="btn btn-primary" data-ipw-text="cta.btn1">投稿通道</span>
+        <span class="btn btn-ghost" data-ipw-text="cta.btn2">订阅年刊</span>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span data-ipw-text="cta.foot">上海 · 2026</span>
+      <span class="counter">06 / 07</span>
+    </div>
+  </section>
+
+  <!-- 7 · END (dark) -->
+  <section class="slide s-end dark" id="end">
+    <div class="slide-chrome">
+      <span class="left"><span class="mark">特</span><b data-ipw-text="end.chromeBrand">拾光研究所</b><span data-ipw-text="end.chromeIssue"> · 年度特辑 · 第 01 期</span></span>
+      <span data-ipw-text="end.chromeRight">品牌故事 · 年度特辑</span>
+    </div>
+    <div class="slide-inner">
+      <div class="word" data-ipw-text="end.word">拾光<span class="hl">。</span></div>
+      <p class="colophon" data-ipw-text="end.colophon">拾光研究所 · 2026 年度特辑 · 第 01 期 · 编辑部敬上</p>
+    </div>
+    <div class="slide-foot">
+      <span data-ipw-text="end.foot">上海 · 2026</span>
+      <span class="counter">07 / 07</span>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

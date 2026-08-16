@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.html-anything-zh.deck-pitch",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "pitch",
+  "style": "bold",
+  "tags": [
+    "pitch",
+    "fundraising",
+    "vc",
+    "startup",
+    "gradient",
+    "html-anything"
+  ],
+  "surface": "design",
+  "title": "融资路演 Pitch",
+  "description": "YC/VC 风格融资路演模版：白底 + 蓝紫渐变 hero、超大字级标题、渐变数据指标、traction 柱状图、渐变 Ask 卡片与英文 eyebrow 装饰字。示例文案为中文 AI 产品 A 轮融资场景，适合创业融资、产品立项路演。移植自 nexu-io/html-anything 的 deck-pitch skill。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "nexu-io/html-anything",
+    "repository": "https://github.com/nexu-io/html-anything",
+    "license": "Apache-2.0",
+    "attribution": "Ported from the html-anything skill 'deck-pitch' (investor pitch deck) to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (blue)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (violet)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (magenta)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-subtle",
+        "label": "Subtle text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-gradient",
+        "label": "Brand gradient",
+        "type": "text",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-gradient-soft",
+        "label": "Soft gradient bg",
+        "type": "text",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-serif",
+        "label": "Serif accent font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-mono",
+        "label": "Mono font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案替换为真实融资内容，数据页数字必须与真实经营口径一致。",
+    "渐变三色（蓝→紫→品红）是风格签名，改色时三色一起改，不要只改其中一两个。",
+    "英文 eyebrow（PROBLEM / SOLUTION / TRACTION 等）是装饰性排版元素，保持大写短词。",
+    "每页只讲一件事：一个大标题 + 一组证据，不要再叠加第二组图表。",
+    "Ask 页只保留融资金额、周期、目标三件事，其余细节放到附录。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

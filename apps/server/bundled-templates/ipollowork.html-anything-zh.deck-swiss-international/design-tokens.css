@@ -1,0 +1,20 @@
+:root {
+  --ipw-color-primary: #002FA7;
+  --ipw-color-secondary: #0A0A0A;
+  --ipw-color-accent: #002FA7;
+  --ipw-color-bg: #FAFAF8;
+  --ipw-color-surface: #FFFFFF;
+  --ipw-color-text: #0A0A0A;
+  --ipw-color-muted: #6E6E68;
+  --ipw-color-border: #0A0A0A;
+  --ipw-color-on-primary: #FAFAF8;
+  --ipw-font-display: "Inter Tight", "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --ipw-font-body: "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --ipw-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+  --ipw-body-line-height: 1.55;
+  --ipw-rule-w: 1px;
+  --ipw-card-bg: #FFFFFF;
+  --ipw-card-border: #0A0A0A;
+  --ipw-card-radius: 0;
+  --ipw-card-shadow: none;
+}

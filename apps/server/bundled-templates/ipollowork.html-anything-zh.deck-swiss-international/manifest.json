@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.html-anything-zh.deck-swiss-international",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "design",
+  "style": "swiss",
+  "tags": [
+    "swiss",
+    "grid",
+    "international",
+    "ikb",
+    "editorial",
+    "html-anything"
+  ],
+  "surface": "design",
+  "title": "瑞士国际主义网格",
+  "description": "瑞士国际主义幻灯片模版：Klein Blue #002FA7 唯一强调色 + 暖纸底 + 16 栏严格网格，全屏蓝封面/结尾与内容页交替，JetBrains Mono 元数据 chrome，极端字号反差，直角无渐变无阴影。适合设计系统宣讲、品牌规范与数据汇报。移植自 nexu-io/html-anything 的 deck-swiss-international skill。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "nexu-io/html-anything",
+    "repository": "https://github.com/nexu-io/html-anything",
+    "license": "Apache-2.0",
+    "attribution": "Ported from the html-anything 'deck-swiss-international' skill to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (Klein Blue)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (ink)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (Klein Blue)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background (warm paper)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Hairline border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-color-on-primary",
+        "label": "Text on blue",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-mono",
+        "label": "Mono font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-body-line-height",
+        "label": "Body line height",
+        "type": "number",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-rule-w",
+        "label": "Hairline rule width",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "全篇只有一种强调色 Klein Blue #002FA7：蓝色铺底页、关键词、图表柱、编号标签共用同一色值，不要新增第二种彩色。",
+    "禁止圆角、渐变、阴影与模糊：卡片 radius 保持 0、阴影保持 none，分隔只用 1px 发丝线。",
+    "所有元素贴 16 栏网格左对齐；正文禁止居中或右对齐，元数据（编号/日期/坐标）一律用等宽字体。",
+    "保持极端字号反差：封面标题 100px+、页标题 50-64px、正文 13-15px、标签 11-12px 全大写加字距。",
+    "替换示例文案时保留每页的 mono chrome 结构（顶部 topic/页码/日期，底部发丝线元数据行），数字必须来自真实数据。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

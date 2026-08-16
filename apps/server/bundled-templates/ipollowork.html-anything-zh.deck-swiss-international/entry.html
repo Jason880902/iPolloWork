@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>瑞士国际主义网格 · 品牌设计系统宣讲</title>
+<link rel="stylesheet" href="assets/fonts.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8E7E2;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: var(--ipw-body-line-height);
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 24px rgba(10, 10, 10, 0.12);
+  }
+  .slide.ikb { background: var(--ipw-color-primary); color: var(--ipw-color-on-primary); }
+
+  .pad { position: absolute; inset: 48px 56px; display: flex; flex-direction: column; justify-content: space-between; }
+
+  /* mono chrome: metadata header / footer on every page */
+  .chrome {
+    display: flex; align-items: baseline; justify-content: space-between;
+    font-family: var(--ipw-font-mono); font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .chrome.head { opacity: 0.8; }
+  .chrome.foot { border-top: var(--ipw-rule-w) solid currentColor; padding-top: 12px; opacity: 0.7; }
+
+  .label {
+    font-family: var(--ipw-font-mono); font-size: 12px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .label.blue { color: var(--ipw-color-primary); }
+  .ikb .label { opacity: 0.8; }
+
+  /* ASCII breathing dot matrix */
+  .ascii {
+    font-family: var(--ipw-font-mono); font-size: 11px; line-height: 1;
+    letter-spacing: 6px; opacity: 0.25; white-space: pre;
+  }
+
+  .hairline-t { border-top: var(--ipw-rule-w) solid currentColor; }
+
+  /* S01 cover */
+  .cover h1 {
+    margin-top: 12px;
+    font-family: var(--ipw-font-display); font-weight: 900;
+    font-size: 128px; line-height: 0.98; letter-spacing: -0.02em;
+  }
+  .cover .sub { margin-top: 24px; max-width: 660px; font-size: 15px; line-height: 1.6; opacity: 0.9; }
+  .cover .ascii { position: absolute; top: 84px; right: 56px; }
+
+  /* S02 contents */
+  .toc-wrap h2, .page-head h2 {
+    margin-top: 10px;
+    font-family: var(--ipw-font-display); font-weight: 800;
+    font-size: 64px; line-height: 1.02; letter-spacing: -0.02em;
+  }
+  .page-head h2 .b { color: var(--ipw-color-primary); }
+  .toc { margin-top: 8px; }
+  .trow {
+    display: grid; grid-template-columns: 72px 300px 1fr 48px;
+    align-items: baseline; gap: 24px;
+    padding: 20px 0;
+    border-top: var(--ipw-rule-w) solid var(--ipw-color-border);
+  }
+  .trow:last-child { border-bottom: var(--ipw-rule-w) solid var(--ipw-color-border); }
+  .trow .no { font-family: var(--ipw-font-mono); font-size: 13px; color: var(--ipw-color-muted); }
+  .trow .ti { font-family: var(--ipw-font-display); font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+  .trow .de { font-size: 13px; color: var(--ipw-color-muted); }
+  .trow .arr { font-family: var(--ipw-font-mono); font-size: 14px; color: var(--ipw-color-primary); text-align: right; }
+
+  /* S03 grid demo */
+  .grid-demo { position: relative; margin-top: 40px; }
+  .g16 { display: grid; grid-template-columns: repeat(16, 1fr); gap: 8px; height: 168px; }
+  .g16 .gc { background: color-mix(in srgb, var(--ipw-color-primary) 12%, transparent); }
+  .goverlay { position: absolute; inset: 0; }
+  .gspan {
+    grid-column: 5 / 13;
+    background: var(--ipw-color-primary); color: var(--ipw-color-on-primary);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--ipw-font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .grid-meta {
+    margin-top: 10px; display: flex; justify-content: space-between;
+    font-family: var(--ipw-font-mono); font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ipw-color-muted);
+  }
+  .cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 34px; }
+  .cols3 h3 {
+    font-family: var(--ipw-font-mono); font-size: 12px; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--ipw-color-primary);
+    margin-bottom: 10px; padding-bottom: 8px;
+    border-bottom: var(--ipw-rule-w) solid var(--ipw-color-border);
+  }
+  .cols3 p { font-size: 13px; line-height: 1.7; }
+
+  /* S04 color spec */
+  .swatches { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 36px; }
+  .swatch {
+    background: var(--ipw-card-bg);
+    border: var(--ipw-rule-w) solid var(--ipw-card-border);
+    border-radius: var(--ipw-card-radius);
+    box-shadow: var(--ipw-card-shadow);
+  }
+  .swatch .chip { height: 168px; }
+  .swatch .chip.ikb { background: var(--ipw-color-primary); }
+  .swatch .chip.paper { background: var(--ipw-color-bg); border-bottom: var(--ipw-rule-w) solid var(--ipw-card-border); }
+  .swatch .chip.ink { background: var(--ipw-color-secondary); }
+  .swatch .spec { padding: 16px 18px 18px; }
+  .swatch .hex { font-family: var(--ipw-font-mono); font-size: 18px; font-weight: 700; letter-spacing: 0.04em; }
+  .swatch .name { margin-top: 4px; font-size: 14px; font-weight: 600; }
+  .swatch .use { margin-top: 6px; font-size: 12px; color: var(--ipw-color-muted); line-height: 1.6; }
+  .inkbar {
+    margin-top: 28px; padding: 16px 24px;
+    background: var(--ipw-color-secondary); color: var(--ipw-color-on-primary);
+    font-family: var(--ipw-font-mono); font-size: 12px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .inkbar .tag { color: var(--ipw-color-primary); background: var(--ipw-color-on-primary); padding: 2px 8px; font-weight: 700; }
+
+  /* S06 KPI tower */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; align-items: end; margin-top: 24px; }
+  .kpi { text-align: center; }
+  .kpi .icon { height: 32px; margin-bottom: 12px; display: flex; align-items: flex-end; justify-content: center; }
+  .kpi .bar { width: 60px; margin: 0 auto; background: var(--ipw-color-primary); }
+  .kpi .num { margin-top: 12px; font-family: var(--ipw-font-mono); font-size: 32px; font-weight: 700; color: var(--ipw-color-primary); }
+  .kpi .lab {
+    margin-top: 4px; padding-top: 6px;
+    border-top: var(--ipw-rule-w) solid var(--ipw-color-border);
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ipw-color-muted);
+  }
+
+  /* S09 ending */
+  .ending h2 {
+    margin-top: 12px;
+    font-family: var(--ipw-font-display); font-weight: 800;
+    font-size: 60px; line-height: 1.12; letter-spacing: -0.02em;
+    max-width: 900px;
+  }
+  .ending .contact { margin-top: 28px; font-size: 14px; opacity: 0.85; }
+  .ending .ascii { position: absolute; bottom: 96px; right: 56px; }
+</style><link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover · full IKB -->
+  <section class="slide ikb cover" id="cover">
+    <div class="pad">
+      <header class="chrome head">
+        <span data-ipw-text="cover.topic">BRAND DESIGN SYSTEM — 2026</span>
+        <span data-ipw-text="cover.no">S01 / 06</span>
+        <span data-ipw-text="cover.date">2026.08.16</span>
+      </header>
+      <pre class="ascii">▒▓█▓▒░░▒▓█▓▒
+▒▒▓█▓▒░░▒▓█▓▒
+░▒▓█▓▒░░▒▓█▓▒
+░░▒▓█▓▒░░▒▓█▓
+▒░░▒▓█▓▒░░▒▓
+▒▒░░▒▓█▓▒░░▒</pre>
+      <div>
+        <div class="label" data-ipw-text="cover.label">№01 · BRAND GUIDELINE</div>
+        <h1 data-ipw-text="cover.title">网格即秩序</h1>
+        <p class="sub" data-ipw-text="cover.sub">品牌设计系统规范宣讲：一套 16 栏网格、一种 Klein Blue、两款字体 —— 让每一页产出都长成同一个品牌。</p>
+      </div>
+      <footer class="chrome foot">
+        <span data-ipw-text="cover.f1">DESIGN OPS · 设计系统委员会</span>
+        <span data-ipw-text="cover.f2">BEIJING · 39.9042° N · 116.4074° E</span>
+        <span data-ipw-text="cover.f3">VOL. 01</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- 2 Contents -->
+  <section class="slide" id="toc">
+    <div class="pad">
+      <header class="chrome head">
+        <span data-ipw-text="toc.topic">CONTENTS — 宣讲议程</span>
+        <span data-ipw-text="toc.no">S02 / 06</span>
+        <span data-ipw-text="toc.date">2026.08.16</span>
+      </header>
+      <div class="toc-wrap">
+        <div class="label blue" data-ipw-text="toc.label">№02 · AGENDA</div>
+        <h2 data-ipw-text="toc.title">四件事，讲完收工</h2>
+        <div class="toc">
+          <div class="trow">
+            <span class="no">01</span>
+            <span class="ti" data-ipw-text="toc.t1">网格系统</span>
+            <span class="de" data-ipw-text="toc.d1">16 栏网格与边距规则 —— 一切对齐的骨架</span>
+            <span class="arr">→</span>
+          </div>
+          <div class="trow">
+            <span class="no">02</span>
+            <span class="ti" data-ipw-text="toc.t2">色彩规范</span>
+            <span class="de" data-ipw-text="toc.d2">一种蓝用到极致 —— 用色纪律与禁令</span>
+            <span class="arr">→</span>
+          </div>
+          <div class="trow">
+            <span class="no">03</span>
+            <span class="ti" data-ipw-text="toc.t3">字体与排版</span>
+            <span class="de" data-ipw-text="toc.d3">字重即层级 —— 极端字号反差的使用规则</span>
+            <span class="arr">→</span>
+          </div>
+          <div class="trow">
+            <span class="no">04</span>
+            <span class="ti" data-ipw-text="toc.t4">落地指标</span>
+            <span class="de" data-ipw-text="toc.d4">一致性可以被度量 —— 2026 四个目标数</span>
+            <span class="arr">→</span>
+          </div>
+        </div>
+      </div>
+      <footer class="chrome foot">
+        <span data-ipw-text="toc.f1">BRAND GUIDELINE · VOL. 01</span>
+        <span data-ipw-text="toc.f2">DESIGN OPS</span>
+        <span data-ipw-text="toc.f3">№02 / 06</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- 3 Grid system -->
+  <section class="slide" id="grid">
+    <div class="pad">
+      <header class="chrome head">
+        <span data-ipw-text="grid.topic">GRID SYSTEM — 16 COLUMNS</span>
+        <span data-ipw-text="grid.no">S03 / 06</span>
+        <span data-ipw-text="grid.date">SECTION 01</span>
+      </header>
+      <div>
+        <div class="page-head">
+          <div class="label blue" data-ipw-text="grid.label">№03 · GRID</div>
+          <h2 data-ipw-text="grid.title"><span class="b">16 栏网格</span> —— 先对齐，再谈创意</h2>
+        </div>
+        <div class="grid-demo">
+          <div class="g16">
+            <div class="gc"></div><div class="gc"></div><div class="gc"></div><div class="gc"></div>
+            <div class="gc"></div><div class="gc"></div><div class="gc"></div><div class="gc"></div>
+            <div class="gc"></div><div class="gc"></div><div class="gc"></div><div class="gc"></div>
+            <div class="gc"></div><div class="gc"></div><div class="gc"></div><div class="gc"></div>
+          </div>
+          <div class="g16 goverlay">
+            <div class="gspan" data-ipw-text="grid.span">主内容区 · 8 栏</div>
+          </div>
+        </div>
+        <div class="grid-meta">
+          <span data-ipw-text="grid.m1">← MARGIN 56PX</span>
+          <span data-ipw-text="grid.m2">16 COLUMNS · GUTTER 8PX</span>
+          <span data-ipw-text="grid.m3">MARGIN 56PX →</span>
+        </div>
+        <div class="cols3">
+          <div>
+            <h3 data-ipw-text="grid.c1h">栏 / COLUMN</h3>
+            <p data-ipw-text="grid.c1p">版面固定 16 栏等宽。内容区块只能整栏跨越：4 栏放注脚，8 栏放主内容，12 栏以上才允许放主标题。</p>
+          </div>
+          <div>
+            <h3 data-ipw-text="grid.c2h">边距 / MARGIN</h3>
+            <p data-ipw-text="grid.c2p">页边距上下 48px、左右 56px，任何元素不得出血（封面与章节页的全色铺底除外）。边距内只允许出现元数据行。</p>
+          </div>
+          <div>
+            <h3 data-ipw-text="grid.c3h">对齐 / ALIGNMENT</h3>
+            <p data-ipw-text="grid.c3p">所有文本左对齐贴栏线，禁止居中与右对齐正文。数字、编号、坐标等元数据一律使用等宽字体，保证纵向成列。</p>
+          </div>
+        </div>
+      </div>
+      <footer class="chrome foot">
+        <span data-ipw-text="grid.f1">SOURCE — BRAND GUIDELINE / GRID</span>
+        <span data-ipw-text="grid.f2">DESIGN OPS</span>
+        <span data-ipw-text="grid.f3">№03 / 06</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- 4 Color spec -->
+  <section class="slide" id="color">
+    <div class="pad">
+      <header class="chrome head">
+        <span data-ipw-text="color.topic">COLOR — KLEIN BLUE IKB</span>
+        <span data-ipw-text="color.no">S04 / 06</span>
+        <span data-ipw-text="color.date">SECTION 02</span>
+      </header>
+      <div>
+        <div class="page-head">
+          <div class="label blue" data-ipw-text="color.label">№04 · COLOR</div>
+          <h2 data-ipw-text="color.title">一种蓝，用到极致 —— <span class="b">#002FA7</span></h2>
+        </div>
+        <div class="swatches">
+          <div class="swatch">
+            <div class="chip ikb"></div>
+            <div class="spec">
+              <div class="hex" data-ipw-text="color.h1">#002FA7</div>
+              <div class="name" data-ipw-text="color.n1">Klein Blue · 强调色</div>
+              <div class="use" data-ipw-text="color.u1">封面铺底 / 关键词 / 图表与数据 / 编号标签。全篇唯一彩色。</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="chip paper"></div>
+            <div class="spec">
+              <div class="hex" data-ipw-text="color.h2">#FAFAF8</div>
+              <div class="name" data-ipw-text="color.n2">Warm Paper · 底色</div>
+              <div class="use" data-ipw-text="color.u2">内容页铺底。暖白降低长时间阅读疲劳，禁止替换为纯白或冷灰。</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="chip ink"></div>
+            <div class="spec">
+              <div class="hex" data-ipw-text="color.h3">#0A0A0A</div>
+              <div class="name" data-ipw-text="color.n3">Ink · 墨色</div>
+              <div class="use" data-ipw-text="color.u3">正文 / 标题 / 发丝线 / 禁令横幅。不用纯黑 #000 以外的灰阶替代。</div>
+            </div>
+          </div>
+        </div>
+        <div class="inkbar">
+          <span data-ipw-text="color.guard">禁止渐变 · 禁止圆角 · 禁止阴影 · 禁止第二种强调色</span>
+          <span class="tag" data-ipw-text="color.guardtag">GUARD</span>
+        </div>
+      </div>
+      <footer class="chrome foot">
+        <span data-ipw-text="color.f1">SOURCE — BRAND GUIDELINE / COLOR</span>
+        <span data-ipw-text="color.f2">DESIGN OPS</span>
+        <span data-ipw-text="color.f3">№04 / 06</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- 5 KPI tower -->
+  <section class="slide" id="kpi">
+    <div class="pad">
+      <header class="chrome head">
+        <span data-ipw-text="kpi.topic">METRICS — 2026 TARGETS</span>
+        <span data-ipw-text="kpi.no">S05 / 06</span>
+        <span data-ipw-text="kpi.date">SECTION 04</span>
+      </header>
+      <div>
+        <div class="label blue" data-ipw-text="kpi.label">№05 · ADOPTION METRICS</div>
+        <h2 style="margin-top:10px; font-family:var(--ipw-font-display); font-weight:800; font-size:52px; line-height:1.04; letter-spacing:-0.02em;" data-ipw-text="kpi.title">四根柱子，一个目标 ——<br />做<span style="color:var(--ipw-color-primary)">最一致</span>的品牌产出</h2>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="#002FA7"><rect x="4" y="4" width="4" height="16"/><rect x="10" y="8" width="4" height="12"/><rect x="16" y="2" width="4" height="18"/></svg>
+          </div>
+          <div class="bar" style="height:60px"></div>
+          <div class="num" data-ipw-text="kpi.n1">48</div>
+          <div class="lab" data-ipw-text="kpi.l1">组件 · 现在</div>
+        </div>
+        <div class="kpi">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="#002FA7"><circle cx="12" cy="12" r="9" fill="none" stroke="#002FA7" stroke-width="2"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="bar" style="height:140px"></div>
+          <div class="num" data-ipw-text="kpi.n2">120</div>
+          <div class="lab" data-ipw-text="kpi.l2">组件 · Q4 目标</div>
+        </div>
+        <div class="kpi">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="#002FA7"><path d="M12 2l3 7h7l-5.5 4.5 2 7L12 16l-6.5 4.5 2-7L2 9h7z"/></svg>
+          </div>
+          <div class="bar" style="height:230px"></div>
+          <div class="num" data-ipw-text="kpi.n3">85%</div>
+          <div class="lab" data-ipw-text="kpi.l3">产品覆盖率 · 目标</div>
+        </div>
+        <div class="kpi">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="#002FA7"><path d="M5 3l10 9-10 9z"/></svg>
+          </div>
+          <div class="bar" style="height:280px"></div>
+          <div class="num" data-ipw-text="kpi.n4">92</div>
+          <div class="lab" data-ipw-text="kpi.l4">一致性评分 · 目标</div>
+        </div>
+      </div>
+      <footer class="chrome foot">
+        <span data-ipw-text="kpi.f1">SOURCE — DESIGN OPS AUDIT / 2026-08</span>
+        <span data-ipw-text="kpi.f2">DESIGN OPS</span>
+        <span data-ipw-text="kpi.f3">№05 / 06</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- 6 Ending · full IKB -->
+  <section class="slide ikb ending" id="ending">
+    <div class="pad">
+      <header class="chrome head">
+        <span data-ipw-text="end.topic">CLOSING MANIFESTO</span>
+        <span data-ipw-text="end.no">S06 / 06</span>
+        <span data-ipw-text="end.date">2026.08.16</span>
+      </header>
+      <pre class="ascii">▒▓█▓▒░░▒▓█▓▒
+▒▒▓█▓▒░░▒▓█▓▒
+░▒▓█▓▒░░▒▓█▓▒
+░░▒▓█▓▒░░▒▓█▓
+▒░░▒▓█▓▒░░▒▓
+▒▒░░▒▓█▓▒░░▒</pre>
+      <div>
+        <div class="label" data-ipw-text="end.label">№06 · MANIFESTO</div>
+        <h2 data-ipw-text="end.title">规范不是限制，<br />是让品牌被信任的基础设施。</h2>
+        <div class="contact" data-ipw-text="end.contact">设计系统委员会 · 宣讲后一周内收集反馈并答疑 · 规范全文见设计知识库</div>
+      </div>
+      <footer class="chrome foot">
+        <span data-ipw-text="end.f1">BRAND GUIDELINE · VOL. 01</span>
+        <span data-ipw-text="end.f2">DESIGN OPS · 设计系统委员会</span>
+        <span data-ipw-text="end.f3">№06 / 06</span>
+      </footer>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

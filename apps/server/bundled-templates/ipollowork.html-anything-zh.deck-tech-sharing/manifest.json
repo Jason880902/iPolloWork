@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.html-anything-zh.deck-tech-sharing",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "technology",
+  "style": "technical",
+  "tags": [
+    "tech talk",
+    "engineering",
+    "dark",
+    "code",
+    "terminal",
+    "html-anything"
+  ],
+  "surface": "design",
+  "title": "技术分享 Tech Talk",
+  "description": "GitHub-dark 技术分享模版：深色底 + 径向辉光、JetBrains Mono kicker（'> ' 前缀）、带红黄绿三色灯的终端代码块、mono 虚线议程行、绿→蓝→紫渐变标题字。示例文案为中文 AI 工程实践分享（评测管线 + 推理调度 + 手写评测器），适合工程团队内部分享、技术大会 talk。移植自 nexu-io/html-anything 的 deck-tech-sharing skill。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "nexu-io/html-anything",
+    "repository": "https://github.com/nexu-io/html-anything",
+    "license": "Apache-2.0",
+    "attribution": "Ported from the html-anything skill 'deck-tech-sharing' (GitHub-dark tech talk deck) to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (green)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (blue)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (purple)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent-2",
+        "label": "Accent 2 (coral)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface-2",
+        "label": "Surface 2 (chips)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-faint",
+        "label": "Faint text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-color-terminal-bg",
+        "label": "Terminal background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-color-code-str",
+        "label": "Code string color",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-gradient",
+        "label": "Brand gradient",
+        "type": "text",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-mono",
+        "label": "Mono font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案替换为真实分享内容，代码块换成真实可运行的示例（20-40 行以内）。",
+    "深色配色是风格签名：背景保持深色，primary/secondary/accent 三色一起改，不要只改一个。",
+    "kicker、tag、页脚用 mono 字体并保持 '> ' 前缀和 # 话题标签的装饰习惯。",
+    "终端代码块保留三色灯标题栏，语法高亮色不要改派用途（coral=关键字，purple=函数，浅蓝=字符串）。",
+    "每页只讲一个观点：标题是结论句，正文用卡片或代码作证，不要堆叠两组以上内容。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.html-anything-zh.deck-magazine-web",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "editorial",
+  "style": "editorial",
+  "tags": [
+    "magazine",
+    "editorial",
+    "serif",
+    "brand-story",
+    "annual-feature",
+    "html-anything"
+  ],
+  "surface": "design",
+  "title": "杂志特辑 Magazine",
+  "description": "杂志编辑风幻灯片模版：暖纸底色 × 墨蓝封面/章节页，衬线 display 单字重、无斜体，配刊号 chrome 条、等宽字体页脚、dash 列表、大数字统计与金句页。适合品牌故事、年度特辑、刊物式发布。移植自 nexu-io/html-anything 的 deck-magazine-web skill。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "nexu-io/html-anything",
+    "repository": "https://github.com/nexu-io/html-anything",
+    "license": "Apache-2.0",
+    "attribution": "Ported from the html-anything skill 'deck-magazine-web' to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (ink blue)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (light ink)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (pale blue)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background (parchment)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface (ivory)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text (near black)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text (stone)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-body",
+        "label": "Body text (warm dark)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-lede",
+        "label": "Lede text (olive)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border (warm sand)",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-color-border-soft",
+        "label": "Soft border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-color-tag-bg",
+        "label": "Tag background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-color-code-bg",
+        "label": "Code tint",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display serif",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body serif",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-sans",
+        "label": "Label sans",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-mono",
+        "label": "Footer mono",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-body-line-height",
+        "label": "Body line height",
+        "type": "number",
+        "group": "typography"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案全部替换为真实品牌内容，刊名、刊号、地点信息保持全刊统一。",
+    "衬线 display 只用 400/500 一个字重，不要加粗、不要用斜体——这是杂志感的来源。",
+    "深色页（封面/章节/结尾）不要改成浅色，墨蓝底是本模板的 signature。",
+    "统计页大数字最多 4 个，超过请拆页；金句页一期只放一句。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

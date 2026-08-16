@@ -1,0 +1,20 @@
+:root {
+  --ipw-color-primary: #FF5A36;
+  --ipw-color-secondary: #FF8C5A;
+  --ipw-color-accent: #FFB36B;
+  --ipw-color-bg: #FFFFFF;
+  --ipw-color-surface: #F2F2F6;
+  --ipw-color-dark: #0A0A12;
+  --ipw-color-text: #0A0A12;
+  --ipw-color-muted: #4A4A58;
+  --ipw-color-faint: #8A8A96;
+  --ipw-color-border: rgba(10, 10, 18, 0.08);
+  --ipw-gradient: linear-gradient(120deg, #FF5A36 0%, #FF8C5A 60%, #FFB36B 100%);
+  --ipw-font-display: 'Inter', "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --ipw-font-body: 'Inter', "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --ipw-font-serif: 'Playfair Display', "Songti SC", "Noto Serif CJK SC", serif;
+  --ipw-card-bg: #FFFFFF;
+  --ipw-card-border: rgba(10, 10, 18, 0.08);
+  --ipw-card-radius: 22px;
+  --ipw-card-shadow: 0 20px 60px rgba(10, 10, 18, 0.08);
+}

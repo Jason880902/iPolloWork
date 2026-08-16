@@ -1,0 +1,20 @@
+:root {
+  --ipw-color-primary: #1B365D;
+  --ipw-color-secondary: #2D5A8A;
+  --ipw-color-accent: #B5C8DC;
+  --ipw-color-bg: #F5F4ED;
+  --ipw-color-surface: #FAF9F5;
+  --ipw-color-text: #141413;
+  --ipw-color-muted: #6B6A64;
+  --ipw-color-body: #3D3D3A;
+  --ipw-color-lede: #504E49;
+  --ipw-color-border: #E8E6DC;
+  --ipw-color-border-soft: #E5E3D8;
+  --ipw-color-tag-bg: #E4ECF5;
+  --ipw-color-code-bg: #EEF2F7;
+  --ipw-font-display: 'Source Serif 4', 'Songti SC', 'Noto Serif CJK SC', Georgia, serif;
+  --ipw-font-body: 'Source Serif 4', 'Songti SC', 'Noto Serif CJK SC', Georgia, serif;
+  --ipw-font-sans: 'Source Sans 3', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --ipw-font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  --ipw-body-line-height: 1.55;
+}
