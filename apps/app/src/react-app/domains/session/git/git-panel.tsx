@@ -13,6 +13,7 @@ import {
   type GraphRef,
   type LayoutCommit,
 } from "./graph-layout";
+import { GitWorkspace } from "./git-workspace";
 
 const LANE_WIDTH = 26;
 const ROW_HEIGHT = 26;
@@ -30,10 +31,6 @@ type GraphData = {
   refs?: GraphRef[];
   headShas?: string[];
 };
-
-function commitMessage(sha: string): string {
-  return shortSha(sha);
-}
 
 type GitPanelProps = {
   workspaceRoot: string;
@@ -119,8 +116,6 @@ export function GitPanel({ workspaceRoot, onClose }: GitPanelProps) {
     }
     return lines;
   }, [rows]);
-
-  const selected = selectedSha ? rows.find((r) => r.sha === selectedSha) : null;
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-background" data-testid="git-panel">
@@ -237,39 +232,8 @@ export function GitPanel({ workspaceRoot, onClose }: GitPanelProps) {
           )}
         </div>
 
-        <aside className="flex w-72 shrink-0 flex-col border-l border-border p-4">
-          <h3 className="mb-2 text-sm font-semibold">提交详情</h3>
-          {selected ? (
-            <div className="space-y-3">
-              <div>
-                <span className="text-xs text-muted-foreground">Commit</span>
-                <p className="break-all font-mono text-sm">{selected.sha}</p>
-              </div>
-              <div>
-                <span className="text-xs text-muted-foreground">父提交</span>
-                {selected.parents.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">根提交</p>
-                ) : (
-                  selected.parents.map((parent) => (
-                    <p key={parent} className="break-all font-mono text-sm">{shortSha(parent)}</p>
-                  ))
-                )}
-              </div>
-              {selected.refs.length > 0 ? (
-                <div>
-                  <span className="text-xs text-muted-foreground">引用</span>
-                  <div className="mt-1 flex flex-wrap gap-1">
-                    {selected.refs.map((ref) => (
-                      <span key={ref.refname} className="rounded bg-muted px-1.5 py-px font-mono text-xs">{shortRef(ref.refname)}</span>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-              <p className="text-xs text-muted-foreground">{commitMessage(selected.sha)}</p>
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">点击图中的提交查看详情。</p>
-          )}
+        <aside className="flex w-96 shrink-0 flex-col border-l border-border">
+          <GitWorkspace workspaceRoot={workspaceRoot} onChanged={fetchGraph} />
         </aside>
       </div>
     </div>
