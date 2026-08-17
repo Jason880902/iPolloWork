@@ -42,7 +42,9 @@ export function createPetWindow({ getWindow }) {
   function petPositionIsVisible(x, y) {
     return screen.getAllDisplays().some((display) => {
       const area = display.workArea;
-      return x < area.x + area.width && x + PET_WINDOW_WIDTH > area.x && y < area.y + area.height && y + PET_WINDOW_HEIGHT > area.y;
+      // 卡通形象锚定在窗口底部，仅"相交"不足以保证可见——要求窗口完整落在工作区内，
+      // 否则跨屏移动或旧显示器遗留的坐标会让画面停在屏幕外。
+      return x >= area.x && y >= area.y && x + PET_WINDOW_WIDTH <= area.x + area.width && y + PET_WINDOW_HEIGHT <= area.y + area.height;
     });
   }
 

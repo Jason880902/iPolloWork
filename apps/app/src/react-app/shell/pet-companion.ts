@@ -7,7 +7,7 @@ import {
   resolvePetEngineHandle,
   type PetEngineHandle,
 } from "../kernel/pet-engine";
-import { readPetPersona } from "../kernel/pet-persona";
+import { PET_PERSONA_DEFAULT_NAME, readPetPersona } from "../kernel/pet-persona";
 
 const PET_CHAT_REQUEST_EVENT = "ipollowork:pet:chat-request";
 
@@ -59,20 +59,20 @@ export function usePetCompanionBridge() {
         const handle = await resolvePetEngineHandle();
         if (!handle) throw new Error("engine handle unavailable");
 
+        // The default persona follows the configured nickname; a custom
+        // persona from settings is used verbatim.
+        const petConfig = internal ? null : await petGetConfig().catch(() => null);
+        const nickname = petConfig?.nickname?.trim() || undefined;
+
         if (!sessionIdRef.current) {
           const created = await petEngineRequestJson<{ id?: string }>(`${handle.mount}/session`, handle, {
             method: "POST",
-            body: JSON.stringify({ title: PET_COMPANION_SESSION_TITLE }),
+            body: JSON.stringify({ title: `桌面助手${nickname || PET_PERSONA_DEFAULT_NAME}` }),
           });
           if (!created?.id) throw new Error("pet companion session create failed");
           sessionIdRef.current = created.id;
         }
         const sessionId = sessionIdRef.current;
-
-        // The default persona follows the configured nickname; a custom
-        // persona from settings is used verbatim.
-        const petConfig = internal ? null : await petGetConfig().catch(() => null);
-        const nickname = petConfig?.nickname?.trim() || undefined;
 
         // The proxy serves reads under /opencode/api/* but prompts and the
         // live message log must go to /opencode/* (the recipe the app UI uses).
