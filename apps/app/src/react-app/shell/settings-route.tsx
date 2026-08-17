@@ -9,9 +9,8 @@ import {
   SUGGESTED_PLUGINS,
 } from "@/app/constants";
 import {
-  canonicalWorkspacesForWorkContext,
+  filterWorkspacesForWorkContext,
   PERSONAL_WORK_CONTEXT_ID,
-  pruneServerWorkspacesForWorkContext,
   readActiveWorkContextId,
   workContextChangedEvent,
 } from "@/app/lib/work-context";
@@ -53,6 +52,7 @@ import { createConnectionsStore, useConnectionsStoreSnapshot } from "@/react-app
 import { useOrgMcpConnections } from "@/react-app/domains/connections/use-org-mcp-connections";
 import { createiPolloWorkServerStore, useiPolloWorkServerStoreSnapshot } from "@/react-app/domains/connections/ipollowork-server-store";
 import { createProviderAuthStore, useProviderAuthStoreSnapshot } from "@/react-app/domains/connections/provider-auth/store";
+import { providerEngineAdapters } from "@/react-app/domains/connections/provider-auth/provider-engine-adapter";
 import { formatProviderAuthName } from "@/react-app/domains/connections/provider-auth/provider-auth-curation";
 import ProviderAuthModal from "@/react-app/domains/connections/provider-auth/provider-auth-modal";
 import ConnectionsModals from "@/react-app/domains/connections/modals";
@@ -132,7 +132,7 @@ import type { ModelRef } from "@/app/types";
 import { recordInspectorEvent } from "../../app/lib/app-inspector";
 import { ensureDesktopLocaliPolloWorkConnection } from "./desktop-local-ipollowork";
 import { resolveiPolloWorkConnection } from "./ipollowork-connection";
-import { abortSessionSafe } from "@/app/lib/opencode-session";
+import { conversationEngineAdapters } from "@/react-app/domains/session/engine/opencode-conversation-engine";
 import { notifyAlert } from "./notifications";
 import { useReloadCoordinator } from "./reload-coordinator";
 import { buildFeedbackUrl } from "@/app/lib/feedback";
@@ -470,6 +470,7 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
             path: selectedWorkspace.path ?? "",
             preset: "starter",
             workspaceType: selectedWorkspace.workspaceType ?? "local",
+            engineId: selectedWorkspace.engineId,
             displayName: selectedWorkspace.displayNameResolved,
             ipolloworkWorkspaceName: selectedWorkspace.ipolloworkWorkspaceName,
           }
@@ -590,11 +591,11 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
         setProviderDefaults,
         setProviderConnectedIds,
         setDisabledProviders,
-        markOpencodeConfigReloadRequired: () => {
+        markEngineConfigReloadRequired: (configFileName) => {
           setConfigActionStatus(t("settings.config_updated"));
           reloadCoordinator.markReloadRequired("config", {
             type: "config",
-            name: "opencode.json",
+            name: configFileName,
             action: "updated",
           });
         },
@@ -782,6 +783,16 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
       },
     );
   }, [selectedWorkspaceEndpoint, selectedWorkspaceRoot]);
+  const conversation = useMemo(
+    () => opencodeBaseUrl && selectedWorkspaceEndpoint?.token
+      ? conversationEngineAdapters.get(selectedWorkspace?.engineId).connect({
+          baseUrl: opencodeBaseUrl,
+          token: selectedWorkspaceEndpoint.token,
+          directory: selectedWorkspaceRoot || undefined,
+        })
+      : null,
+    [opencodeBaseUrl, selectedWorkspace?.engineId, selectedWorkspaceEndpoint?.token, selectedWorkspaceRoot],
+  );
 
   useEffect(() => {
     setActiveClient(opencodeClient);
@@ -792,6 +803,7 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
   }, []);
   const modelPicker = useModelPicker({
     client: opencodeClient,
+    engineId: selectedWorkspace?.engineId,
     baseUrl: opencodeBaseUrl,
     workspaceRoot: selectedWorkspaceRoot,
     onLoadError: handleModelPickerLoadError,
@@ -998,26 +1010,30 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
     setLocalProviderStatus(null);
     setLocalProviderError(null);
     try {
-      await client.patchConfig(workspaceId, {
-        opencode: {
-          provider: {
-            [input.providerId]: {
-              npm: input.npm ?? "@ai-sdk/openai-compatible",
-              name: input.name,
-              ...(api ? { api } : { options: { baseURL } }),
-              models,
-            },
-          },
+      const engineAdapter = providerEngineAdapters.get(selectedWorkspace?.engineId);
+      await engineAdapter.patchRuntimeProviders(
+        {
+          ipolloworkClient: client,
+          workspaceId,
+          hasiPolloWorkTarget: true,
+          canUseiPolloWorkServer: true,
+          isLocalWorkspace: selectedWorkspace?.workspaceType !== "remote",
+          root: selectedWorkspaceRoot,
         },
-      });
+        engineAdapter.buildCompatibleProviderPatch({
+          id: input.providerId,
+          name: input.name,
+          npm: input.npm,
+          api,
+          baseURL,
+          models,
+        }),
+      );
       if (input.apiKey?.trim()) {
         if (!opencodeClient) {
           throw new Error("OpenCode is not connected for this workspace.");
         }
-        await opencodeClient.auth.set({
-          providerID: input.providerId,
-          auth: { type: "api", key: input.apiKey.trim() },
-        });
+        await engineAdapter.connect(opencodeClient).setApiKey(input.providerId, input.apiKey.trim());
       }
       if (input.setDefault) {
         local.setPrefs((previous) => ({
@@ -1044,7 +1060,7 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
     } finally {
       setLocalProviderBusy(false);
     }
-  }, [local, ipolloworkClient, opencodeClient, reloadCoordinator, runtimeWorkspaceId, selectedWorkspaceEndpoint]);
+  }, [local, ipolloworkClient, opencodeClient, reloadCoordinator, runtimeWorkspaceId, selectedWorkspace, selectedWorkspaceEndpoint, selectedWorkspaceRoot]);
 
   useEffect(() => {
     local.setUi((previous) => ({ ...previous, view: "settings", tab: route.tab }));
@@ -1079,10 +1095,9 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
       if (isDesktopRuntime()) {
         try {
           desktopList = await workspaceBootstrap() as WorkspaceList;
-          desktopWorkspaces = canonicalWorkspacesForWorkContext(
+          desktopWorkspaces = filterWorkspacesForWorkContext(
             (desktopList.workspaces ?? []).map(mapDesktopWorkspace),
             requestedContextId,
-            [resolveWorkspaceListSelectedId(desktopList)],
           );
         } catch (error) {
           const message = describeRouteError(error);
@@ -1118,28 +1133,11 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
       });
       const list = await client.listWorkspaces();
       const serverWorkspaceIds = new Set(list.items.map((workspace) => workspace.id));
-      const nextWorkspaces = canonicalWorkspacesForWorkContext(
+      const nextWorkspaces = filterWorkspacesForWorkContext(
         mergeRouteWorkspaces(list.items, desktopWorkspaces),
         requestedContextId,
-        [
-          routeWorkspaceId,
-          readActiveWorkspaceId(),
-          resolveWorkspaceListSelectedId(desktopList),
-          list.activeId,
-        ],
       );
       if (workContextRef.current !== requestedContextId) return;
-      const canonicalServerWorkspaceId = nextWorkspaces.find((workspace) => serverWorkspaceIds.has(workspace.id))?.id ?? "";
-      if (canonicalServerWorkspaceId) {
-        void pruneServerWorkspacesForWorkContext(
-          client,
-          list.items,
-          requestedContextId,
-          canonicalServerWorkspaceId,
-        ).catch((error) => {
-          console.warn("[settings-route] failed to prune legacy workspace identities", error);
-        });
-      }
       const sessionEntries = await Promise.all(
         nextWorkspaces.map(async (workspace) => {
           if (!serverWorkspaceIds.has(workspace.id)) {
@@ -1239,13 +1237,13 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
       reloadWorkspaceEngine: reloadWorkspaceEngineFromUi,
       activeSessions: () => activeReloadBlockingSessions,
       stopSession: async (sessionId) => {
-        if (!activeClient) return;
-        await abortSessionSafe(activeClient, sessionId);
+        if (!conversation) return;
+        await conversation.abort(sessionId).catch(() => false);
       },
     });
   }, [
-    activeClient,
     activeReloadBlockingSessions,
+    conversation,
     ipolloworkClient,
     reloadCoordinator,
     reloadWorkspaceEngineFromUi,
@@ -2055,8 +2053,8 @@ function SettingsRouteContent(props: SettingsSurfaceProps = {}) {
         activeSessions={activeReloadBlockingSessions}
         isRemoteWorkspace={selectedWorkspace?.workspaceType === "remote"}
         onForceStopSession={async (sessionId) => {
-          if (!activeClient) return;
-          await abortSessionSafe(activeClient, sessionId);
+          if (!conversation) return;
+          await conversation.abort(sessionId).catch(() => false);
         }}
         onReloadEngine={reloadCoordinator.reloadWorkspaceEngine}
         modalState={{
