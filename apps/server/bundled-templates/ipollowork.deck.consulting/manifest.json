@@ -18,9 +18,10 @@
   "cover": "cover.png",
   "entry": "entry.html",
   "source": {
-    "name": "iPolloWork",
+    "name": "slide-maker",
+    "repository": "https://github.com/addsumtech/slides_maker",
     "license": "MIT",
-    "attribution": "Designed for iPolloWork as a consulting (Action Title) boardroom presentation template; visual system and editable variables by iPolloWork."
+    "attribution": "Ported from the slide-maker skill 'consulting' preset to an iPolloWork HTML slides template."
   },
   "designSystem": {
     "tokenVersion": 1,
