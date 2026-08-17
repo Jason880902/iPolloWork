@@ -2,7 +2,7 @@ import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } fro
 import { resolve } from "node:path";
 
 const REPO_CONSTANTS_IMPORT = /from\s+["']\.\.\/\.\.\/\.\.\/constants\.json["']/g;
-const RUNTIME_TYPES_IMPORT = /from\s+(["'])@ipollowork\/types\/(hyperframes|templates|plugins)\1/g;
+const RUNTIME_TYPES_IMPORT = /from\s+(["'])@ipollowork\/types\/(hyperframes|templates|plugins|workspace)\1/g;
 
 export function stageServerConstants({ serverDistDir, constantsSrc }) {
   copyFileSync(constantsSrc, resolve(serverDistDir, "constants.json"));
@@ -24,7 +24,7 @@ export function stageServerConstants({ serverDistDir, constantsSrc }) {
 export function stageServerRuntimeTypes({ serverDistDir, runtimeTypesDistDir }) {
   const targetDir = resolve(serverDistDir, "ipollowork-types");
   mkdirSync(targetDir, { recursive: true });
-  for (const moduleName of ["hyperframes", "templates", "plugins"]) {
+  for (const moduleName of ["hyperframes", "templates", "plugins", "workspace"]) {
     copyFileSync(resolve(runtimeTypesDistDir, `${moduleName}.js`), resolve(targetDir, `${moduleName}.js`));
   }
 
