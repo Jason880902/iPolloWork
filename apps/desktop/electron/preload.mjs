@@ -175,6 +175,16 @@ contextBridge.exposeInMainWorld("__IPOLLOWORK_ELECTRON__", {
   },
   git: {
     graph(options) { return ipcRenderer.invoke("ipollowork:git:graph", options); },
+    status(options) { return ipcRenderer.invoke("ipollowork:git:status", options); },
+    diff(options) { return ipcRenderer.invoke("ipollowork:git:diff", options); },
+    stage(options) { return ipcRenderer.invoke("ipollowork:git:stage", options); },
+    unstage(options) { return ipcRenderer.invoke("ipollowork:git:unstage", options); },
+    commit(options) { return ipcRenderer.invoke("ipollowork:git:commit", options); },
+    push(options) { return ipcRenderer.invoke("ipollowork:git:push", options); },
+    pull(options) { return ipcRenderer.invoke("ipollowork:git:pull", options); },
+    branches(options) { return ipcRenderer.invoke("ipollowork:git:branches", options); },
+    checkout(options) { return ipcRenderer.invoke("ipollowork:git:checkout", options); },
+    createBranch(options) { return ipcRenderer.invoke("ipollowork:git:create-branch", options); },
   },
   lanPreview: {
     getState() { return ipcRenderer.invoke("ipollowork:lan-preview:get-state"); },

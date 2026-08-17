@@ -190,6 +190,19 @@ declare global {
           | { ok: true; repoRoot: string; count: number; totalCount: number | null; truncated: boolean; isRepo: true; commits: { sha: string; parents: string[] }[]; refs: { sha: string; refname: string; head: boolean }[]; headShas: string[] }
           | { ok: false; isRepo: boolean; error: string }
         >;
+        status?: (options: { cwd: string }) => Promise<
+          | { ok: true; branch: string | null; staged: string[]; unstaged: string[]; untracked: string[]; conflicted: string[] }
+          | { ok: false; error: string }
+        >;
+        diff?: (options: { cwd: string; staged?: boolean; file?: string | null }) => Promise<{ ok: true; diff: string } | { ok: false; error: string }>;
+        stage?: (options: { cwd: string; files: string[] }) => Promise<{ ok: true; output: string } | { ok: false; error: string }>;
+        unstage?: (options: { cwd: string; files: string[] }) => Promise<{ ok: true; output: string } | { ok: false; error: string }>;
+        commit?: (options: { cwd: string; message: string }) => Promise<{ ok: true; output: string } | { ok: false; error: string }>;
+        push?: (options: { cwd: string }) => Promise<{ ok: true; output: string } | { ok: false; error: string }>;
+        pull?: (options: { cwd: string }) => Promise<{ ok: true; output: string } | { ok: false; error: string }>;
+        branches?: (options: { cwd: string }) => Promise<{ ok: true; branches: { name: string; current: boolean }[]; current: string | null } | { ok: false; error: string }>;
+        checkout?: (options: { cwd: string; branch: string }) => Promise<{ ok: true; output: string } | { ok: false; error: string }>;
+        createBranch?: (options: { cwd: string; name: string }) => Promise<{ ok: true; output: string } | { ok: false; error: string }>;
       };
       lanPreview?: {
         getState?: () => Promise<LanPreviewState>;

@@ -32,6 +32,7 @@ import { createUiControlServer } from "./ui-control-server.mjs";
 import { createLanPreviewServer, lanPreviewPagePath } from "./lan-preview-server.mjs";
 import { createSshOps } from "./ssh-ops.mjs";
 import { createGitGraph } from "./git-graph.mjs";
+import { createGitOps } from "./git-ops.mjs";
 import { createPreviewCore } from "./preview-core.mjs";
 import { createImBot } from "./im-bot.mjs";
 import { createApplicationMenu } from "./app-menu.mjs";
@@ -127,6 +128,7 @@ const lanPreviewServer = createLanPreviewServer({
 
 const sshOps = createSshOps({ pty });
 const gitGraph = createGitGraph();
+const gitOps = createGitOps();
 const imBot = createImBot({ previewCore });
 
 const terminalProcesses = new Map();
@@ -3077,6 +3079,65 @@ ipcMain.handle("ipollowork:git:graph", (event, options = {}) => {
     }
     return { ok: false, isRepo: true, error: message };
   }
+});
+
+// ── Git ops IPC ──────────────────────────────────────────────────────────
+// Real git working-tree operations (git-ops.mjs). Each handler expects an
+// options object carrying `cwd` and returns the git-ops { ok, ... } result.
+
+function gitOpsCwd(options) {
+  return typeof options?.cwd === "string" && options.cwd.trim() ? options.cwd.trim() : null;
+}
+
+ipcMain.handle("ipollowork:git:status", (_event, options = {}) => {
+  const cwd = gitOpsCwd(options);
+  if (!cwd) return { ok: false, error: "missing cwd" };
+  return gitOps.status(cwd);
+});
+ipcMain.handle("ipollowork:git:diff", (_event, options = {}) => {
+  const cwd = gitOpsCwd(options);
+  if (!cwd) return { ok: false, error: "missing cwd" };
+  return gitOps.diff(cwd, options);
+});
+ipcMain.handle("ipollowork:git:stage", (_event, options = {}) => {
+  const cwd = gitOpsCwd(options);
+  if (!cwd) return { ok: false, error: "missing cwd" };
+  return gitOps.stage(cwd, options.files);
+});
+ipcMain.handle("ipollowork:git:unstage", (_event, options = {}) => {
+  const cwd = gitOpsCwd(options);
+  if (!cwd) return { ok: false, error: "missing cwd" };
+  return gitOps.unstage(cwd, options.files);
+});
+ipcMain.handle("ipollowork:git:commit", (_event, options = {}) => {
+  const cwd = gitOpsCwd(options);
+  if (!cwd) return { ok: false, error: "missing cwd" };
+  return gitOps.commit(cwd, options.message);
+});
+ipcMain.handle("ipollowork:git:push", (_event, options = {}) => {
+  const cwd = gitOpsCwd(options);
+  if (!cwd) return { ok: false, error: "missing cwd" };
+  return gitOps.push(cwd);
+});
+ipcMain.handle("ipollowork:git:pull", (_event, options = {}) => {
+  const cwd = gitOpsCwd(options);
+  if (!cwd) return { ok: false, error: "missing cwd" };
+  return gitOps.pull(cwd);
+});
+ipcMain.handle("ipollowork:git:branches", (_event, options = {}) => {
+  const cwd = gitOpsCwd(options);
+  if (!cwd) return { ok: false, error: "missing cwd" };
+  return gitOps.branches(cwd);
+});
+ipcMain.handle("ipollowork:git:checkout", (_event, options = {}) => {
+  const cwd = gitOpsCwd(options);
+  if (!cwd) return { ok: false, error: "missing cwd" };
+  return gitOps.checkout(cwd, options.branch);
+});
+ipcMain.handle("ipollowork:git:create-branch", (_event, options = {}) => {
+  const cwd = gitOpsCwd(options);
+  if (!cwd) return { ok: false, error: "missing cwd" };
+  return gitOps.createBranch(cwd, options.name);
 });
 
 // ── LAN preview IPC ────────────────────────────────────────────────────
