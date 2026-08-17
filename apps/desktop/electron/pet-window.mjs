@@ -86,10 +86,20 @@ export function createPetWindow({ getWindow }) {
 
   function petRendererUrl() {
     const currentUrl = getWindow()?.webContents?.getURL?.();
-    if (currentUrl && /^https?:\/\//i.test(currentUrl)) {
-      return new URL(PET_HTML, currentUrl).toString();
+    if (!currentUrl || !/^https?:\/\//i.test(currentUrl)) return null;
+    let parsed;
+    try {
+      parsed = new URL(currentUrl);
+    } catch {
+      return null;
     }
-    return null;
+    // 只允许回环 dev server（localhost/127.0.0.1/::1）；拒绝跟随其他远端源，
+    // 避免 pet 窗口用带 Node preload 的页面加载不受信任的内容。
+    const host = parsed.hostname.toLowerCase();
+    if (host !== "localhost" && host !== "127.0.0.1" && host !== "[::1]") {
+      return null;
+    }
+    return new URL(PET_HTML, parsed).toString();
   }
 
   async function loadPetRenderer(win) {

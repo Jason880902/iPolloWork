@@ -2241,8 +2241,26 @@ const LOCAL_IMAGE_MIME_TYPES = new Map([
   [".webp", "image/webp"],
 ]);
 
-async function readLocalImageAsDataUrl(target) {
-  const imagePath = String(target ?? "").trim();
+const SENSITIVE_PATH_SEGMENTS = new Set([".ssh", ".aws", ".gnupg", ".docker", ".kube", ".azure", ".gcloud"]);
+
+function rejectSensitivePath(target) {
+  const resolved = path.resolve(String(target ?? ""));
+  const home = os.homedir();
+  const rel = path.relative(home, resolved);
+  if (rel === "" || rel.startsWith("..") || path.isAbsolute(rel)) return false;
+  const segments = rel.split(path.sep);
+  if (segments.some((seg) => SENSITIVE_PATH_SEGMENTS.has(seg))) return true;
+  const basename = path.basename(resolved);
+  return (
+    basename === ".env" ||
+    basename === ".netrc" ||
+    basename === ".npmrc" ||
+    basename.startsWith("id_rsa") ||
+    basename.startsWith("id_ed25519")
+  );
+}
+
+async function readLocalImageAsDataUrl(target) {  const imagePath = String(target ?? "").trim();
   if (!imagePath) return null;
   const extension = path.extname(imagePath).toLowerCase();
   const mimeType = LOCAL_IMAGE_MIME_TYPES.get(extension);
@@ -2687,6 +2705,7 @@ const desktopCommandHandlers = {
   "__openPath": async (event, ...args) => {
       const target = String(args[0] ?? "").trim();
       if (!target) return "Path is required.";
+      if (rejectSensitivePath(target)) return "Path is not accessible.";
       return shell.openPath(target);
   },
   "__revealItemInDir": async (event, ...args) => {
@@ -2724,6 +2743,7 @@ const desktopCommandHandlers = {
   "__readLocalTextFile": async (event, ...args) => {
       const target = String(args[0] ?? "").trim();
       if (!target) throw new Error("Path is required.");
+      if (rejectSensitivePath(target)) throw new Error("Path is not accessible.");
       const info = await stat(target);
       if (!info.isFile()) throw new Error("File not found.");
       const maxBytes = 20 * 1024 * 1024;
@@ -2838,6 +2858,15 @@ const desktopCommandHandlers = {
       const url = String(args[0] ?? "").trim();
       const init = args[1] ?? {};
       if (!url) throw new Error("URL is required.");
+      let parsedUrl;
+      try {
+        parsedUrl = new URL(url);
+      } catch {
+        throw new Error("URL is invalid.");
+      }
+      if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+        throw new Error("Only http/https URLs are allowed.");
+      }
       if (desktopNetworkSuspended) {
         throw new Error("Desktop network is suspended. Retry after the computer resumes.");
       }
