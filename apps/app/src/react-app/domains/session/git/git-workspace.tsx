@@ -35,8 +35,6 @@ type GitBranchesData = {
   error?: string;
 };
 
-type GitBridge = NonNullable<NonNullable<typeof window.__IPOLLOWORK_ELECTRON__>["git"]>;
-
 type GitWorkspaceProps = {
   workspaceRoot: string;
   onChanged?: () => void;
@@ -49,7 +47,7 @@ export function GitWorkspace({ workspaceRoot, onChanged }: GitWorkspaceProps) {
   const [message, setMessage] = useState("");
   const [newBranch, setNewBranch] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [notice, setNotice] = useState<{ kind: "error" | "success"; text: string } | null>(null);
   const [diff, setDiff] = useState<{ file: string; staged: boolean; text: string } | null>(null);
   const [confirmPush, setConfirmPush] = useState(false);
 
@@ -68,13 +66,14 @@ export function GitWorkspace({ workspaceRoot, onChanged }: GitWorkspaceProps) {
   }, [refresh]);
 
   const run = useCallback(
-    async (key: string, fn: () => Promise<{ ok: boolean; error?: string }>) => {
+    async (key: string, fn: () => Promise<{ ok: boolean; error?: string }>, successText?: string) => {
       if (!bridge) return;
       setBusy(key);
       setNotice(null);
       try {
         const result = await fn();
-        if (!result.ok) setNotice(result.error ?? "操作失败");
+        if (!result.ok) setNotice({ kind: "error", text: result.error ?? "操作失败" });
+        else if (successText) setNotice({ kind: "success", text: successText });
         await refresh();
         onChanged?.();
       } finally {
@@ -92,7 +91,7 @@ export function GitWorkspace({ workspaceRoot, onChanged }: GitWorkspaceProps) {
     );
   }
 
-  const git = bridge as GitBridge;
+  const git = bridge;
   const staged = status?.staged ?? [];
   const unstaged = status?.unstaged ?? [];
   const untracked = status?.untracked ?? [];
@@ -105,21 +104,29 @@ export function GitWorkspace({ workspaceRoot, onChanged }: GitWorkspaceProps) {
   };
 
   const doCommit = () =>
-    run("commit", async () => {
-      const r = await git.commit!({ cwd: workspaceRoot, message });
-      if (r.ok) setMessage("");
-      return r;
-    });
+    run(
+      "commit",
+      async () => {
+        const r = await git.commit!({ cwd: workspaceRoot, message });
+        if (r.ok) setMessage("");
+        return r;
+      },
+      "提交成功",
+    );
 
   const doCreateBranch = () =>
-    run("create-branch", async () => {
-      const r = await git.createBranch!({ cwd: workspaceRoot, name: newBranch });
-      if (r.ok) setNewBranch("");
-      return r;
-    });
+    run(
+      "create-branch",
+      async () => {
+        const r = await git.createBranch!({ cwd: workspaceRoot, name: newBranch });
+        if (r.ok) setNewBranch("");
+        return r;
+      },
+      "已创建并切换分支",
+    );
 
-  const doPush = () => run("push", () => git.push!({ cwd: workspaceRoot }));
-  const doPull = () => run("pull", () => git.pull!({ cwd: workspaceRoot }));
+  const doPush = () => run("push", () => git.push!({ cwd: workspaceRoot }), "推送成功");
+  const doPull = () => run("pull", () => git.pull!({ cwd: workspaceRoot }), "拉取成功");
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -155,7 +162,11 @@ export function GitWorkspace({ workspaceRoot, onChanged }: GitWorkspaceProps) {
 
       {/* 状态 + 提交 */}
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-3">
-        {notice ? <p className="rounded bg-destructive/10 px-2 py-1.5 text-xs text-destructive">{notice}</p> : null}
+        {notice ? (
+          <p className={notice.kind === "error" ? "rounded bg-destructive/10 px-2 py-1.5 text-xs text-destructive" : "rounded bg-emerald-500/10 px-2 py-1.5 text-xs text-emerald-600"}>
+            {notice.text}
+          </p>
+        ) : null}
 
         {conflicted.length > 0 ? (
           <FileGroup title="冲突" files={conflicted} badge="destructive" />
@@ -174,7 +185,7 @@ export function GitWorkspace({ workspaceRoot, onChanged }: GitWorkspaceProps) {
           files={untracked}
           actionLabel="暂存"
           onAction={(files) => void run("stage", () => git.stage!({ cwd: workspaceRoot, files }))}
-          onFileClick={(f) => void showDiff(f, false)}
+          onFileClick={(f) => setDiff({ file: f, staged: false, text: "（未跟踪文件，暂存后可查看差异）" })}
           busy={busy === "stage"}
         />
         <FileGroup
@@ -186,7 +197,9 @@ export function GitWorkspace({ workspaceRoot, onChanged }: GitWorkspaceProps) {
           busy={busy === "unstage"}
         />
 
-        {staged.length === 0 && unstaged.length === 0 && untracked.length === 0 && conflicted.length === 0 ? (
+        {status && !status.ok ? (
+          <p className="rounded bg-destructive/10 px-2 py-1.5 text-xs text-destructive">{status.error ?? "无法读取 git 状态。"}</p>
+        ) : staged.length === 0 && unstaged.length === 0 && untracked.length === 0 && conflicted.length === 0 ? (
           <p className="text-xs text-muted-foreground">工作区干净，没有变更。</p>
         ) : null}
 
@@ -214,7 +227,7 @@ export function GitWorkspace({ workspaceRoot, onChanged }: GitWorkspaceProps) {
           placeholder="提交信息"
           className="h-8"
           onKeyDown={(e) => {
-            if (e.key === "Enter" && message.trim() && staged.length > 0) void doCommit();
+            if (e.key === "Enter" && message.trim() && staged.length > 0 && busy !== "commit") void doCommit();
           }}
         />
         <div className="flex items-center gap-2">

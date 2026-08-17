@@ -84,13 +84,33 @@ test("commit passes message as single arg", async () => {
   assert.deepEqual(calls[0].args, ["commit", "-m", "fix: thing"]);
 });
 
-test("push/pull pass expected args", async () => {
-  const { fn, calls } = fakeExec(() => ({ stdout: "" }));
+test("push with upstream runs rev-parse then push", async () => {
+  const { fn, calls } = fakeExec(() => ({ stdout: "origin/main" }));
   const ops = createGitOps({ execFile: fn });
   await ops.push("/ws");
-  assert.deepEqual(calls[0].args, ["push"]);
+  assert.deepEqual(calls[0].args, ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"]);
+  assert.deepEqual(calls[1].args, ["push"]);
+});
+
+test("push without upstream pushes with -u origin HEAD", async () => {
+  const { fn, calls } = fakeExec((program, args) => {
+    if (args[0] === "rev-parse") {
+      const err = new Error("no upstream");
+      err.stderr = "fatal: no upstream configured";
+      return Promise.reject(err);
+    }
+    return { stdout: "" };
+  });
+  const ops = createGitOps({ execFile: fn });
+  await ops.push("/ws");
+  assert.deepEqual(calls[1].args, ["push", "-u", "origin", "HEAD"]);
+});
+
+test("pull passes --ff-only", async () => {
+  const { fn, calls } = fakeExec(() => ({ stdout: "" }));
+  const ops = createGitOps({ execFile: fn });
   await ops.pull("/ws");
-  assert.deepEqual(calls[1].args, ["pull", "--ff-only"]);
+  assert.deepEqual(calls[0].args, ["pull", "--ff-only"]);
 });
 
 test("branches identifies current branch", async () => {

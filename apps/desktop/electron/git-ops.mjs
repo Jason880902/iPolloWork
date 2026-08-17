@@ -31,13 +31,20 @@ export function parseStatus(output) {
     if (line.length < 4) continue;
     const x = line[0];
     const y = line[1];
-    const file = stripQuotes(line.slice(3).trim());
+    let file = line.slice(3).trim();
+    // Renames print as "old -> new"; keep the new path so diff/stage work.
+    if (x === "R" || y === "R") {
+      const arrow = file.indexOf(" -> ");
+      if (arrow >= 0) file = file.slice(arrow + 4).trim();
+    }
+    file = stripQuotes(file);
 
     if (x === "?" && y === "?") {
       untracked.push(file);
       continue;
     }
-    if (x === "U" || y === "U") {
+    // Unmerged states (all 7 porcelain v1 combinations) count as conflicts.
+    if (/^(DD|AU|UD|UA|DU|AA|UU)$/.test(x + y)) {
       conflicted.push(file);
       continue;
     }
@@ -50,7 +57,7 @@ export function parseStatus(output) {
 
 export function createGitOps({ execFile: execFileImpl = execFileAsync } = {}) {
   async function runGit(cwd, args) {
-    const env = { ...process.env, GIT_TERMINAL_PROMPT: "0" };
+    const env = { ...process.env, GIT_TERMINAL_PROMPT: "0", GIT_PAGER: "", LC_ALL: "C" };
     const result = await execFileImpl("git", args, {
       cwd,
       encoding: "utf8",
@@ -106,7 +113,9 @@ export function createGitOps({ execFile: execFileImpl = execFileAsync } = {}) {
   }
 
   async function push(cwd) {
-    return runGitSafe(cwd, ["push"]);
+    const upstream = await runGitSafe(cwd, ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"]);
+    if (upstream.ok) return runGitSafe(cwd, ["push"]);
+    return runGitSafe(cwd, ["push", "-u", "origin", "HEAD"]);
   }
 
   async function pull(cwd) {
