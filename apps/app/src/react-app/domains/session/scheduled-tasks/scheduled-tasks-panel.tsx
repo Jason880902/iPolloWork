@@ -110,7 +110,7 @@ export function ScheduledTasksPanel({ workspaceRoot, onClose }: ScheduledTasksPa
 
   const openNew = () => {
     setSelectedId(null);
-    setDraft(null);
+    setDraft(emptyDraft());
     setLogs([]);
   };
 
