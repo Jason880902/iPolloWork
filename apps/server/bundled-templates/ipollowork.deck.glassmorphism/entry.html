@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Glassmorphism — 产品发布宣讲模版</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #05071A;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: var(--ipw-body-line-height);
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: linear-gradient(160deg, #0A0E27 0%, #0D1235 55%, #101740 100%);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(2, 6, 23, 0.6);
+    flex-shrink: 0;
+  }
+  .slide-inner { position: absolute; inset: 56px 72px 64px; display: flex; flex-direction: column; z-index: 2; }
+
+  /* signature glow: 每页最多 2 个大面积径向辉光（蓝 / 紫光斑） */
+  .glow { position: absolute; border-radius: 50%; pointer-events: none; z-index: 0; }
+  .glow.blue { width: 720px; height: 720px; top: -260px; right: -180px;
+    background: radial-gradient(circle, var(--ipw-glow-blue) 0%, rgba(91,141,239,0) 65%); }
+  .glow.violet { width: 640px; height: 640px; bottom: -280px; left: -160px;
+    background: radial-gradient(circle, var(--ipw-glow-violet) 0%, rgba(162,107,250,0) 65%); }
+
+  /* glass card：半透明白底 + 磨砂模糊 + 1px 亮边 + 顶部高光 sheen */
+  .glass {
+    position: relative;
+    background: var(--ipw-glass-bg);
+    border: 1px solid var(--ipw-glass-border);
+    border-radius: var(--ipw-card-radius);
+    box-shadow: var(--ipw-card-shadow);
+    backdrop-filter: blur(var(--ipw-glass-blur));
+    -webkit-backdrop-filter: blur(var(--ipw-glass-blur));
+    overflow: hidden;
+  }
+  .glass::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0) 100%); }
+
+  .kicker { font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--ipw-color-secondary); font-weight: 700; margin-bottom: 12px; }
+  h1.action-title { font-family: var(--ipw-font-display); font-size: 30px; font-weight: 700;
+    line-height: 1.35; max-width: 1000px; }
+  h1.action-title b { color: var(--ipw-color-primary); }
+  h1.action-title c { color: var(--ipw-color-secondary); }
+  h1.action-title v { color: var(--ipw-color-accent); }
+
+  .insight-banner {
+    margin-top: 20px; padding: 14px 20px;
+    font-size: 16px; font-weight: 600;
+    display: flex; align-items: center; gap: 12px; max-width: 1080px;
+  }
+  .insight-banner::before { content: "KEY"; font-size: 10px; letter-spacing: 2px;
+    background: var(--ipw-color-secondary); color: var(--ipw-color-bg);
+    padding: 3px 8px; border-radius: 4px; font-weight: 800; flex-shrink: 0; }
+
+  .footer { position: absolute; left: 72px; right: 72px; bottom: 24px; z-index: 2;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--ipw-color-muted);
+    border-top: 1px solid var(--ipw-color-border); padding-top: 10px; }
+  .footer .stamp { letter-spacing: 1.5px; font-weight: 700; color: var(--ipw-color-neutral); }
+  .pagenum { font-variant-numeric: tabular-nums; font-family: var(--ipw-font-mono); }
+
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 36px; }
+  .tile { padding: 24px 24px 20px; }
+  .tile .label { font-size: 13px; color: var(--ipw-color-muted); font-weight: 600; margin-bottom: 8px; }
+  .tile .value { font-size: 44px; font-weight: 800; font-family: var(--ipw-font-display); line-height: 1.1; }
+  .tile.blue .value { color: var(--ipw-color-primary); }
+  .tile.cyan .value { color: var(--ipw-color-secondary); }
+  .tile.green .value { color: var(--ipw-color-accent-3); }
+  .tile .delta { font-size: 13px; margin-top: 8px; color: var(--ipw-color-muted); }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 36px; }
+  .bullet-block { padding: 24px 28px; }
+  .bullet-block h3 { font-size: 17px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .bullet-block h3 .dot { width: 10px; height: 10px; border-radius: 3px; background: var(--ipw-color-primary);
+    box-shadow: 0 0 12px var(--ipw-color-primary); }
+  .bullet-block.cyan h3 .dot { background: var(--ipw-color-secondary); box-shadow: 0 0 12px var(--ipw-color-secondary); }
+  .bullet-block ul { list-style: none; }
+  .bullet-block li { font-size: 15px; padding: 10px 0 10px 20px; position: relative;
+    border-bottom: 1px solid var(--ipw-color-border); color: var(--ipw-color-text); }
+  .bullet-block li:last-child { border-bottom: none; }
+  .bullet-block li::before { content: "—"; position: absolute; left: 0; color: var(--ipw-color-muted); }
+
+  .agenda-list { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; max-width: 960px; }
+  .agenda-item { display: flex; align-items: center; gap: 20px; padding: 18px 28px; }
+  .agenda-item .idx { font-family: var(--ipw-font-mono); font-size: 14px; font-weight: 700;
+    color: var(--ipw-color-secondary); flex-shrink: 0; }
+  .agenda-item h4 { font-size: 17px; font-weight: 700; }
+  .agenda-item p { font-size: 13px; color: var(--ipw-color-muted); margin-left: auto; }
+
+  /* cover */
+  .slide.cover { color: var(--ipw-color-text); }
+  .cover .slide-inner { justify-content: center; align-items: center; text-align: center; }
+  .cover .kicker { color: var(--ipw-color-secondary); }
+  .cover h1 { font-size: 56px; line-height: 1.25; font-weight: 800; max-width: 960px; }
+  .cover h1 c { color: var(--ipw-color-secondary); }
+  .cover .sub { margin-top: 24px; font-size: 18px; color: var(--ipw-color-muted); max-width: 760px; }
+  .cover .meta-pill { margin-top: 48px; padding: 12px 28px; font-size: 13px; letter-spacing: 1px;
+    color: var(--ipw-color-muted); border-radius: 999px; }
+
+  /* divider：大号幽灵数字 + 辉光 */
+  .slide.divider { color: var(--ipw-color-text); }
+  .divider .slide-inner { justify-content: center; }
+  .divider .bignum { position: absolute; right: 56px; top: 50%; transform: translateY(-50%);
+    font-size: 340px; font-weight: 800; color: rgba(255,255,255,0.05); line-height: 1;
+    font-family: var(--ipw-font-display); z-index: 1;
+    text-shadow: 0 0 80px rgba(91,141,239,0.25); }
+  .divider h2 { font-size: 44px; font-weight: 800; max-width: 720px; position: relative; }
+  .divider h2 v { color: var(--ipw-color-accent); }
+  .divider .kicker { color: var(--ipw-color-accent); }
+
+  /* ending */
+  .slide.ending { color: var(--ipw-color-text); }
+  .ending .slide-inner { justify-content: center; align-items: center; text-align: center; }
+  .ending h2 { font-size: 42px; font-weight: 800; max-width: 880px; }
+  .ending h2 c { color: var(--ipw-color-secondary); }
+  .ending .contact-card { margin-top: 32px; padding: 20px 40px; font-size: 15px;
+    color: var(--ipw-color-muted); border-radius: var(--ipw-card-radius); }
+</style>
+<link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide cover" id="cover">
+    <div class="glow blue"></div>
+    <div class="glow violet"></div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="cover.kicker">NEW PRODUCT LAUNCH · 2026</div>
+      <h1 data-ipw-text="cover.title">新一代智能协作平台<br /><c>星流 FlowX</c> 产品发布宣讲</h1>
+      <p class="sub" data-ipw-text="cover.sub">从市场洞察到上市打法：定位、定价、渠道与推广节奏的一次讲清</p>
+      <div class="meta-pill glass" data-ipw-text="cover.meta">市场部 · 张三 · 2026 年 8 月</div>
+    </div>
+    <div class="footer">
+      <span class="stamp" data-ipw-text="cover.stamp">INTERNAL · 内部宣讲</span>
+      <span class="pagenum">01</span>
+    </div>
+  </section>
+
+  <!-- 2 Agenda（玻璃卡片列表） -->
+  <section class="slide" id="agenda">
+    <div class="glow blue"></div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="agenda.kicker">AGENDA</div>
+      <h1 class="action-title" data-ipw-text="agenda.title">今天分四步讲清：为什么做、做什么、<c>怎么卖</c>、怎么推</h1>
+      <div class="agenda-list">
+        <div class="agenda-item glass">
+          <span class="idx">01</span>
+          <h4 data-ipw-text="agenda.s1t">市场洞察与机会</h4>
+          <p data-ipw-text="agenda.s1d">赛道规模、竞争格局与目标客群</p>
+        </div>
+        <div class="agenda-item glass">
+          <span class="idx">02</span>
+          <h4 data-ipw-text="agenda.s2t">产品定位与核心能力</h4>
+          <p data-ipw-text="agenda.s2d">差异化卖点与产品目录结构</p>
+        </div>
+        <div class="agenda-item glass">
+          <span class="idx">03</span>
+          <h4 data-ipw-text="agenda.s3t">定价与渠道策略</h4>
+          <p data-ipw-text="agenda.s3d">定价体系、渠道管理与销售激励</p>
+        </div>
+        <div class="agenda-item glass">
+          <span class="idx">04</span>
+          <h4 data-ipw-text="agenda.s4t">上市推广节奏</h4>
+          <p data-ipw-text="agenda.s4d">传播渠道、里程碑与考核指标</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">INTERNAL · 内部宣讲</span><span class="pagenum">02</span></div>
+  </section>
+
+  <!-- 3 KPI 玻璃瓷砖 -->
+  <section class="slide" id="kpi">
+    <div class="glow violet"></div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="kpi.kicker">MARKET OPPORTUNITY</div>
+      <h1 class="action-title" data-ipw-text="kpi.title">目标赛道年规模 <b>86 亿元</b>，智能协作细分增速领跑，头部集中度仍低</h1>
+      <div class="insight-banner glass" data-ipw-text="kpi.banner">窗口期约 18 个月 —— 先发品牌认知比功能完备更值钱</div>
+      <div class="tiles">
+        <div class="tile glass blue"><div class="label" data-ipw-text="kpi.t1l">赛道年规模（亿元）</div><div class="value" data-ipw-text="kpi.t1v">86</div><div class="delta" data-ipw-text="kpi.t1d">同比 +24% · 连续 3 年双位数</div></div>
+        <div class="tile glass cyan"><div class="label" data-ipw-text="kpi.t2l">目标客群渗透率</div><div class="value" data-ipw-text="kpi.t2v">11%</div><div class="delta" data-ipw-text="kpi.t2d">中大型企业仍处早期采用期</div></div>
+        <div class="tile glass green"><div class="label" data-ipw-text="kpi.t3l">首年营收目标（万元）</div><div class="value" data-ipw-text="kpi.t3v">6,000</div><div class="delta" data-ipw-text="kpi.t3d">对应市占率约 0.7%</div></div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">INTERNAL · 内部宣讲</span><span class="pagenum">03</span></div>
+  </section>
+
+  <!-- 4 玻璃卡片双栏要点 -->
+  <section class="slide" id="analysis">
+    <div class="glow blue"></div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="ana.kicker">POSITIONING</div>
+      <h1 class="action-title" data-ipw-text="ana.title">定位一句话：为 200-2000 人企业打造的<v>开箱即用</v>智能协作平台</h1>
+      <div class="cols">
+        <div class="bullet-block glass">
+          <h3><span class="dot"></span><span data-ipw-text="ana.gt">三大核心卖点</span></h3>
+          <ul>
+            <li data-ipw-text="ana.g1">AI 原生工作流引擎：会议纪要、待办、报表自动生成</li>
+            <li data-ipw-text="ana.g2">开箱即用：标准部署 3 天上线，无需实施顾问驻场</li>
+            <li data-ipw-text="ana.g3">开放集成：预置 120+ 主流 SaaS 连接器</li>
+          </ul>
+        </div>
+        <div class="bullet-block glass cyan">
+          <h3><span class="dot"></span><span data-ipw-text="ana.rt">差异化护城河</span></h3>
+          <ul>
+            <li data-ipw-text="ana.r1">价格带卡位：介于轻量工具与重型套件之间的空白区</li>
+            <li data-ipw-text="ana.r2">数据本地化选项，满足上市公司合规要求</li>
+            <li data-ipw-text="ana.r3">行业模板市场，让客户成功可复用、可复制</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">INTERNAL · 内部宣讲</span><span class="pagenum">04</span></div>
+  </section>
+
+  <!-- 5 Divider（幽灵数字 + 辉光） -->
+  <section class="slide divider" id="divider">
+    <div class="glow violet"></div>
+    <div class="bignum" data-ipw-text="div.num">03</div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="div.kicker">PART 03</div>
+      <h2 data-ipw-text="div.title">定价与渠道策略：<br />用<v>伙伴体系</v>撬动规模化增长</h2>
+    </div>
+    <div class="footer">
+      <span class="stamp">INTERNAL · 内部宣讲</span>
+      <span class="pagenum">05</span>
+    </div>
+  </section>
+
+  <!-- 6 Ending -->
+  <section class="slide ending" id="ending">
+    <div class="glow blue"></div>
+    <div class="glow violet"></div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="end.kicker">CALL TO ACTION</div>
+      <h2 data-ipw-text="end.title">9 月 1 日全渠道上市，<br />一起把 <c>星流 FlowX</c> 打成细分第一</h2>
+      <div class="contact-card glass" data-ipw-text="end.contact">市场部 · 张三 · 宣讲材料与话术包会后同步至全员</div>
+    </div>
+    <div class="footer">
+      <span class="stamp">INTERNAL · 内部宣讲</span>
+      <span class="pagenum">06</span>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

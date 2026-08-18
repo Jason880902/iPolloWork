@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Keynote 发布会 — 产品发布模版</title>
+<link rel="stylesheet" href="assets/fonts.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #ECE9E2;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    border-radius: 18px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex; flex-direction: column;
+    padding: 64px 80px;
+    background: var(--ipw-color-bg);
+    color: var(--ipw-color-text);
+    box-shadow: 0 30px 80px -20px rgba(21, 20, 15, 0.35);
+  }
+  .slide.dark { background: var(--ipw-color-accent); color: var(--ipw-color-bg); }
+  .slide.brand { background: var(--ipw-gradient-brand); color: #FFFFFF; }
+
+  .num {
+    position: absolute; top: 24px; right: 32px;
+    font-family: var(--ipw-font-mono);
+    font-size: 11px; letter-spacing: 0.18em;
+    opacity: 0.55;
+  }
+  .eyebrow {
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    opacity: 0.65; margin-bottom: 20px;
+  }
+  .eyebrow.terra { color: var(--ipw-color-primary); opacity: 1; }
+  .eyebrow.gold { color: var(--ipw-color-secondary); opacity: 1; }
+
+  h1 { font-family: var(--ipw-font-display); font-size: 84px; font-weight: 800; line-height: 1.05; letter-spacing: -0.025em; }
+  h2 { font-family: var(--ipw-font-display); font-size: 64px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 24px; }
+  p.lead { font-size: 24px; line-height: 1.5; opacity: 0.78; max-width: 65ch; }
+
+  .se { font-family: var(--ipw-font-serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+  .accent-terra { color: var(--ipw-color-primary); }
+  .accent-gold { color: var(--ipw-color-secondary); }
+
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: auto; }
+  .card {
+    padding: 28px;
+    border-radius: var(--ipw-card-radius);
+    background: var(--ipw-card-bg);
+    border: 1px solid var(--ipw-card-border);
+    box-shadow: var(--ipw-card-shadow);
+  }
+  .dark .card { background: var(--ipw-card-dark-bg); border-color: var(--ipw-card-dark-border); }
+  .card .icon { font-size: 36px; margin-bottom: 14px; }
+  .card .t { font-weight: 600; font-size: 18px; margin-bottom: 6px; }
+  .card .d { font-size: 14px; opacity: 0.7; line-height: 1.6; }
+  .card .k { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; font-family: var(--ipw-font-display); }
+  .card .k .u { font-size: 24px; font-weight: 600; }
+  .card .l { font-size: 14px; opacity: 0.65; }
+
+  /* agenda */
+  .agenda-list { margin-top: auto; }
+  .agenda-item {
+    display: flex; align-items: baseline; gap: 32px;
+    padding: 26px 0;
+    border-top: 1px solid var(--ipw-color-border);
+  }
+  .agenda-item:last-child { border-bottom: 1px solid var(--ipw-color-border); }
+  .agenda-item .idx { font-family: var(--ipw-font-mono); font-size: 15px; font-weight: 500; color: var(--ipw-color-primary); letter-spacing: 0.1em; flex-shrink: 0; }
+  .agenda-item .at { font-size: 30px; font-weight: 700; letter-spacing: -0.015em; font-family: var(--ipw-font-display); }
+  .agenda-item .ad { margin-left: auto; font-size: 15px; color: var(--ipw-color-muted); max-width: 320px; text-align: right; }
+
+  /* problem bullets */
+  .points { list-style: none; margin-top: auto; }
+  .points li { font-size: 24px; line-height: 2; opacity: 0.78; }
+  .points li::before { content: "· "; }
+
+  /* cover meta */
+  .cover-meta { margin-top: auto; display: flex; align-items: center; gap: 16px; font-size: 14px; }
+  .cover-meta .avatar {
+    width: 32px; height: 32px; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.25);
+    display: grid; place-items: center;
+    font-family: var(--ipw-font-serif); font-style: italic; font-weight: 400; font-size: 16px;
+  }
+
+  /* thanks footer */
+  .thanks-foot { display: flex; align-items: flex-end; justify-content: space-between; font-size: 18px; }
+  .thanks-foot .mono { font-family: var(--ipw-font-mono); font-size: 16px; opacity: 0.85; }
+</style><link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide brand" id="cover">
+    <span class="num">01 / 07</span>
+    <div class="eyebrow" data-ipw-text="cover.kicker">Product Keynote · 2026</div>
+    <h1 style="margin-top:auto" data-ipw-text="cover.title">Lumen <span class="se">2.0</span></h1>
+    <p class="lead" style="font-size:28px; opacity:0.95; margin-top:24px" data-ipw-text="cover.sub">让每一张报表，都值得被看见 —— 全新一代智能数据工作台</p>
+    <div class="cover-meta">
+      <div class="avatar">L</div>
+      <span data-ipw-text="cover.meta">产品发布会 · 2026 年 9 月</span>
+    </div>
+  </section>
+
+  <!-- 2 Agenda -->
+  <section class="slide" id="agenda">
+    <span class="num">02 / 07</span>
+    <div class="eyebrow terra" data-ipw-text="agenda.kicker">Agenda · 议程</div>
+    <h2 data-ipw-text="agenda.title">二十分钟，三件事。</h2>
+    <div class="agenda-list">
+      <div class="agenda-item">
+        <span class="idx">01</span>
+        <span class="at" data-ipw-text="agenda.i1t">问题</span>
+        <span class="ad" data-ipw-text="agenda.i1d">数据越做越多，为什么没人看</span>
+      </div>
+      <div class="agenda-item">
+        <span class="idx">02</span>
+        <span class="at" data-ipw-text="agenda.i2t">方案</span>
+        <span class="ad" data-ipw-text="agenda.i2d">Lumen 2.0 的三件新武器</span>
+      </div>
+      <div class="agenda-item">
+        <span class="idx">03</span>
+        <span class="at" data-ipw-text="agenda.i3t">证据</span>
+        <span class="ad" data-ipw-text="agenda.i3d">beta 客户 90 天的真实数据</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 Problem -->
+  <section class="slide" id="problem">
+    <span class="num">03 / 07</span>
+    <div class="eyebrow terra" data-ipw-text="problem.kicker">问题</div>
+    <h2 data-ipw-text="problem.title">报表做出来了，<br /><span class="accent-terra">却没人读完</span>。</h2>
+    <ul class="points">
+      <li data-ipw-text="problem.p1">一份周报平均 40 页，读者停留不到 3 分钟</li>
+      <li data-ipw-text="problem.p2">数据散落在 6 个系统，对齐口径要两天</li>
+      <li data-ipw-text="problem.p3">图表越做越多，结论越来越少</li>
+    </ul>
+  </section>
+
+  <!-- 4 Solution -->
+  <section class="slide dark" id="solution">
+    <span class="num">04 / 07</span>
+    <div class="eyebrow gold" data-ipw-text="solution.kicker">方案</div>
+    <h2 style="font-size:88px; margin-top:auto; margin-bottom:auto" data-ipw-text="solution.title">从堆图表，到<br /><span class="se accent-gold">讲清一件事</span></h2>
+    <p class="lead" style="font-size:22px; opacity:0.6" data-ipw-text="solution.sub">Lumen 2.0 用 AI 先写结论，再配图表 —— 读者 30 秒看懂重点。</p>
+  </section>
+
+  <!-- 5 Features -->
+  <section class="slide" id="features">
+    <span class="num">05 / 07</span>
+    <div class="eyebrow" data-ipw-text="features.kicker">产品亮点</div>
+    <h2 data-ipw-text="features.title">三件新武器</h2>
+    <div class="grid3">
+      <div class="card">
+        <div class="icon">⚡</div>
+        <div class="t" data-ipw-text="features.c1t">智能摘要</div>
+        <div class="d" data-ipw-text="features.c1d">一键生成 100 字结论，先看结论再看图</div>
+      </div>
+      <div class="card">
+        <div class="icon">🎯</div>
+        <div class="t" data-ipw-text="features.c2t">口径对齐</div>
+        <div class="d" data-ipw-text="features.c2d">6 个数据源统一指标口径，自动稽核</div>
+      </div>
+      <div class="card">
+        <div class="icon">📤</div>
+        <div class="t" data-ipw-text="features.c3t">一键发布</div>
+        <div class="d" data-ipw-text="features.c3d">公众号 / 飞书 / PNG，排版不再重写</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 Stats -->
+  <section class="slide dark" id="stats">
+    <span class="num">06 / 07</span>
+    <div class="eyebrow gold" data-ipw-text="stats.kicker">数据</div>
+    <h2 data-ipw-text="stats.title">beta 90 天</h2>
+    <div class="grid3">
+      <div class="card"><div class="k accent-gold" data-ipw-text="stats.k1v">30<span class="u">s</span></div><div class="l" data-ipw-text="stats.k1l">读者平均看懂结论的时间</div></div>
+      <div class="card"><div class="k accent-gold" data-ipw-text="stats.k2v">87<span class="u">%</span></div><div class="l" data-ipw-text="stats.k2l">周报阅读完成率（原 23%）</div></div>
+      <div class="card"><div class="k accent-gold" data-ipw-text="stats.k3v">42<span class="u">家</span></div><div class="l" data-ipw-text="stats.k3l">beta 客户全量续费</div></div>
+    </div>
+  </section>
+
+  <!-- 7 Thanks -->
+  <section class="slide brand" id="thanks">
+    <span class="num">07 / 07</span>
+    <h1 style="margin:auto 0; font-size:120px" data-ipw-text="thanks.title">Thanks.</h1>
+    <div class="thanks-foot">
+      <div>
+        <div class="mono" data-ipw-text="thanks.mono">$ open lumen-2.0 --ga 09.18</div>
+        <div style="opacity:0.85; margin-top:6px" data-ipw-text="thanks.cta">9 月 18 日全量开放 · 扫码申请试用</div>
+      </div>
+      <div style="opacity:0.7" data-ipw-text="thanks.credit">产品发布团队 · 谢谢观看</div>
+    </div>
+  </section>
+
+</div>
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let i = 0;
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') i = Math.min(i + 1, slides.length - 1);
+    else if (e.key === 'ArrowLeft') i = Math.max(i - 1, 0);
+    else return;
+    slides[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+</script>
+</body>
+</html>

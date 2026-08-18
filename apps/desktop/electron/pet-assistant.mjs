@@ -14,7 +14,7 @@ function copyForPetEvent(input) {
   const detail = typeof input.detail === "string" ? input.detail.trim().slice(0, 200) : "";
   switch (input.type) {
     case "task.completed":
-      return { kind: "praise", text: "任务跑完啦，韩大哥出品就是稳！" };
+      return { kind: "praise", text: "任务跑完啦，出品就是稳！" };
     case "task.failed":
       return { kind: "reminder", text: detail ? `有个任务出错了：${detail}` : "有个任务出错了，等你有空看一眼。" };
     case "permission.asked":

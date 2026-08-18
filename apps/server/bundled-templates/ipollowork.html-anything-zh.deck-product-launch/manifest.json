@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.html-anything-zh.deck-product-launch",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "launch",
+  "style": "bold",
+  "tags": [
+    "launch",
+    "keynote",
+    "product",
+    "consumer",
+    "marketing",
+    "html-anything"
+  ],
+  "surface": "design",
+  "title": "产品发布 Launch",
+  "description": "消费级智能产品上市发布 Keynote 模版：暗色 hero 封面 + 亮色内容页交替，暖橙→桃渐变 accent，超大字重标题、特性卡、玻璃拟态暗页卡、三档定价与「金句 + CTA」收尾。适合新品发布会、上市评审、渠道宣讲与预售预热。移植自 html-anything 的 deck-product-launch skill。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "nexu-io/html-anything",
+    "repository": "https://github.com/nexu-io/html-anything",
+    "license": "Apache-2.0",
+    "attribution": "Ported from the html-anything skill 'deck-product-launch' (example.html) to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (暖橙)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (橙)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (桃)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-dark",
+        "label": "Dark hero 底色",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-faint",
+        "label": "Faint text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-gradient",
+        "label": "品牌渐变 (橙→桃)",
+        "type": "text",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-serif",
+        "label": "Serif 金句字体",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例产品（Halo S2 耳机）与全部文案、价格替换为真实新品信息。",
+    "保持「暗 hero / 亮内容」的明暗交替节奏，不要把所有页改成同一底色。",
+    "品牌渐变只用于 icon、CTA、hero 装置和关键词渐变字，正文不要大面积铺渐变。",
+    "每页一个核心信息：kicker 给编号与章节，标题一句话说清卖点。",
+    "定价页主推档用深色 pro 卡突出，档位保持三档以内。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

@@ -25,6 +25,7 @@ import { PET_TEMPLATES } from "../../../kernel/pet-templates";
 import {
   PET_PERSONA_PROMPT,
   PET_PERSONA_STORAGE_KEY,
+  readPetPersona,
 } from "../../../kernel/pet-persona";
 import { fetchPetEngineProviders } from "../../../kernel/pet-engine";
 import { useLocal } from "../../../kernel/local-provider";
@@ -147,6 +148,13 @@ export function PetView({ onOpenProviderAuth, onOpenExtensions }: {
       .then((config) => {
         setTemplateId(config.templateId);
         setNickname(config.nickname);
+        // 未保存自定义人设时，展示昵称对应的默认人设（昵称会替换默认名）。
+        try {
+          const custom = window.localStorage.getItem(PET_PERSONA_STORAGE_KEY)?.trim();
+          if (!custom) setPersona(readPetPersona(config.nickname));
+        } catch {
+          // ignore
+        }
       })
       .catch(() => undefined);
     try {
@@ -285,7 +293,7 @@ export function PetView({ onOpenProviderAuth, onOpenExtensions }: {
                   </div>
                   <div className="flex flex-col gap-0.5 px-2.5 py-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-[13px] font-medium">{template.defaultName}</span>
+                      <span className="text-[13px] font-medium">{nickname || template.defaultName}</span>
                       {selected ? (
                         <span className="flex h-4 w-4 items-center justify-center rounded-full bg-indigo-500 text-[10px] text-white">
                           ✓

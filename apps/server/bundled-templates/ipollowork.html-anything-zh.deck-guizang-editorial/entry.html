@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>归藏 · 东方编辑风</title>
+<link rel="stylesheet" href="assets/fonts.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--ipw-color-surface);
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: 1.6;
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--ipw-color-bg);
+    color: var(--ipw-color-text);
+  }
+  .slide.ink { background: var(--ipw-color-primary); color: var(--ipw-color-bg); }
+  .slide-inner { position: absolute; inset: 48px; display: flex; flex-direction: column; justify-content: space-between; }
+
+  .display { font-family: var(--ipw-font-display); font-weight: 400; }
+  .it { font-family: var(--ipw-font-display); font-style: italic; font-weight: 400; }
+  .kicker { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; }
+  .kicker.muted, .slide .muted { color: var(--ipw-color-muted); }
+  .slide.ink .muted { color: var(--ipw-color-bg); }
+  .hairline { border: 0; border-top: 1px solid currentColor; opacity: 0.3; }
+  .folio { font-feature-settings: 'tnum'; font-variant-numeric: tabular-nums; }
+
+  header.row, footer.row { display: flex; align-items: baseline; justify-content: space-between; }
+  footer.row { opacity: 0.7; }
+
+  /* L01 Hero Cover */
+  .cover-hero { font-size: 92px; line-height: 1.12; letter-spacing: 0.01em; margin-top: 20px; }
+  .cover-lead { font-size: 17px; max-width: 640px; margin-top: 32px; color: var(--ipw-color-accent); }
+
+  /* Contents */
+  .toc-list { list-style: none; margin-top: 8px; }
+  .toc-list li { display: flex; align-items: baseline; gap: 32px; padding: 22px 0; border-top: 1px solid var(--ipw-color-border); }
+  .toc-list li:last-child { border-bottom: 1px solid var(--ipw-color-border); }
+  .toc-num { font-family: var(--ipw-font-display); font-style: italic; font-size: 22px; width: 56px; flex-shrink: 0; color: var(--ipw-color-accent); }
+  .toc-title { font-family: var(--ipw-font-display); font-size: 30px; width: 320px; flex-shrink: 0; }
+  .toc-desc { font-size: 14px; color: var(--ipw-color-accent); }
+
+  /* L02 Act Divider */
+  .act-bignum { position: absolute; right: 32px; top: 50%; transform: translateY(-50%);
+    font-family: var(--ipw-font-display); font-size: 480px; line-height: 1;
+    color: var(--ipw-color-secondary); pointer-events: none; }
+  .act-headline { font-size: 120px; line-height: 1.04; margin-top: 16px; position: relative; }
+  .act-quote { font-size: 17px; margin-top: 36px; max-width: 560px; opacity: 0.75; position: relative; }
+
+  /* L03 Big Numbers Grid */
+  .num-headline { font-size: 56px; line-height: 1.1; margin-top: 8px; }
+  .num-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+  .num-card { border-top: 1px solid var(--ipw-card-border); padding-top: 16px;
+    background: var(--ipw-card-bg); border-radius: var(--ipw-card-radius); box-shadow: var(--ipw-card-shadow); }
+  .num-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: var(--ipw-color-accent); }
+  .num-value { font-family: var(--ipw-font-display); font-size: 84px; line-height: 1; margin-top: 8px; }
+  .num-value .unit { font-family: var(--ipw-font-display); font-style: italic; font-size: 40px; }
+  .num-note { font-size: 13px; line-height: 1.5; margin-top: 12px; color: #3a382f; }
+
+  /* L08 Big Quote */
+  .big-quote { font-family: var(--ipw-font-display); font-size: 64px; line-height: 1.3; max-width: 980px; }
+  .quote-trans { font-size: 15px; opacity: 0.6; margin-top: 32px; max-width: 620px; }
+  .quote-attr { display: flex; align-items: baseline; gap: 24px; }
+
+  /* Ending */
+  .end-headline { font-size: 76px; line-height: 1.15; margin-top: 16px; max-width: 900px; }
+  .end-contact { font-size: 15px; opacity: 0.75; margin-top: 40px; }
+</style><link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 L01 Hero Cover · paper -->
+  <section class="slide" id="cover">
+    <div class="slide-inner">
+      <header class="row kicker">
+        <span data-ipw-text="cover.brand">归藏 GUIZANG — 东方美学季刊</span>
+        <span data-ipw-text="cover.topic">品牌编辑内容特辑</span>
+        <span class="folio" data-ipw-text="cover.folio">01 / 06</span>
+      </header>
+      <hr class="hairline" />
+      <div>
+        <div class="kicker muted" data-ipw-text="cover.kicker">ISSUE №01 · 2026 AUTUMN</div>
+        <h1 class="display cover-hero" data-ipw-text="cover.title">东方美学，<br/>品牌的<span class="it">另一种</span>叙事。</h1>
+        <p class="cover-lead" data-ipw-text="cover.lead">一本关于东方审美如何进入当代品牌编辑内容的样刊 —— 纸感、留白与衬线的版面实验。</p>
+      </div>
+      <footer class="row kicker">
+        <span data-ipw-text="cover.byline">出品 · 归藏编辑室</span>
+        <span class="it" data-ipw-text="cover.note">A quarterly for editorial branding.</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- 2 Contents · paper -->
+  <section class="slide" id="contents">
+    <div class="slide-inner">
+      <header class="row kicker">
+        <span data-ipw-text="toc.brand">归藏 GUIZANG — Issue №01</span>
+        <span data-ipw-text="toc.topic">目录 Contents</span>
+        <span class="folio" data-ipw-text="toc.folio">02 / 06</span>
+      </header>
+      <hr class="hairline" />
+      <div>
+        <div class="kicker muted" data-ipw-text="toc.kicker">本期四辑</div>
+        <ul class="toc-list">
+          <li>
+            <span class="toc-num" data-ipw-text="toc.n1">01</span>
+            <span class="toc-title display" data-ipw-text="toc.t1">溯源</span>
+            <span class="toc-desc" data-ipw-text="toc.d1">东方审美的四个原点：器、纸、墨、留白。</span>
+          </li>
+          <li>
+            <span class="toc-num" data-ipw-text="toc.n2">02</span>
+            <span class="toc-title display" data-ipw-text="toc.t2">转译</span>
+            <span class="toc-desc" data-ipw-text="toc.d2">从水墨语言到版面系统：网格、字距与呼吸感。</span>
+          </li>
+          <li>
+            <span class="toc-num" data-ipw-text="toc.n3">03</span>
+            <span class="toc-title display" data-ipw-text="toc.t3">实践</span>
+            <span class="toc-desc" data-ipw-text="toc.d3">三个品牌编辑内容案例的完整拆解。</span>
+          </li>
+          <li>
+            <span class="toc-num" data-ipw-text="toc.n4">04</span>
+            <span class="toc-title display" data-ipw-text="toc.t4">沉淀</span>
+            <span class="toc-desc" data-ipw-text="toc.d4">归藏的方法、边界，与不做什么。</span>
+          </li>
+        </ul>
+      </div>
+      <footer class="row kicker">
+        <span data-ipw-text="toc.byline">归藏编辑室 · 2026 秋</span>
+        <span class="it" data-ipw-text="toc.note">Set in Playfair Display &amp; Songti.</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- 3 L02 Act Divider · ink reverse -->
+  <section class="slide ink" id="act">
+    <div class="act-bignum" aria-hidden="true" data-ipw-text="act.num">壹</div>
+    <div class="slide-inner">
+      <header class="row kicker">
+        <span data-ipw-text="act.brand">归藏 GUIZANG — Issue №01</span>
+        <span data-ipw-text="act.topic">Act I</span>
+        <span class="folio" data-ipw-text="act.folio">03 / 06</span>
+      </header>
+      <div>
+        <div class="kicker muted" data-ipw-text="act.kicker">第一辑 · 溯源</div>
+        <h1 class="display act-headline" data-ipw-text="act.title">为什么<span class="it">东方美学</span><br/>是品牌的<br/>下一种语言。</h1>
+        <p class="act-quote" data-ipw-text="act.quote">当所有品牌都在争夺注意力，克制本身成了最稀缺的表达。</p>
+      </div>
+      <footer class="row kicker">
+        <span data-ipw-text="act.byline">BY 归藏编辑室 · 2026 AUTUMN</span>
+        <span class="it" data-ipw-text="act.note">Ink on paper, nothing else.</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- 4 L03 Big Numbers Grid · paper -->
+  <section class="slide" id="numbers">
+    <div class="slide-inner">
+      <header class="row kicker">
+        <span data-ipw-text="num.brand">归藏 GUIZANG — Issue №01</span>
+        <span data-ipw-text="num.topic">数字 Numbers</span>
+        <span class="folio" data-ipw-text="num.folio">04 / 06</span>
+      </header>
+      <hr class="hairline" />
+      <div>
+        <div class="kicker muted" data-ipw-text="num.kicker">By the numbers</div>
+        <h2 class="display num-headline" data-ipw-text="num.title">四个数字，<span class="it">一条线索</span> —— 编辑内容正在成为品牌的长期资产。</h2>
+      </div>
+      <div class="num-grid">
+        <article class="num-card">
+          <div class="num-label" data-ipw-text="num.l1">合作品牌</div>
+          <div class="num-value" data-ipw-text="num.v1">30<span class="unit">+</span></div>
+          <p class="num-note" data-ipw-text="num.n1">茶饮、香氛、织物与器物，皆为东方生活方式品牌。</p>
+        </article>
+        <article class="num-card">
+          <div class="num-label" data-ipw-text="num.l2">内容专题</div>
+          <div class="num-value" data-ipw-text="num.v2">12</div>
+          <p class="num-note" data-ipw-text="num.n2">每季三辑，从节气、器物到匠人手记。</p>
+        </article>
+        <article class="num-card">
+          <div class="num-label" data-ipw-text="num.l3">版面语言</div>
+          <div class="num-value" data-ipw-text="num.v3">4<span class="unit">套</span></div>
+          <p class="num-note" data-ipw-text="num.n3">墨、靛、森、沙 —— 四套纸感调色，各归其位。</p>
+        </article>
+        <article class="num-card">
+          <div class="num-label" data-ipw-text="num.l4">渐变与装饰</div>
+          <div class="num-value" data-ipw-text="num.v4">0</div>
+          <p class="num-note" data-ipw-text="num.n4">全刊不用渐变、阴影与圆角，只留衬线与细线。</p>
+        </article>
+      </div>
+      <footer class="row kicker">
+        <span data-ipw-text="num.byline">Source: 归藏编辑室内部 · 2026-08</span>
+        <span class="it" data-ipw-text="num.note">Numbers set in Playfair italic.</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- 5 L08 Big Quote · ink -->
+  <section class="slide ink" id="quote">
+    <div class="slide-inner">
+      <header class="row kicker">
+        <span data-ipw-text="quote.brand">归藏 GUIZANG — Issue №01</span>
+        <span data-ipw-text="quote.topic">引文 Quote</span>
+        <span class="folio" data-ipw-text="quote.folio">05 / 06</span>
+      </header>
+      <div>
+        <div class="kicker muted" data-ipw-text="quote.kicker">本辑题辞</div>
+        <p class="big-quote" data-ipw-text="quote.text" style="margin-top:28px;">「大音希声，<br/>大象无形。」</p>
+        <p class="quote-trans" data-ipw-text="quote.trans">The greatest note is soundless; the greatest form is shapeless. — 品牌的最高境界，是让人忘记它在表达。</p>
+      </div>
+      <footer class="row kicker quote-attr">
+        <span data-ipw-text="quote.attr">《道德经》 · 第四十一章</span>
+        <span class="it" data-ipw-text="quote.note">Quoted in Issue №01.</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- 6 Ending / Colophon · ink -->
+  <section class="slide ink" id="ending">
+    <div class="slide-inner">
+      <header class="row kicker">
+        <span data-ipw-text="end.brand">归藏 GUIZANG — Issue №01</span>
+        <span data-ipw-text="end.topic">版权页 Colophon</span>
+        <span class="folio" data-ipw-text="end.folio">06 / 06</span>
+      </header>
+      <div>
+        <div class="kicker muted" data-ipw-text="end.kicker">NEXT ISSUE · 2026 WINTER</div>
+        <h2 class="display end-headline" data-ipw-text="end.title">与归藏一起，<br/>做一本<span class="it">会呼吸的</span>品牌刊物。</h2>
+        <p class="end-contact" data-ipw-text="end.contact">归藏编辑室 · 品牌内容约稿与合作 · 2026 年秋 · 下期主题「冬藏」</p>
+      </div>
+      <footer class="row kicker">
+        <span data-ipw-text="end.byline">GUIZANG EDITORIAL OFFICE</span>
+        <span class="it" data-ipw-text="end.note">Printed on screen, in ink.</span>
+      </footer>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

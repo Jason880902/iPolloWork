@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.academic.quarto-clean",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "data",
+  "style": "minimal",
+  "tags": [
+    "clean",
+    "minimal",
+    "data",
+    "quarto"
+  ],
+  "surface": "design",
+  "title": "极简 Clean 汇报",
+  "description": "Quarto reveal.js clean 主题的静态 HTML 移植：白底、极细字重排版、左对齐标题块、青蓝强调色（#107895）配锈红警示色（#9A2515）、无框线数据表与等宽代码块。适合数据分析汇报、经营复盘、学术与技术分享。移植自 grantmcdermott/quarto-revealjs-clean（MIT）。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "grantmcdermott/quarto-revealjs-clean",
+    "repository": "https://github.com/grantmcdermott/quarto-revealjs-clean",
+    "license": "MIT",
+    "attribution": "Ported from the Quarto reveal.js clean theme by Grant McDermott to a self-contained iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (teal)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (rust alert)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (teal tint)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface (paper tone)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text (jet)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border / table rule",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-mono",
+        "label": "Mono font (code/data)",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-type-scale",
+        "label": "Type scale",
+        "type": "number",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-body-line-height",
+        "label": "Body line height",
+        "type": "number",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案全部替换为真实汇报内容，数字与口径以中台指标字典为准。",
+    "保持细字重（200/300）排版：标题不要加粗超过 600，否则会丢掉 clean 的气质。",
+    "语义色不要改派用途：青蓝 #107895 只用于副标题、强调与正向，锈红 #9A2515 只用于风险与缺口警示。",
+    "表格保持无框线：只允许表头下方和表尾各一条 2px 横线，不要加竖线或斑马纹。",
+    "全部页面保持白底，本模版没有深色页；页码固定右下角灰色「n / 6」。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

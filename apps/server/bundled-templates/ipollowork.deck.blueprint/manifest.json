@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.deck.blueprint",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "technology",
+  "style": "technical",
+  "tags": [
+    "blueprint",
+    "engineering",
+    "technical",
+    "dark"
+  ],
+  "surface": "design",
+  "title": "Blueprint 工程蓝图",
+  "description": "工程蓝图风幻灯片模版：深海军蓝底（#0A1B38）上的 cyan 细线 schematic —— 1px 发丝线节点框、连接线、淡淡的蓝图网格与直角边框；mono 大写 eyebrow；coral（#F1764E）全篇只服务一个焦点路径/结果。全部使用系统字体栈，无外部资源。适合技术方案评审、架构宣讲、研发汇报等工程/学术场景。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "slide-maker",
+    "repository": "https://github.com/addsumtech/slides_maker",
+    "license": "MIT",
+    "attribution": "Ported from the slide-maker skill 'blueprint' preset to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (cyan)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (steel blue)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (coral focus)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text (ink)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-color-grid",
+        "label": "Blueprint grid line",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-mono",
+        "label": "Mono font (labels)",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-type-scale",
+        "label": "Type scale",
+        "type": "number",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-body-line-height",
+        "label": "Body line height",
+        "type": "number",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Node background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Node border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Node radius (0)",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Node shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案全部替换为真实宣讲内容，eyebrow 保持 mono 全大写。",
+    "coral 全篇只服务一个焦点（一条路径、一个指标或一个决策项），不要多点使用。",
+    "所有线条保持 1px 发丝线，禁止加粗、禁止多色实心填充节点。",
+    "节点框保持直角（radius = 0），不要引入圆角卡片。",
+    "架构/流程一律用 boxed nodes + 连接线表达，不要贴截图。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

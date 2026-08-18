@@ -1,0 +1,21 @@
+:root {
+  --ipw-color-primary: #C96442;
+  --ipw-color-secondary: #E9B94A;
+  --ipw-color-accent: #15140F;
+  --ipw-color-bg: #FAFAF7;
+  --ipw-color-surface: #F4F1EC;
+  --ipw-color-text: #0A0A0A;
+  --ipw-color-muted: #6B675E;
+  --ipw-color-border: #E7E5E0;
+  --ipw-font-display: "Inter Tight", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --ipw-font-body: "Inter Tight", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --ipw-font-serif: "Playfair Display", Georgia, "Songti SC", serif;
+  --ipw-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+  --ipw-gradient-brand: linear-gradient(135deg, #C96442 0%, #E9B94A 100%);
+  --ipw-card-bg: #F4F1EC;
+  --ipw-card-border: #E7E5E0;
+  --ipw-card-radius: 14px;
+  --ipw-card-shadow: none;
+  --ipw-card-dark-bg: rgba(255, 255, 255, 0.06);
+  --ipw-card-dark-border: rgba(255, 255, 255, 0.08);
+}

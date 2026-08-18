@@ -1,0 +1,23 @@
+:root {
+  --ipw-color-primary: #2D7D6E;
+  --ipw-color-secondary: #D88A3A;
+  --ipw-color-accent: #C4593F;
+  --ipw-color-bg: #FBFAF6;
+  --ipw-color-surface: #FFFFFF;
+  --ipw-color-surface-2: #F6F3EA;
+  --ipw-color-text: #2A2418;
+  --ipw-color-muted: #5A5140;
+  --ipw-color-faint: #8A7F68;
+  --ipw-color-border: rgba(60, 45, 20, 0.12);
+  --ipw-color-border-strong: rgba(60, 45, 20, 0.24);
+  --ipw-font-display: 'Playfair Display', 'Songti SC', 'Noto Serif CJK SC', serif;
+  --ipw-font-body: 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --ipw-font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, monospace;
+  --ipw-card-bg: #FFFFFF;
+  --ipw-card-border: rgba(60, 45, 20, 0.12);
+  --ipw-card-radius: 14px;
+  --ipw-card-shadow: 0 12px 30px rgba(60, 45, 20, 0.07);
+  --ipw-code-bg: #2A2418;
+  --ipw-code-text: #F4F1E8;
+  --ipw-exercise-bg: #FFF8ED;
+}

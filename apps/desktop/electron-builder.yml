@@ -13,6 +13,7 @@ files:
   - electron/**/*
   - server/**/*
   - "!server/dist/opencode-plugins/**"
+  - resources/lan-preview/**/*
   - package.json
 extraResources:
   - from: ../../examples/plugin-packages/figma

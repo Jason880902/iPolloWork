@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.deck.glassmorphism",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "launch",
+  "style": "glass",
+  "tags": [
+    "glass",
+    "dark",
+    "launch",
+    "saas"
+  ],
+  "surface": "design",
+  "title": "Glassmorphism 产品发布",
+  "description": "玻璃拟态深色科技风幻灯片模版：深邃蓝渐变底 + 蓝/紫径向辉光、磨砂玻璃卡片（backdrop-filter 模糊 + 半透明白底 + 顶部高光 sheen）、KPI 玻璃瓷砖、标题关键词单色高亮。适合新产品发布宣讲、SaaS 路演、科技感方案汇报。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "slide-maker",
+    "repository": "https://github.com/addsumtech/slides_maker",
+    "license": "MIT",
+    "attribution": "Ported from the slide-maker skill 'glassmorphism' preset to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (blue)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (cyan)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (violet)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent-2",
+        "label": "Accent 2 (rose)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent-3",
+        "label": "Accent 3 (green)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-neutral",
+        "label": "Neutral (slate)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-mono",
+        "label": "Mono font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-glass-bg",
+        "label": "Glass background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-glass-border",
+        "label": "Glass border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-glass-blur",
+        "label": "Glass blur",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-glow-blue",
+        "label": "Glow (blue)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-glow-violet",
+        "label": "Glow (violet)",
+        "type": "color",
+        "group": "background"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案全部替换为真实发布内容。",
+    "玻璃卡片只能放在深色底上，切勿把 .glass 用到浅色背景。",
+    "每页最多 2 个径向辉光（.glow），不要叠加更多光斑。",
+    "标题里一次只用一个强调色高亮关键词，不要彩虹式混用。",
+    "强调色不要改派用途：blue=结构/数据，cyan=正向/行动，violet=章节/愿景。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

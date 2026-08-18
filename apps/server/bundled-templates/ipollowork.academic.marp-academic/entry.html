@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>学术答辩 Academic — 论文/课题答辩模版</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8ECF1;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: 1.7;
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(51, 51, 51, 0.12);
+    flex-shrink: 0;
+  }
+
+  /* signature: maroon header band (theme `_header`) */
+  .band {
+    height: 72px;
+    background: var(--ipw-color-primary);
+    color: var(--ipw-color-bg);
+    display: flex; align-items: center;
+    padding: 0 40px;
+    font-family: var(--ipw-font-display);
+    font-size: 26px; font-weight: 700; letter-spacing: 1px;
+  }
+  .content { position: absolute; top: 72px; left: 0; right: 0; bottom: 0; padding: 34px 40px 70px; }
+
+  /* signature: n/N pagination, bottom right, bold */
+  .pagenum {
+    position: absolute; right: 40px; bottom: 20px;
+    font-size: 18px; font-weight: 700;
+    color: var(--ipw-color-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* signature: dashed-top footnote blockquote */
+  .footnote {
+    position: absolute; left: 40px; bottom: 20px;
+    max-width: 980px;
+    border-top: 1.5px dashed var(--ipw-color-muted);
+    padding-top: 8px;
+    font-size: 12.5px; line-height: 1.55;
+    color: var(--ipw-color-muted);
+  }
+  .footnote .fn-mark { color: var(--ipw-color-primary); font-weight: 700; }
+
+  .hl { color: var(--ipw-color-primary); font-weight: 700; }
+  sup.fn-mark { color: var(--ipw-color-primary); font-weight: 700; }
+
+  /* lead grammar: maroon headings left, meta block right */
+  .lead-main { position: absolute; left: 40px; right: 40px; top: 168px; }
+  .lead-main .doc-kind {
+    color: var(--ipw-color-primary);
+    font-size: 20px; font-weight: 700; letter-spacing: 6px;
+    margin-bottom: 26px;
+  }
+  .lead-main h1 {
+    color: var(--ipw-color-primary);
+    font-family: var(--ipw-font-display);
+    font-size: 46px; font-weight: 700; line-height: 1.35;
+    -webkit-text-stroke: 0.6px var(--ipw-color-primary);
+  }
+  .lead-main .subtitle {
+    color: var(--ipw-color-primary);
+    font-size: 25px; font-weight: 700;
+    margin-top: 18px;
+  }
+  .lead-meta {
+    position: absolute; right: 64px; top: 408px;
+    text-align: right;
+    font-size: 19px; line-height: 1.95;
+  }
+  .lead-meta .author { font-weight: 700; font-size: 22px; }
+
+  /* toc */
+  .toc-list { margin: 12px 0 0 8px; padding-left: 36px; }
+  .toc-list li { font-size: 25px; padding: 13px 0; }
+  .toc-list li::marker { color: var(--ipw-color-primary); font-weight: 700; }
+
+  /* bullet content page */
+  .points { padding-left: 30px; max-width: 1120px; }
+  .points > li { font-size: 21px; padding: 10px 0; }
+  .points > li::marker { color: var(--ipw-color-primary); }
+  .points ul { margin-top: 6px; padding-left: 28px; font-size: 0.9em; }
+  .points ul li { padding: 4px 0; color: var(--ipw-color-muted); }
+  .points ul li::marker { color: var(--ipw-color-accent); }
+
+  /* chart + formula page */
+  .cols { display: grid; grid-template-columns: 1.12fr 1fr; gap: 40px; margin-top: 6px; }
+  .chart-card {
+    background: var(--ipw-card-bg);
+    border: 1px solid var(--ipw-card-border);
+    border-radius: var(--ipw-card-radius);
+    box-shadow: var(--ipw-card-shadow);
+    padding: 22px 24px 16px;
+  }
+  .chart-title { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
+  .plot {
+    height: 250px;
+    border-left: 2px solid var(--ipw-color-secondary);
+    border-bottom: 2px solid var(--ipw-color-secondary);
+    display: flex; align-items: flex-end;
+    padding: 0 18px;
+    gap: 56px;
+  }
+  .group { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .bars { display: flex; align-items: flex-end; gap: 14px; }
+  .bar { width: 46px; position: relative; }
+  .bar.baseline { background: var(--ipw-color-border); }
+  .bar.ai { background: var(--ipw-color-primary); }
+  .bar .val {
+    position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+    font-size: 12.5px; font-weight: 700; white-space: nowrap;
+    color: var(--ipw-color-text);
+  }
+  .bar.ai .val { color: var(--ipw-color-primary); }
+  .xlabel {
+    margin-top: 10px; font-size: 14px; color: var(--ipw-color-text);
+    height: 22px;
+  }
+  .plot-wrap { position: relative; }
+  .plot-wrap .xlabels {
+    display: flex; gap: 56px; padding: 0 18px;
+  }
+  .legend { display: flex; gap: 28px; margin-top: 16px; font-size: 13.5px; color: var(--ipw-color-muted); }
+  .legend .sw { display: inline-block; width: 14px; height: 14px; margin-right: 7px; vertical-align: -2px; }
+  .legend .sw.baseline { background: var(--ipw-color-border); }
+  .legend .sw.ai { background: var(--ipw-color-primary); }
+
+  .formula-card {
+    background: var(--ipw-color-surface);
+    border: 1px solid var(--ipw-card-border);
+    border-radius: var(--ipw-card-radius);
+    box-shadow: var(--ipw-card-shadow);
+    padding: 26px 28px;
+  }
+  .formula-card .fc-title { font-size: 16px; font-weight: 700; margin-bottom: 18px; color: var(--ipw-color-primary); }
+  .formula {
+    font-family: var(--ipw-font-math);
+    font-size: 27px;
+    text-align: center;
+    padding: 12px 0;
+    color: var(--ipw-color-text);
+  }
+  .formula + .formula { border-top: 1px dashed var(--ipw-color-border); }
+  .fc-note { margin-top: 14px; font-size: 13px; line-height: 1.6; color: var(--ipw-color-muted); }
+
+  /* chapter (lead variant) */
+  .chapter .lead-main { top: 200px; }
+  .chapter .lead-main h1 { font-size: 60px; }
+  .chapter .lead-meta { top: 470px; font-size: 17px; color: var(--ipw-color-muted); max-width: 520px; }
+
+  /* ending */
+  .qa {
+    margin-top: 42px;
+    font-family: var(--ipw-font-display);
+    font-size: 118px; font-weight: 800; line-height: 1;
+    color: var(--ipw-color-bg);
+    -webkit-text-stroke: 2.5px var(--ipw-color-primary);
+    letter-spacing: 6px;
+  }
+  .ending .lead-main { top: 120px; }
+  .ending .lead-meta { top: 430px; }
+</style>
+<link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover：论文题录版式（lead） -->
+  <section class="slide" id="cover">
+    <div class="lead-main">
+      <div class="doc-kind" data-ipw-text="cover.kind">硕士学位论文答辩</div>
+      <h1 data-ipw-text="cover.title">大模型时代的产品营销研究方法</h1>
+      <div class="subtitle" data-ipw-text="cover.subtitle">〜基于消费者洞察与渠道效能的实证研究〜</div>
+    </div>
+    <div class="lead-meta">
+      <div class="author" data-ipw-text="cover.author">答辩人：韩 立</div>
+      <div data-ipw-text="cover.advisor">指导教师：王 明 教授</div>
+      <div data-ipw-text="cover.affiliation">××大学 管理学院 · 市场营销系</div>
+      <div data-ipw-text="cover.date">2026 年 6 月 12 日</div>
+    </div>
+    <div class="pagenum">1/6</div>
+  </section>
+
+  <!-- 2 目录 -->
+  <section class="slide" id="toc">
+    <div class="band" data-ipw-text="toc.band">目 录</div>
+    <div class="content">
+      <ol class="toc-list">
+        <li data-ipw-text="toc.i1">研究背景与问题提出</li>
+        <li data-ipw-text="toc.i2">文献综述与理论框架</li>
+        <li data-ipw-text="toc.i3">研究设计与数据来源</li>
+        <li data-ipw-text="toc.i4">实证结果与分析</li>
+        <li data-ipw-text="toc.i5">结论与展望</li>
+      </ol>
+    </div>
+    <div class="pagenum">2/6</div>
+  </section>
+
+  <!-- 3 内容页：要点 -->
+  <section class="slide" id="background">
+    <div class="band" data-ipw-text="bg.band">研究背景与问题提出</div>
+    <div class="content">
+      <ul class="points">
+        <li data-ipw-text="bg.b1"><span class="hl">大模型显著降低了消费者文本数据的处理门槛</span>：评论、社媒与客服对话可被规模化编码。<sup class="fn-mark">1</sup>
+          <ul>
+            <li data-ipw-text="bg.b1s">传统人工编码一万条语料约需 2–3 周，AI 辅助流程可压缩至数小时。</li>
+          </ul>
+        </li>
+        <li data-ipw-text="bg.b2">但「AI 生成洞察」的<span class="hl">可信度与适用边界</span>缺乏方法层面的系统检验。</li>
+        <li data-ipw-text="bg.b3">研究问题：AI 辅助方法在哪些研究任务上可替代、哪些不可替代人工分析？</li>
+      </ul>
+    </div>
+    <div class="footnote" data-ipw-text="bg.fn"><span class="fn-mark">1:</span> 本研究中的「AI 辅助洞察」指使用大模型完成开放题编码、主题聚类与情感判别，人工仅承担抽样复核与编码框架审定。</div>
+    <div class="pagenum">3/6</div>
+  </section>
+
+  <!-- 4 内容页：图表 + 公式 + 引用位 -->
+  <section class="slide" id="result">
+    <div class="band" data-ipw-text="result.band">实证结果：效率增益与信度检验</div>
+    <div class="content">
+      <div class="cols">
+        <div class="chart-card">
+          <div class="chart-title" data-ipw-text="result.chartTitle">人工 vs AI 辅助：语料处理耗时（小时 / 万条）</div>
+          <div class="plot">
+            <div class="group">
+              <div class="bars">
+                <div class="bar baseline" style="height:160px"><span class="val" data-ipw-text="result.v1a">120</span></div>
+                <div class="bar ai" style="height:12px"><span class="val" data-ipw-text="result.v1b">9</span></div>
+              </div>
+              <div class="xlabel" data-ipw-text="result.x1">主题编码</div>
+            </div>
+            <div class="group">
+              <div class="bars">
+                <div class="bar baseline" style="height:107px"><span class="val" data-ipw-text="result.v2a">80</span></div>
+                <div class="bar ai" style="height:8px"><span class="val" data-ipw-text="result.v2b">6</span></div>
+              </div>
+              <div class="xlabel" data-ipw-text="result.x2">情感判别</div>
+            </div>
+            <div class="group">
+              <div class="bars">
+                <div class="bar baseline" style="height:200px"><span class="val" data-ipw-text="result.v3a">150</span></div>
+                <div class="bar ai" style="height:16px"><span class="val" data-ipw-text="result.v3b">12</span></div>
+              </div>
+              <div class="xlabel" data-ipw-text="result.x3">开放题聚类</div>
+            </div>
+          </div>
+          <div class="legend">
+            <span><span class="sw baseline"></span><span data-ipw-text="result.legend1">传统人工编码</span></span>
+            <span><span class="sw ai"></span><span data-ipw-text="result.legend2">AI 辅助 + 抽样复核</span></span>
+          </div>
+        </div>
+        <div class="formula-card">
+          <div class="fc-title" data-ipw-text="result.formulaTitle">效能与信度评估模型</div>
+          <div class="formula" data-ipw-text="result.f1">Gain = (T<sub>0</sub> − T<sub>1</sub>) / T<sub>0</sub> × 100%</div>
+          <div class="formula" data-ipw-text="result.f2">κ = (p<sub>o</sub> − p<sub>e</sub>) / (1 − p<sub>e</sub>)</div>
+          <p class="fc-note" data-ipw-text="result.formulaNote">T₀ 为人工耗时，T₁ 为 AI 辅助耗时；κ 为 AI 与人工双盲编码结果的 Cohen's κ 一致性系数。</p>
+        </div>
+      </div>
+    </div>
+    <div class="footnote" data-ipw-text="result.fn"><span class="fn-mark">资料来源：</span>课题组 2025–2026 年对 3 个快消品牌 12.6 万条消费者评论的对比实验；AI 组耗时含人工抽样复核环节。</div>
+    <div class="pagenum">4/6</div>
+  </section>
+
+  <!-- 5 章节页（lead 变体） -->
+  <section class="slide chapter" id="chapter">
+    <div class="lead-main">
+      <div class="doc-kind" data-ipw-text="sec.kind">第 四 章</div>
+      <h1 data-ipw-text="sec.title">实证结果与分析</h1>
+      <div class="subtitle" data-ipw-text="sec.subtitle">〜效率增益、信度检验与适用边界〜</div>
+    </div>
+    <div class="lead-meta">
+      <div data-ipw-text="sec.note">本节回答：AI 辅助方法能否在保证编码信度的前提下，显著提升营销研究的效率？</div>
+    </div>
+    <div class="pagenum">5/6</div>
+  </section>
+
+  <!-- 6 结尾：致谢 + Q&A（lead 变体） -->
+  <section class="slide ending" id="ending">
+    <div class="lead-main">
+      <h1 data-ipw-text="end.title">致谢与问答</h1>
+      <div class="subtitle" data-ipw-text="end.subtitle">〜感谢聆听，恳请各位专家、老师批评指正〜</div>
+      <div class="qa" data-ipw-text="end.qa">Q &amp; A</div>
+    </div>
+    <div class="lead-meta">
+      <div class="author" data-ipw-text="end.author">答辩人：韩 立</div>
+      <div data-ipw-text="end.contact">hanli@example.edu.cn</div>
+      <div data-ipw-text="end.affiliation">××大学 管理学院 · 市场营销系</div>
+    </div>
+    <div class="footnote" data-ipw-text="end.fn"><span class="fn-mark">致谢：</span>感谢王明教授在选题与研究方法上的悉心指导，感谢课题组同学参与双盲编码；本研究受 ×× 基金（项目号：XXXXXXXX）资助。</div>
+    <div class="pagenum">6/6</div>
+  </section>
+
+</div>
+</body>
+</html>

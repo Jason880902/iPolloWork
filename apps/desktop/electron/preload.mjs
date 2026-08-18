@@ -173,6 +173,39 @@ contextBridge.exposeInMainWorld("__IPOLLOWORK_ELECTRON__", {
       return () => ipcRenderer.removeListener("ipollowork:terminal:exit", handler);
     },
   },
+  ssh: {
+    listHosts() { return ipcRenderer.invoke("ipollowork:ssh:list-hosts"); },
+  },
+  git: {
+    graph(options) { return ipcRenderer.invoke("ipollowork:git:graph", options); },
+  },
+  scheduledTasks: {
+    list() { return ipcRenderer.invoke("ipollowork:scheduled-tasks:list"); },
+    create(input) { return ipcRenderer.invoke("ipollowork:scheduled-tasks:create", input); },
+    update(id, patch) { return ipcRenderer.invoke("ipollowork:scheduled-tasks:update", id, patch); },
+    setEnabled(id, enabled) { return ipcRenderer.invoke("ipollowork:scheduled-tasks:set-enabled", id, Boolean(enabled)); },
+    remove(id) { return ipcRenderer.invoke("ipollowork:scheduled-tasks:remove", id); },
+    runNow(id) { return ipcRenderer.invoke("ipollowork:scheduled-tasks:run-now", id); },
+    logs(id) { return ipcRenderer.invoke("ipollowork:scheduled-tasks:logs", id); },
+    preview(cron) { return ipcRenderer.invoke("ipollowork:scheduled-tasks:preview", cron); },
+    onChanged(callback) {
+      const handler = (_event, payload) => callback(payload);
+      ipcRenderer.on("ipollowork:scheduled-tasks:changed", handler);
+      return () => ipcRenderer.removeListener("ipollowork:scheduled-tasks:changed", handler);
+    },
+  },
+  lanPreview: {
+    getState() { return ipcRenderer.invoke("ipollowork:lan-preview:get-state"); },
+    setEnabled(enabled) { return ipcRenderer.invoke("ipollowork:lan-preview:set-enabled", Boolean(enabled)); },
+    regenerateCode() { return ipcRenderer.invoke("ipollowork:lan-preview:regenerate-code"); },
+    disconnectAll() { return ipcRenderer.invoke("ipollowork:lan-preview:disconnect-all"); },
+    pushToIm(options) { return ipcRenderer.invoke("ipollowork:lan-preview:push-to-im", options); },
+    onStateChanged(callback) {
+      const handler = (_event, state) => callback(state);
+      ipcRenderer.on("ipollowork:lan-preview:state", handler);
+      return () => ipcRenderer.removeListener("ipollowork:lan-preview:state", handler);
+    },
+  },
   hyperframes: {
     start(options) { return ipcRenderer.invoke("ipollowork:hyperframes:start", options); },
     stop(sessionId, options) { return ipcRenderer.invoke("ipollowork:hyperframes:stop", sessionId, options); },

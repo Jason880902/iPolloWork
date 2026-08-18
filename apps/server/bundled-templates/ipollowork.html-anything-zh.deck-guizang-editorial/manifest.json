@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.html-anything-zh.deck-guizang-editorial",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "editorial",
+  "style": "editorial",
+  "tags": [
+    "editorial",
+    "e-ink",
+    "magazine",
+    "narrative",
+    "guizang",
+    "eastern-aesthetic",
+    "html-anything"
+  ],
+  "surface": "design",
+  "title": "归藏 · 东方编辑风",
+  "description": "电子杂志 × 电子墨水风的叙事型幻灯片模版：墨水经典 Monocle 调色（墨 #0a0a0b / 纸 #f1efea）、Playfair Display 衬线大标题 + 中文宋体、11px 大写字距 kicker、细发丝线与 folio 页码等杂志细节。严禁渐变、阴影、圆角与装饰图形，靠留白与字级建立秩序。适合品牌故事、观点叙事、文化内容与编辑型发布。移植自 html-anything 的 deck-guizang-editorial skill。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "nexu-io/html-anything",
+    "repository": "https://github.com/nexu-io/html-anything",
+    "license": "Apache-2.0",
+    "attribution": "Ported from the html-anything skill 'deck-guizang-editorial' to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (ink)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (ink tint)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (muted warm grey)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background (paper)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface (paper tint)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Hairline border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font (serif)",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font (sans)",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案替换为真实内容，长标题按语义手工断行（<br/>），不要依赖自动换行。",
+    "保持墨水经典调色板纯净：只允许墨与纸两系互反，不要引入新的强调色。",
+    "严禁渐变、投影、圆角、emoji 与装饰图形 —— 这是本风格的核心 guard。",
+    "italic 衬线只用于点缀词、数字与英文短句，正文保持常规字重。",
+    "kicker 保持 11px、大写、0.12em 字距；页码 folio 格式为 01 / 06。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

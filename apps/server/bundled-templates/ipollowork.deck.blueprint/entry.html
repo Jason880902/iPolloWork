@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Blueprint — 工程蓝图技术宣讲模版</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8ECF1;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: var(--ipw-body-line-height);
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(10, 27, 56, 0.35);
+    flex-shrink: 0;
+  }
+  .slide-inner { position: absolute; inset: 56px 72px 64px; display: flex; flex-direction: column; }
+
+  /* signature: blueprint grid + hairline frame */
+  .grid-bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(to right, var(--ipw-color-grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--ipw-color-grid) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: 0.5;
+  }
+  .frame { position: absolute; inset: 28px; border: 1px solid var(--ipw-color-border); pointer-events: none; }
+  .frame::before, .frame::after {
+    content: ""; position: absolute; width: 18px; height: 18px;
+    border: 1px solid var(--ipw-color-primary);
+  }
+  .frame::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+  .frame::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+  .eyebrow {
+    font-family: var(--ipw-font-mono); font-size: 12px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--ipw-color-primary); margin-bottom: 14px;
+  }
+  .eyebrow coral, .eyebrow .focus { color: var(--ipw-color-accent); }
+  h1.headline {
+    font-family: var(--ipw-font-display); font-size: 30px; font-weight: 700;
+    line-height: 1.4; max-width: 1020px;
+  }
+  h1.headline c { color: var(--ipw-color-primary); }
+  h1.headline k { color: var(--ipw-color-accent); }
+
+  .footer {
+    position: absolute; left: 72px; right: 72px; bottom: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--ipw-font-mono); font-size: 11px; letter-spacing: 1.5px;
+    color: var(--ipw-color-muted);
+    border-top: 1px solid var(--ipw-color-border); padding-top: 10px;
+  }
+  .footer .stamp { color: var(--ipw-color-secondary); }
+  .pagenum { font-variant-numeric: tabular-nums; color: var(--ipw-color-primary); }
+
+  /* agenda: numbered hairline rows */
+  .agenda-list { margin-top: 44px; border-top: 1px solid var(--ipw-color-border); max-width: 980px; }
+  .agenda-item {
+    display: flex; align-items: baseline; gap: 32px;
+    padding: 22px 8px; border-bottom: 1px solid var(--ipw-color-border);
+  }
+  .agenda-item .no { font-family: var(--ipw-font-mono); font-size: 14px; color: var(--ipw-color-primary); width: 48px; flex-shrink: 0; }
+  .agenda-item .t { font-size: 21px; font-weight: 700; width: 320px; flex-shrink: 0; }
+  .agenda-item .d { font-size: 14px; color: var(--ipw-color-muted); }
+  .agenda-item.hot .no, .agenda-item.hot .t { color: var(--ipw-color-accent); }
+
+  /* spec table / data rows */
+  .spec-table { margin-top: 40px; border: 1px solid var(--ipw-color-border); max-width: 1080px; }
+  .spec-row { display: grid; grid-template-columns: 260px 1fr 220px; border-bottom: 1px solid var(--ipw-color-border); }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-row > div { padding: 16px 20px; font-size: 14px; }
+  .spec-row .k { font-family: var(--ipw-font-mono); font-size: 12px; letter-spacing: 1px; color: var(--ipw-color-primary); border-right: 1px solid var(--ipw-color-border); display: flex; align-items: center; }
+  .spec-row .v { color: var(--ipw-color-text); }
+  .spec-row .n { font-family: var(--ipw-font-mono); font-size: 16px; color: var(--ipw-color-text); border-left: 1px solid var(--ipw-color-border); display: flex; align-items: center; justify-content: flex-end; }
+  .spec-row.hot .n { color: var(--ipw-color-accent); font-weight: 700; }
+  .spec-row.head > div { font-family: var(--ipw-font-mono); font-size: 11px; letter-spacing: 2px; color: var(--ipw-color-muted); text-transform: uppercase; }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 40px; max-width: 1080px; }
+  .bullet-block h3 {
+    font-family: var(--ipw-font-mono); font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--ipw-color-primary); margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--ipw-color-primary);
+  }
+  .bullet-block ul { list-style: none; }
+  .bullet-block li {
+    font-size: 14px; padding: 10px 0 10px 22px; position: relative;
+    border-bottom: 1px solid var(--ipw-color-border); color: var(--ipw-color-text);
+  }
+  .bullet-block li::before { content: "▸"; position: absolute; left: 0; color: var(--ipw-color-primary); }
+  .bullet-block li b { color: var(--ipw-color-primary); font-weight: 700; }
+
+  /* node diagram: boxed nodes + connectors, all 1px hairlines */
+  .diagram { position: relative; margin-top: 44px; width: 1080px; height: 300px; }
+  .node {
+    position: absolute; background: var(--ipw-card-bg);
+    border: 1px solid var(--ipw-card-border);
+    border-radius: var(--ipw-card-radius);
+    box-shadow: var(--ipw-card-shadow);
+    padding: 14px 18px; width: 200px;
+  }
+  .node .nt { font-size: 15px; font-weight: 700; }
+  .node .nd { font-family: var(--ipw-font-mono); font-size: 11px; color: var(--ipw-color-muted); margin-top: 6px; letter-spacing: 0.5px; }
+  .node .tag {
+    position: absolute; top: -9px; left: 12px; background: var(--ipw-color-bg);
+    padding: 0 8px; font-family: var(--ipw-font-mono); font-size: 10px;
+    letter-spacing: 2px; color: var(--ipw-color-primary); text-transform: uppercase;
+  }
+  .node.hot { border-color: var(--ipw-color-accent); }
+  .node.hot .nt { color: var(--ipw-color-accent); }
+  .node.hot .tag { color: var(--ipw-color-accent); }
+  .wire { position: absolute; background: var(--ipw-color-primary); }
+  .wire.h { height: 1px; }
+  .wire.v { width: 1px; }
+  .wire.hot { background: var(--ipw-color-accent); }
+  .arrow { position: absolute; width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+  .arrow.r { border-left: 8px solid var(--ipw-color-primary); }
+  .arrow.r.hot { border-left-color: var(--ipw-color-accent); }
+  .arrow.d { border-top: 8px solid var(--ipw-color-primary); border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: none; }
+
+  /* cover */
+  .slide.cover .slide-inner { justify-content: center; }
+  .cover h1 { font-size: 54px; line-height: 1.3; font-weight: 800; max-width: 940px; }
+  .cover h1 k { color: var(--ipw-color-accent); }
+  .cover .sub { margin-top: 26px; font-size: 17px; color: var(--ipw-color-muted); max-width: 760px; }
+  .cover .meta { margin-top: 64px; font-family: var(--ipw-font-mono); font-size: 12px; letter-spacing: 2px; color: var(--ipw-color-secondary); }
+  .cover .corner-box {
+    position: absolute; right: 100px; top: 50%; transform: translateY(-50%);
+    width: 220px; height: 220px; border: 1px solid var(--ipw-color-primary);
+  }
+  .cover .corner-box::before {
+    content: ""; position: absolute; right: 28px; bottom: 28px; width: 36px; height: 36px;
+    background: var(--ipw-color-accent);
+  }
+  .cover .corner-box .cb-label {
+    position: absolute; top: 12px; left: 12px; font-family: var(--ipw-font-mono);
+    font-size: 10px; letter-spacing: 2px; color: var(--ipw-color-primary);
+  }
+
+  /* divider */
+  .slide.divider .slide-inner { justify-content: center; }
+  .divider .bignum {
+    position: absolute; right: 96px; top: 50%; transform: translateY(-50%);
+    font-family: var(--ipw-font-mono); font-size: 300px; font-weight: 700;
+    color: transparent; -webkit-text-stroke: 1px var(--ipw-color-border); line-height: 1;
+  }
+  .divider h2 { font-size: 42px; font-weight: 800; max-width: 780px; position: relative; line-height: 1.35; }
+  .divider h2 k { color: var(--ipw-color-accent); }
+
+  /* ending */
+  .slide.ending .slide-inner { justify-content: center; align-items: flex-start; }
+  .ending h2 { font-size: 40px; font-weight: 800; max-width: 860px; line-height: 1.35; }
+  .ending h2 k { color: var(--ipw-color-accent); }
+  .ending .contact { margin-top: 32px; font-family: var(--ipw-font-mono); font-size: 13px; letter-spacing: 1.5px; color: var(--ipw-color-muted); }
+</style>
+<link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide cover" id="cover">
+    <div class="grid-bg"></div>
+    <div class="frame"></div>
+    <div class="corner-box"><span class="cb-label" data-ipw-text="cover.boxlabel">FIG. 01 — SYSTEM</span></div>
+    <div class="slide-inner">
+      <div class="eyebrow" data-ipw-text="cover.eyebrow">TECH REVIEW · INFERENCE PLATFORM · 2026</div>
+      <h1 data-ipw-text="cover.title">大模型推理平台<br />技术方案评审</h1>
+      <p class="sub" data-ipw-text="cover.sub">从架构选型、容量规划到成本模型：一套可落地、可扩展、可考核的推理底座方案</p>
+      <div class="meta" data-ipw-text="cover.meta">市场部 · 张三 · 2026 年 8 月 · V1.0 DRAFT</div>
+    </div>
+    <div class="footer">
+      <span class="stamp" data-ipw-text="cover.stamp">INTERNAL · 评审材料</span>
+      <span class="pagenum">01 / 06</span>
+    </div>
+  </section>
+
+  <!-- 2 Agenda -->
+  <section class="slide" id="agenda">
+    <div class="grid-bg"></div>
+    <div class="frame"></div>
+    <div class="slide-inner">
+      <div class="eyebrow" data-ipw-text="agenda.eyebrow">AGENDA · 评审路径</div>
+      <h1 class="headline" data-ipw-text="agenda.title">今天走完四个模块：<c>架构、容量、成本</c>，最后落到<k>决策项</k></h1>
+      <div class="agenda-list">
+        <div class="agenda-item"><span class="no">01</span><span class="t" data-ipw-text="agenda.a1t">总体架构</span><span class="d" data-ipw-text="agenda.a1d">推理链路分层与核心组件选型</span></div>
+        <div class="agenda-item"><span class="no">02</span><span class="t" data-ipw-text="agenda.a2t">容量与性能</span><span class="d" data-ipw-text="agenda.a2d">并发模型、延迟指标与压测结论</span></div>
+        <div class="agenda-item"><span class="no">03</span><span class="t" data-ipw-text="agenda.a3t">成本模型</span><span class="d" data-ipw-text="agenda.a3d">单 token 成本测算与降本杠杆</span></div>
+        <div class="agenda-item hot"><span class="no">04</span><span class="t" data-ipw-text="agenda.a4t">决策与排期</span><span class="d" data-ipw-text="agenda.a4d">需要评审会拍板的三件事与上线节奏</span></div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">INTERNAL · 评审材料</span><span class="pagenum">02 / 06</span></div>
+  </section>
+
+  <!-- 3 Architecture content -->
+  <section class="slide" id="arch">
+    <div class="grid-bg"></div>
+    <div class="frame"></div>
+    <div class="slide-inner">
+      <div class="eyebrow" data-ipw-text="arch.eyebrow">SECTION 01 · ARCHITECTURE</div>
+      <h1 class="headline" data-ipw-text="arch.title">四层解耦架构：接入层与推理层分离，<k>调度层是唯一焦点</k>，决定整体吞吐上限</h1>
+      <div class="diagram">
+        <div class="node" style="left:0; top:24px;">
+          <span class="tag">L1 ACCESS</span>
+          <div class="nt" data-ipw-text="arch.n1t">接入网关</div>
+          <div class="nd" data-ipw-text="arch.n1d">鉴权 · 限流 · 协议适配</div>
+        </div>
+        <div class="node hot" style="left:293px; top:24px;">
+          <span class="tag">L2 SCHEDULE</span>
+          <div class="nt" data-ipw-text="arch.n2t">调度层</div>
+          <div class="nd" data-ipw-text="arch.n2d">连续批处理 · 优先级队列</div>
+        </div>
+        <div class="node" style="left:586px; top:24px;">
+          <span class="tag">L3 RUNTIME</span>
+          <div class="nt" data-ipw-text="arch.n3t">推理运行时</div>
+          <div class="nd" data-ipw-text="arch.n3d">vLLM 集群 · 张量并行</div>
+        </div>
+        <div class="node" style="left:879px; top:24px;">
+          <span class="tag">L4 STORAGE</span>
+          <div class="nt" data-ipw-text="arch.n4t">缓存与存储</div>
+          <div class="nd" data-ipw-text="arch.n4d">KV Cache · 向量索引</div>
+        </div>
+        <div class="wire h" style="left:200px; top:78px; width:85px;"></div>
+        <div class="arrow r" style="left:285px; top:73px;"></div>
+        <div class="wire h hot" style="left:493px; top:78px; width:85px;"></div>
+        <div class="arrow r hot" style="left:578px; top:73px;"></div>
+        <div class="wire h" style="left:786px; top:78px; width:85px;"></div>
+        <div class="arrow r" style="left:871px; top:73px;"></div>
+        <div class="wire v" style="left:393px; top:110px; height:60px;"></div>
+        <div class="arrow d" style="left:388px; top:162px;"></div>
+        <div class="node" style="left:293px; top:180px; width:280px;">
+          <span class="tag">OBSERVE</span>
+          <div class="nt" data-ipw-text="arch.n5t">可观测与计量</div>
+          <div class="nd" data-ipw-text="arch.n5d">全链路 tracing · token 计量计费</div>
+        </div>
+        <div class="wire h" style="left:100px; top:210px; width:185px; background: var(--ipw-color-border);"></div>
+        <div class="wire h" style="left:581px; top:210px; width:400px; background: var(--ipw-color-border);"></div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">INTERNAL · 评审材料</span><span class="pagenum">03 / 06</span></div>
+  </section>
+
+  <!-- 4 Data content -->
+  <section class="slide" id="perf">
+    <div class="grid-bg"></div>
+    <div class="frame"></div>
+    <div class="slide-inner">
+      <div class="eyebrow" data-ipw-text="perf.eyebrow">SECTION 02 · CAPACITY &amp; COST</div>
+      <h1 class="headline" data-ipw-text="perf.title">压测结论：单集群支撑 <c>2,000 QPS</c>，P99 延迟 780ms，<k>单 token 成本下降 41%</k></h1>
+      <div class="spec-table">
+        <div class="spec-row head"><div class="k">METRIC</div><div class="v" data-ipw-text="perf.h2">口径说明</div><div class="n" data-ipw-text="perf.h3">数值</div></div>
+        <div class="spec-row"><div class="k" data-ipw-text="perf.r1k">THROUGHPUT</div><div class="v" data-ipw-text="perf.r1v">单集群峰值吞吐（70B 模型，连续批处理开启）</div><div class="n" data-ipw-text="perf.r1n">2,000 QPS</div></div>
+        <div class="spec-row"><div class="k" data-ipw-text="perf.r2k">LATENCY P99</div><div class="v" data-ipw-text="perf.r2v">2K 上下文输入、512 token 输出的端到端延迟</div><div class="n" data-ipw-text="perf.r2n">780 ms</div></div>
+        <div class="spec-row"><div class="k" data-ipw-text="perf.r3k">GPU UTIL</div><div class="v" data-ipw-text="perf.r3v">高峰期推理卡平均利用率（调度层开启前后：52% → 83%）</div><div class="n" data-ipw-text="perf.r3n">83%</div></div>
+        <div class="spec-row hot"><div class="k" data-ipw-text="perf.r4k">COST / 1M TOKEN</div><div class="v" data-ipw-text="perf.r4v">对比现网直连方案的单位成本（焦点指标）</div><div class="n" data-ipw-text="perf.r4n">-41%</div></div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">INTERNAL · 评审材料</span><span class="pagenum">04 / 06</span></div>
+  </section>
+
+  <!-- 5 Divider -->
+  <section class="slide divider" id="divider">
+    <div class="grid-bg"></div>
+    <div class="frame"></div>
+    <div class="bignum" data-ipw-text="div.num">04</div>
+    <div class="slide-inner">
+      <div class="eyebrow" data-ipw-text="div.eyebrow">SECTION 04 · DECISION</div>
+      <h2 data-ipw-text="div.title">进入决策环节：<br />三项拍板，<k>一个上线窗口</k></h2>
+    </div>
+    <div class="footer"><span class="stamp">INTERNAL · 评审材料</span><span class="pagenum">05 / 06</span></div>
+  </section>
+
+  <!-- 6 Ending -->
+  <section class="slide ending" id="ending">
+    <div class="grid-bg"></div>
+    <div class="frame"></div>
+    <div class="slide-inner">
+      <div class="eyebrow" data-ipw-text="end.eyebrow">NEXT STEP · 请评审会决策</div>
+      <h2 data-ipw-text="end.title">批准调度层自研立项，<k>9 月灰度上线</k>，Q4 全量切流</h2>
+      <div class="contact" data-ipw-text="end.contact">市场部 · 张三 · 会后三个工作日内输出评审纪要与人财物测算</div>
+    </div>
+    <div class="footer"><span class="stamp">INTERNAL · 评审材料</span><span class="pagenum">06 / 06</span></div>
+  </section>
+
+</div>
+</body>
+</html>

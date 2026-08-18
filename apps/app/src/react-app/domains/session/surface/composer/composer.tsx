@@ -1,6 +1,5 @@
 /** @jsxImportSource react */
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import type { Agent } from "@opencode-ai/sdk/v2/client";
 import { AppWindowMac, ArrowUp, Check, ChevronDown, ChevronRight, FileText, ListTodo, Plus, Plug, Settings, Square, Terminal, X, Zap } from "lucide-react";
 import fuzzysort from "fuzzysort";
 import { toast } from "@/components/ui/sonner";
@@ -9,6 +8,7 @@ import { IPOLLOWORK_EXTENSION_CATALOG, type McpDirectoryInfo } from "@/app/const
 import type { CloudImportedPlugin, CloudImportedPluginFile } from "@/app/cloud/import-state";
 import type { iPolloWorkPluginPackageItem } from "@/app/lib/ipollowork-server";
 import type { ComposerAttachment, McpServerEntry, McpStatusMap, ModelRef, SkillCard, SlashCommandOption } from "@/app/types";
+import type { ConversationAgent } from "../../engine/conversation-engine";
 import { formatBytes } from "@/app/utils";
 import { t } from "@/i18n";
 import { isiPolloWorkExtensionEnabled, isiPolloWorkExtensionHidden, IPOLLOWORK_EXTENSION_STATE_CHANGED } from "@/react-app/domains/settings/extension-state";
@@ -68,14 +68,12 @@ type ComposerProps = {
   hasPromptContext?: boolean;
   onAttachFiles: (files: File[]) => void;
   onRemoveAttachment: (id: string) => void;
-  attachmentsEnabled: boolean;
-  attachmentsDisabledReason: string | null;
   modelVariantLabel: string;
   modelVariant: string | null;
   modelBehaviorOptions?: { value: string | null; label: string }[];
   onModelVariantChange: (value: string | null) => void;
   selectedAgent: string | null;
-  listAgents: () => Promise<Agent[]>;
+  listAgents: () => Promise<ConversationAgent[]>;
   onSelectAgent: (agent: string | null) => void;
   listCommands: () => Promise<SlashCommandOption[]>;
   listSkills?: () => Promise<SkillCard[]>;
@@ -1027,10 +1025,6 @@ export function ReactSessionComposer(props: ComposerProps) {
 
   const addAttachments = async (inputFiles: File[]) => {
     if (!inputFiles.length) return;
-    if (!props.attachmentsEnabled) {
-      toast.warning(props.attachmentsDisabledReason ?? t("composer.attachments_unavailable"));
-      return;
-    }
 
     const accepted: File[] = [];
     const oversize: string[] = [];
@@ -1380,15 +1374,12 @@ export function ReactSessionComposer(props: ComposerProps) {
                       <div className="w-52 shrink-0 rounded-[16px] border border-dls-border bg-dls-surface p-1.5 shadow-[var(--dls-shell-shadow)]">
                       <button
                         type="button"
-                        className={`flex w-full items-center rounded-[12px] px-3 py-2.5 text-left text-sm ${props.attachmentsEnabled ? "text-gray-11 hover:bg-gray-2" : "cursor-not-allowed text-gray-9 opacity-60"}`}
+                        className="flex w-full items-center rounded-[12px] px-3 py-2.5 text-left text-sm text-gray-11 hover:bg-gray-2"
                         onClick={() => {
-                          if (!props.attachmentsEnabled) return;
                           setPlusMenuOpen(false);
                           setPlusMenuSection(null);
                           fileInput?.click();
                         }}
-                        disabled={!props.attachmentsEnabled}
-                        title={!props.attachmentsEnabled ? props.attachmentsDisabledReason ?? undefined : undefined}
                       >
                         {t("composer.plus_attach_files")}
                       </button>

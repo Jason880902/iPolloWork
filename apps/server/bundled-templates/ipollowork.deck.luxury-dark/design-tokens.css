@@ -1,0 +1,18 @@
+:root {
+  --ipw-color-primary: #C9A96E;
+  --ipw-color-secondary: #8B7355;
+  --ipw-color-accent: #C9A96E;
+  --ipw-color-bg: #0A0A0A;
+  --ipw-color-surface: #141311;
+  --ipw-color-text: #F5F0EB;
+  --ipw-color-muted: #9E9690;
+  --ipw-color-border: #2A2621;
+  --ipw-font-display: "Playfair Display", Georgia, "Songti SC", serif;
+  --ipw-font-body: Arial, "PingFang SC", sans-serif;
+  --ipw-type-scale: 1.3;
+  --ipw-body-line-height: 1.7;
+  --ipw-card-bg: #121110;
+  --ipw-card-border: #2A2621;
+  --ipw-card-radius: 2px;
+  --ipw-card-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+}

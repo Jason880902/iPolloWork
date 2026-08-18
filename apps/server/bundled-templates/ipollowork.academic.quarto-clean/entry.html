@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>极简 Clean 汇报 — Quarto clean 移植模版</title>
+<link rel="stylesheet" href="assets/fonts.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8ECF1;
+    font-family: var(--ipw-font-body);
+    font-weight: 300;
+    color: var(--ipw-color-text);
+    line-height: var(--ipw-body-line-height);
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(19, 21, 22, 0.10);
+    flex-shrink: 0;
+  }
+  .slide-inner { position: absolute; inset: 72px 96px 72px; display: flex; flex-direction: column; }
+
+  /* clean signature typography: light weights, teal italic subtitle */
+  h2.slide-title {
+    font-family: var(--ipw-font-display);
+    font-size: 40px; font-weight: 200; line-height: 1.3;
+    color: var(--ipw-color-text);
+  }
+  h3.slide-subtitle {
+    font-family: var(--ipw-font-display);
+    font-size: 21px; font-weight: 300; font-style: italic;
+    color: var(--ipw-color-primary);
+    margin-top: 10px;
+  }
+  .accent { color: var(--ipw-color-primary); }
+  .alert { color: var(--ipw-color-secondary); }
+
+  /* clean lists: light weight, tinted markers, arrow sub-items */
+  ul.clean-list { list-style: none; margin-top: 8px; }
+  ul.clean-list > li {
+    font-size: 19px; font-weight: 300;
+    padding: 9px 0 9px 26px; position: relative;
+  }
+  ul.clean-list > li::before {
+    content: "•"; position: absolute; left: 4px;
+    color: var(--ipw-color-accent); font-weight: 400;
+  }
+  ul.clean-list ul { list-style: none; margin-top: 2px; }
+  ul.clean-list ul li {
+    font-size: 16px; color: var(--ipw-color-muted);
+    padding: 4px 0 4px 28px; position: relative;
+  }
+  ul.clean-list ul li::before {
+    content: "→"; position: absolute; left: 2px;
+    color: var(--ipw-color-accent);
+  }
+
+  ol.clean-list { list-style: none; counter-reset: item; margin-top: 8px; }
+  ol.clean-list > li {
+    counter-increment: item;
+    font-size: 19px; font-weight: 300;
+    padding: 12px 0 12px 44px; position: relative;
+    border-bottom: 1px solid var(--ipw-color-surface);
+  }
+  ol.clean-list > li::before {
+    content: counter(item, decimal-leading-zero);
+    position: absolute; left: 0; top: 14px;
+    font-family: var(--ipw-font-mono); font-size: 15px; font-weight: 500;
+    color: var(--ipw-color-primary);
+  }
+  ol.clean-list > li .desc { display: block; font-size: 14px; color: var(--ipw-color-muted); margin-top: 2px; }
+
+  /* clean tables: no inner rules, 2px rule under header, small-caps caption */
+  .table-wrap { margin-top: 4px; }
+  .table-caption {
+    font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--ipw-color-muted); margin-bottom: 10px; font-weight: 400;
+  }
+  table.clean-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  table.clean-table th, table.clean-table td {
+    border: none; padding: 9px 14px 9px 0; text-align: left; font-weight: 300;
+  }
+  table.clean-table thead th {
+    font-weight: 600; font-size: 14px;
+    border-bottom: 2px solid var(--ipw-color-border);
+  }
+  table.clean-table tbody tr:last-child td { border-bottom: 2px solid var(--ipw-color-border); }
+  table.clean-table td.num { font-family: var(--ipw-font-mono); font-weight: 400; font-size: 14px; }
+  table.clean-table td .up { color: var(--ipw-color-primary); }
+  table.clean-table td .down { color: var(--ipw-color-secondary); }
+
+  /* code block: paper-tone surface, mono */
+  .code-block {
+    background: var(--ipw-color-surface);
+    border-radius: var(--ipw-card-radius);
+    padding: 20px 24px;
+    font-family: var(--ipw-font-mono); font-size: 12.5px; font-weight: 400;
+    line-height: 1.75; color: var(--ipw-color-text);
+    white-space: pre; overflow: hidden;
+  }
+  .code-block .cm { color: var(--ipw-color-muted); }
+  .code-block .kw { color: var(--ipw-color-primary); }
+  .code-block .fn { color: var(--ipw-color-secondary); }
+
+  .cols { display: grid; gap: 36px; margin-top: 28px; flex: 1; min-height: 0; }
+  .cols.c6040 { grid-template-columns: 6fr 4fr; }
+
+  /* footer: slide number bottom-right, grey — clean signature */
+  .pagenum {
+    position: absolute; right: 28px; bottom: 18px;
+    font-size: 12px; font-weight: 400;
+    color: #777777; font-variant-numeric: tabular-nums;
+  }
+  .footline {
+    position: absolute; left: 96px; bottom: 18px;
+    font-size: 12px; color: var(--ipw-color-muted); font-weight: 300;
+  }
+
+  /* cover: left-aligned title block, generous whitespace */
+  .slide.cover .slide-inner { justify-content: center; left: 110px; }
+  .cover .title {
+    font-family: var(--ipw-font-display);
+    font-size: 54px; font-weight: 200; line-height: 1.25;
+    color: var(--ipw-color-text); max-width: 900px;
+  }
+  .cover .subtitle {
+    font-family: var(--ipw-font-display);
+    font-size: 24px; font-weight: 300; font-style: italic;
+    color: var(--ipw-color-primary); margin-top: 14px;
+  }
+  .cover .author-block { margin-top: 72px; display: flex; gap: 96px; }
+  .cover .author .name { font-size: 19px; font-weight: 400; }
+  .cover .author .affil { font-size: 15px; font-style: italic; color: var(--ipw-color-text); margin-top: 4px; }
+  .cover .date { margin-top: 56px; font-size: 17px; font-weight: 300; }
+
+  /* divider: stays white and quiet — clean has no dark slides */
+  .slide.divider .slide-inner { justify-content: center; }
+  .divider .part {
+    font-family: var(--ipw-font-mono); font-size: 15px; font-weight: 500;
+    color: var(--ipw-color-primary); letter-spacing: 2px; margin-bottom: 18px;
+  }
+  .divider h2 { font-size: 46px; font-weight: 200; line-height: 1.3; max-width: 880px; }
+  .divider .dsub { font-size: 20px; font-weight: 300; font-style: italic; color: var(--ipw-color-primary); margin-top: 16px; }
+  .divider .bignum {
+    position: absolute; right: 72px; bottom: 24px;
+    font-family: var(--ipw-font-display); font-size: 260px; font-weight: 200;
+    color: var(--ipw-color-surface); line-height: 1;
+  }
+
+  /* ending */
+  .slide.ending .slide-inner { justify-content: center; }
+  .ending h2 { font-size: 46px; font-weight: 200; line-height: 1.3; }
+  .ending .esub { font-size: 20px; font-weight: 300; font-style: italic; color: var(--ipw-color-primary); margin-top: 16px; }
+  .ending .meta { margin-top: 72px; font-size: 15px; color: var(--ipw-color-muted); font-weight: 300; }
+  .ending .meta b { font-weight: 500; color: var(--ipw-color-text); }
+</style>
+<link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide cover" id="cover">
+    <div class="slide-inner">
+      <h1 class="title" data-ipw-text="cover.title">营销数据中台<br />季度经营分析</h1>
+      <p class="subtitle" data-ipw-text="cover.subtitle">2026 年 Q2 · 渠道结构与经营质量复盘</p>
+      <div class="author-block">
+        <div class="author">
+          <div class="name" data-ipw-text="cover.author">张三</div>
+          <div class="affil" data-ipw-text="cover.affil">市场部 · 产品营销负责人</div>
+        </div>
+        <div class="author">
+          <div class="name" data-ipw-text="cover.audience">经营管理会</div>
+          <div class="affil" data-ipw-text="cover.scope">内部汇报 · 仅限参会人员</div>
+        </div>
+      </div>
+      <div class="date" data-ipw-text="cover.date">2026 年 8 月 16 日</div>
+    </div>
+    <div class="pagenum">1 / 6</div>
+  </section>
+
+  <!-- 2 Agenda -->
+  <section class="slide" id="agenda">
+    <div class="slide-inner">
+      <h2 class="slide-title" data-ipw-text="toc.title">汇报框架</h2>
+      <h3 class="slide-subtitle" data-ipw-text="toc.subtitle">四个问题，层层递进</h3>
+      <ol class="clean-list" style="margin-top: 40px;">
+        <li><span data-ipw-text="toc.i1">季度经营总览 —— 目标达成与缺口在哪里</span><span class="desc" data-ipw-text="toc.i1d">销售额、回款、新客三项核心指标的达成度</span></li>
+        <li><span data-ipw-text="toc.i2">渠道结构拆解 —— 增长由哪类渠道贡献</span><span class="desc" data-ipw-text="toc.i2d">直销、分销、线上三条线的效率与边际变化</span></li>
+        <li><span data-ipw-text="toc.i3">数据质量与口径 —— 数字本身可不可信</span><span class="desc" data-ipw-text="toc.i3d">中台口径统一进度与仍存疑的三处数据断点</span></li>
+        <li><span data-ipw-text="toc.i4">下季度行动 —— 资源往哪里押</span><span class="desc" data-ipw-text="toc.i4d">考核激励调整、渠道政策与数据治理排期</span></li>
+      </ol>
+    </div>
+    <div class="pagenum">2 / 6</div>
+  </section>
+
+  <!-- 3 Content: key points -->
+  <section class="slide" id="points">
+    <div class="slide-inner">
+      <h2 class="slide-title" data-ipw-text="pts.title">Q2 经营总览：达成 96%，缺口集中在一个点</h2>
+      <h3 class="slide-subtitle" data-ipw-text="pts.subtitle">结论先行：不是需求问题，是结构问题</h3>
+      <ul class="clean-list" style="margin-top: 36px;">
+        <li><span data-ipw-text="pts.b1">销售额 4.82 亿元，达成季度目标 96%，同比增长 11%</span>
+          <ul>
+            <li data-ipw-text="pts.b1s">直销超额 12%，贡献了全部净增量</li>
+          </ul>
+        </li>
+        <li><span data-ipw-text="pts.b2">回款率 91.3%，环比提升 2.1 个百分点，账期结构改善</span></li>
+        <li><span data-ipw-text="pts.b3">新客数 318 家，达成 88% —— <span class="alert">缺口全部来自分销渠道</span></span>
+          <ul>
+            <li data-ipw-text="pts.b3s">两家省级代理占新客缺口的 76%，已在 Q2 末启动约谈</li>
+          </ul>
+        </li>
+        <li><span data-ipw-text="pts.b4">毛利率 42.6%，低价单占比上升拉低 1.4 个百分点</span></li>
+      </ul>
+    </div>
+    <div class="pagenum">3 / 6</div>
+  </section>
+
+  <!-- 4 Content: data table + code -->
+  <section class="slide" id="data">
+    <div class="slide-inner">
+      <h2 class="slide-title" data-ipw-text="dat.title">渠道效率拆解：钱花在哪，回报在哪</h2>
+      <h3 class="slide-subtitle" data-ipw-text="dat.subtitle">口径：中台统一指标，T+1 数据</h3>
+      <div class="cols c6040">
+        <div class="table-wrap">
+          <div class="table-caption" data-ipw-text="dat.caption">Table 1 · 分渠道 Q2 效率指标</div>
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th data-ipw-text="dat.h1">渠道</th>
+                <th data-ipw-text="dat.h2">销售额（亿元）</th>
+                <th data-ipw-text="dat.h3">同比</th>
+                <th data-ipw-text="dat.h4">获客成本（元）</th>
+                <th data-ipw-text="dat.h5">ROI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-ipw-text="dat.r1c1">直销</td>
+                <td class="num" data-ipw-text="dat.r1c2">2.61</td>
+                <td class="num"><span class="up" data-ipw-text="dat.r1c3">+18%</span></td>
+                <td class="num" data-ipw-text="dat.r1c4">8,420</td>
+                <td class="num" data-ipw-text="dat.r1c5">5.2</td>
+              </tr>
+              <tr>
+                <td data-ipw-text="dat.r2c1">分销</td>
+                <td class="num" data-ipw-text="dat.r2c2">1.58</td>
+                <td class="num"><span class="down" data-ipw-text="dat.r2c3">-4%</span></td>
+                <td class="num" data-ipw-text="dat.r2c4">5,960</td>
+                <td class="num" data-ipw-text="dat.r2c5">3.1</td>
+              </tr>
+              <tr>
+                <td data-ipw-text="dat.r3c1">线上</td>
+                <td class="num" data-ipw-text="dat.r3c2">0.63</td>
+                <td class="num"><span class="up" data-ipw-text="dat.r3c3">+41%</span></td>
+                <td class="num" data-ipw-text="dat.r3c4">1,130</td>
+                <td class="num" data-ipw-text="dat.r3c5">4.6</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="table-caption" data-ipw-text="dat.codec">指标口径（中台定义）</div>
+          <div class="code-block" data-ipw-text="dat.code"><span class="cm">-- ROI 统一口径，Q2 起全渠道生效</span>
+<span class="kw">SELECT</span> channel,
+  <span class="fn">SUM</span>(revenue) /
+  <span class="fn">SUM</span>(marketing_cost) <span class="kw">AS</span> roi
+<span class="kw">FROM</span> dws_channel_q2
+<span class="kw">GROUP BY</span> channel;</div>
+        </div>
+      </div>
+    </div>
+    <div class="pagenum">4 / 6</div>
+  </section>
+
+  <!-- 5 Divider -->
+  <section class="slide divider" id="divider">
+    <div class="bignum" data-ipw-text="div.num">04</div>
+    <div class="slide-inner">
+      <div class="part" data-ipw-text="div.part">PART 04</div>
+      <h2 data-ipw-text="div.title">下季度行动：把资源押在增量上</h2>
+      <p class="dsub" data-ipw-text="div.subtitle">三件事：激励重构、渠道汰换、口径收口</p>
+    </div>
+    <div class="pagenum">5 / 6</div>
+  </section>
+
+  <!-- 6 Ending -->
+  <section class="slide ending" id="ending">
+    <div class="slide-inner">
+      <h2 data-ipw-text="end.title">让数据成为共同的决策语言</h2>
+      <p class="esub" data-ipw-text="end.subtitle">Q3 复盘时，用同一套口径验收今天定的三件事</p>
+      <div class="meta">
+        <span data-ipw-text="end.m1"><b>汇报人</b>　张三 · 市场部</span><br />
+        <span data-ipw-text="end.m2"><b>材料</b>　数据口径详见中台指标字典 v3.2</span><br />
+        <span data-ipw-text="end.m3"><b>联系</b>　hanli@example.com</span>
+      </div>
+    </div>
+    <div class="pagenum">6 / 6</div>
+  </section>
+
+</div>
+</body>
+</html>

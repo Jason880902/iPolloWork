@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.deck.editorial-report",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "data",
+  "style": "newsprint",
+  "tags": [
+    "editorial",
+    "dark",
+    "data",
+    "finance",
+    "briefing"
+  ],
+  "surface": "design",
+  "title": "深色财经简报",
+  "description": "FT/Bloomberg 式深色财经数据简报模版：#0E0E12 深底、衬线大标题、大写 kicker + 发丝线、纯 CSS 数据图（单柱琥珀高亮 + 结论条）、每页 mono 来源行、罗马数字章节页。单一红色纪律（每页至多一处红色焦点）。适合市场洞察、经营简报、数据汇报场景。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "slide-maker",
+    "repository": "https://github.com/addsumtech/slides_maker",
+    "license": "MIT",
+    "attribution": "Ported from the slide-maker skill 'editorial_report' preset to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (discipline red)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (amber)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text (ink)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Hairline border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display serif font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-mono",
+        "label": "Mono font (source lines)",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-body-line-height",
+        "label": "Body line height",
+        "type": "number",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案与数据全部替换为真实简报内容，图表柱高按真实数值同比调整。",
+    "红色纪律：每页红色（--ipw-color-primary）至多出现一次，只用于结论关键词或最关键数据。",
+    "琥珀色（--ipw-color-secondary）只用于图表高亮柱、kicker 与结论条边线，不与红色同义混用。",
+    "禁止使用图标卡片网格；数据呈现一律用纯 CSS 柱状/条形图 + 结论条。",
+    "每页底部保留 mono 来源行（Source: …），注明数据口径与时间范围。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

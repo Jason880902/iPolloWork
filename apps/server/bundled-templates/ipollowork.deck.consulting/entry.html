@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Consulting — MBB 战略汇报模版</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8ECF1;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: var(--ipw-body-line-height);
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(26, 43, 69, 0.12);
+    flex-shrink: 0;
+  }
+  .slide-inner { position: absolute; inset: 56px 72px 64px; display: flex; flex-direction: column; }
+
+  /* signature gradient rule: navy -> emerald */
+  .gradient-rule { position: absolute; top: 0; left: 0; right: 0; height: 6px;
+    background: linear-gradient(90deg, var(--ipw-color-primary) 0%, var(--ipw-color-secondary) 100%); }
+
+  .kicker { font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--ipw-color-secondary); font-weight: 700; margin-bottom: 12px; }
+  h1.action-title { font-family: var(--ipw-font-display); font-size: 30px; font-weight: 700;
+    line-height: 1.35; max-width: 1000px; }
+  h1.action-title k { color: var(--ipw-color-secondary); }
+  h1.action-title r { color: var(--ipw-color-risk); }
+
+  .insight-banner {
+    margin-top: 20px; padding: 14px 20px;
+    background: var(--ipw-color-primary); color: #fff;
+    font-size: 16px; font-weight: 600; border-radius: 4px;
+    display: flex; align-items: center; gap: 12px; max-width: 1080px;
+  }
+  .insight-banner::before { content: "SO WHAT"; font-size: 10px; letter-spacing: 2px;
+    background: var(--ipw-color-accent); color: var(--ipw-color-primary);
+    padding: 3px 8px; border-radius: 2px; font-weight: 800; flex-shrink: 0; }
+
+  .footer { position: absolute; left: 72px; right: 72px; bottom: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--ipw-color-muted);
+    border-top: 1px solid var(--ipw-color-border); padding-top: 10px; }
+  .footer .stamp { letter-spacing: 1.5px; font-weight: 700; color: var(--ipw-color-neutral); }
+  .pagenum { font-variant-numeric: tabular-nums; }
+
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 36px; }
+  .tile {
+    background: var(--ipw-card-bg); border: 1px solid var(--ipw-card-border);
+    border-radius: var(--ipw-card-radius); box-shadow: var(--ipw-card-shadow);
+    padding: 24px 24px 20px; border-top: 4px solid var(--ipw-color-primary);
+  }
+  .tile.good { border-top-color: var(--ipw-color-secondary); }
+  .tile.risk { border-top-color: var(--ipw-color-risk); }
+  .tile .label { font-size: 13px; color: var(--ipw-color-muted); font-weight: 600; margin-bottom: 8px; }
+  .tile .value { font-size: 44px; font-weight: 800; font-family: var(--ipw-font-display); line-height: 1.1; }
+  .tile.good .value { color: var(--ipw-color-secondary); }
+  .tile.risk .value { color: var(--ipw-color-risk); }
+  .tile .delta { font-size: 13px; margin-top: 8px; color: var(--ipw-color-muted); }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 36px; }
+  .bullet-block h3 { font-size: 17px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .bullet-block h3 .dot { width: 10px; height: 10px; border-radius: 2px; background: var(--ipw-color-primary); }
+  .bullet-block.good h3 .dot { background: var(--ipw-color-secondary); }
+  .bullet-block.risk h3 .dot { background: var(--ipw-color-risk); }
+  .bullet-block ul { list-style: none; }
+  .bullet-block li { font-size: 15px; padding: 8px 0 8px 20px; position: relative;
+    border-bottom: 1px solid var(--ipw-color-border); color: var(--ipw-color-text); }
+  .bullet-block li::before { content: "—"; position: absolute; left: 0; color: var(--ipw-color-muted); }
+
+  .steps { display: flex; gap: 0; margin-top: 40px; }
+  .step { flex: 1; position: relative; padding: 20px 20px 0 0; }
+  .step .num { font-size: 13px; font-weight: 800; color: #fff; background: var(--ipw-color-primary);
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .step:nth-child(2) .num { background: var(--ipw-color-secondary); }
+  .step:nth-child(3) .num { background: var(--ipw-color-accent); }
+  .step:nth-child(4) .num { background: var(--ipw-color-risk); }
+  .step h4 { font-size: 15px; margin: 12px 0 6px; }
+  .step p { font-size: 13px; color: var(--ipw-color-muted); }
+  .step::after { content: ""; position: absolute; top: 34px; left: 36px; right: 8px;
+    height: 2px; background: var(--ipw-color-border); }
+  .step:last-child::after { display: none; }
+
+  /* cover */
+  .slide.cover { background: var(--ipw-color-primary); color: #fff; }
+  .slide.cover .gradient-rule { background: linear-gradient(90deg, var(--ipw-color-accent), var(--ipw-color-secondary)); }
+  .cover .slide-inner { justify-content: center; }
+  .cover .kicker { color: var(--ipw-color-accent); }
+  .cover h1 { font-size: 52px; line-height: 1.25; font-weight: 800; max-width: 900px; }
+  .cover .sub { margin-top: 24px; font-size: 18px; color: #B9C6D8; max-width: 720px; }
+  .cover .meta { margin-top: 56px; font-size: 13px; color: #8FA1B9; letter-spacing: 1px; }
+
+  /* divider */
+  .slide.divider { background: var(--ipw-color-primary); color: #fff; }
+  .divider .slide-inner { justify-content: center; }
+  .divider .bignum { position: absolute; right: 48px; top: 50%; transform: translateY(-50%);
+    font-size: 320px; font-weight: 800; color: rgba(255,255,255,0.07); line-height: 1; font-family: var(--ipw-font-display); }
+  .divider h2 { font-size: 44px; font-weight: 800; max-width: 700px; position: relative; }
+  .divider .kicker { color: var(--ipw-color-accent); }
+
+  /* ending */
+  .slide.ending { background: var(--ipw-color-primary); color: #fff; }
+  .ending .slide-inner { justify-content: center; align-items: flex-start; }
+  .ending h2 { font-size: 40px; font-weight: 800; }
+  .ending .contact { margin-top: 28px; font-size: 15px; color: #B9C6D8; }
+</style>
+<link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide cover" id="cover">
+    <div class="gradient-rule"></div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="cover.kicker">STRATEGY REVIEW · 2026 H2</div>
+      <h1 data-ipw-text="cover.title">产品线增长战略<br />半年度复盘与规划</h1>
+      <p class="sub" data-ipw-text="cover.sub">从渠道结构、定价体系到营销协同：回到问题本质的系统性检视</p>
+      <div class="meta" data-ipw-text="cover.meta">市场部 · 张三 · 2026 年 8 月</div>
+    </div>
+    <div class="footer" style="border-top-color: rgba(255,255,255,0.2); color:#8FA1B9;">
+      <span class="stamp" data-ipw-text="cover.stamp">CONFIDENTIAL · 内部资料</span>
+      <span class="pagenum">01</span>
+    </div>
+  </section>
+
+  <!-- 2 Agenda -->
+  <section class="slide" id="agenda">
+    <div class="gradient-rule"></div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="agenda.kicker">AGENDA</div>
+      <h1 class="action-title" data-ipw-text="agenda.title">今天回答三个问题：增长从哪来、钱花得值不值、下半年怎么打</h1>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><h4 data-ipw-text="agenda.s1t">业绩复盘</h4><p data-ipw-text="agenda.s1d">H1 销售目标达成与缺口归因</p></div>
+        <div class="step"><div class="num">2</div><h4 data-ipw-text="agenda.s2t">渠道与定价</h4><p data-ipw-text="agenda.s2d">渠道管理体系效率与定价回顾</p></div>
+        <div class="step"><div class="num">3</div><h4 data-ipw-text="agenda.s3t">市场洞察</h4><p data-ipw-text="agenda.s3d">竞争格局与产品市场投资机会</p></div>
+        <div class="step"><div class="num">4</div><h4 data-ipw-text="agenda.s4t">H2 行动计划</h4><p data-ipw-text="agenda.s4d">考核激励调整与跨部门协同</p></div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">CONFIDENTIAL · 内部资料</span><span class="pagenum">02</span></div>
+  </section>
+
+  <!-- 3 Scorecard content -->
+  <section class="slide" id="kpi">
+    <div class="gradient-rule"></div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="kpi.kicker">PERFORMANCE</div>
+      <h1 class="action-title" data-ipw-text="kpi.title">H1 销售额达成 92%，<k>直销渠道超额 18%</k>，但<r>分销渠道缺口扩大至 2,400 万</r></h1>
+      <div class="insight-banner" data-ipw-text="kpi.banner">缺口 80% 集中在两家省级代理 —— 不是市场问题，是渠道管理问题</div>
+      <div class="tiles">
+        <div class="tile"><div class="label" data-ipw-text="kpi.t1l">总销售额（亿元）</div><div class="value" data-ipw-text="kpi.t1v">4.6</div><div class="delta" data-ipw-text="kpi.t1d">目标 5.0 亿 · 达成 92%</div></div>
+        <div class="tile good"><div class="label" data-ipw-text="kpi.t2l">直销渠道同比</div><div class="value" data-ipw-text="kpi.t2v">+18%</div><div class="delta" data-ipw-text="kpi.t2d">超额完成 · 贡献占比 54%</div></div>
+        <div class="tile risk"><div class="label" data-ipw-text="kpi.t3l">分销渠道缺口（万元）</div><div class="value" data-ipw-text="kpi.t3v">-2,400</div><div class="delta" data-ipw-text="kpi.t3d">两家代理占缺口 80%</div></div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">CONFIDENTIAL · 内部资料</span><span class="pagenum">03</span></div>
+  </section>
+
+  <!-- 4 Two-column analysis -->
+  <section class="slide" id="analysis">
+    <div class="gradient-rule"></div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="ana.kicker">CHANNEL DIAGNOSIS</div>
+      <h1 class="action-title" data-ipw-text="ana.title">渠道分化的根因是激励错位：直销拿增量激励，分销仍在吃存量返点</h1>
+      <div class="cols">
+        <div class="bullet-block good">
+          <h3><span class="dot"></span><span data-ipw-text="ana.gt">有效动作（继续保持）</span></h3>
+          <ul>
+            <li data-ipw-text="ana.g1">直销团队按「增量阶梯激励」兑付，Top 20% 销售人均产出 +31%</li>
+            <li data-ipw-text="ana.g2">重点行业客户直营覆盖率从 42% 提升至 67%</li>
+            <li data-ipw-text="ana.g3">产品目录精简后，方案报价周期缩短 40%</li>
+          </ul>
+        </div>
+        <div class="bullet-block risk">
+          <h3><span class="dot"></span><span data-ipw-text="ana.rt">失效机制（必须调整）</span></h3>
+          <ul>
+            <li data-ipw-text="ana.r1">分销返点与存量挂钩，代理没有拓新动力</li>
+            <li data-ipw-text="ana.r2">代理分级考核两年未更新，末位 30% 无退出机制</li>
+            <li data-ipw-text="ana.r3">渠道冲突无仲裁规则，H1 丢单 6 起</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">CONFIDENTIAL · 内部资料</span><span class="pagenum">04</span></div>
+  </section>
+
+  <!-- 5 Divider -->
+  <section class="slide divider" id="divider">
+    <div class="gradient-rule"></div>
+    <div class="bignum" data-ipw-text="div.num">03</div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="div.kicker">PART 03</div>
+      <h2 data-ipw-text="div.title">H2 行动计划：<br />重建渠道激励，把资源押在增量上</h2>
+    </div>
+    <div class="footer" style="border-top-color: rgba(255,255,255,0.2); color:#8FA1B9;">
+      <span class="stamp">CONFIDENTIAL · 内部资料</span><span class="pagenum">05</span>
+    </div>
+  </section>
+
+  <!-- 6 Ending -->
+  <section class="slide ending" id="ending">
+    <div class="gradient-rule"></div>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="end.kicker">NEXT STEP</div>
+      <h2 data-ipw-text="end.title">请管理层决策：渠道激励新政 9 月 1 日落地</h2>
+      <div class="contact" data-ipw-text="end.contact">市场部 · 张三 · 会后一周内提交新政细则与考核方案</div>
+    </div>
+    <div class="footer" style="border-top-color: rgba(255,255,255,0.2); color:#8FA1B9;">
+      <span class="stamp">CONFIDENTIAL · 内部资料</span><span class="pagenum">06</span>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

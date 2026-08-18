@@ -29,6 +29,12 @@ import {
   openComputerUseSetupApp,
 } from "./computer-use.mjs";
 import { createUiControlServer } from "./ui-control-server.mjs";
+import { createLanPreviewServer, lanPreviewPagePath } from "./lan-preview-server.mjs";
+import { createSshOps } from "./ssh-ops.mjs";
+import { createGitGraph } from "./git-graph.mjs";
+import { createScheduledTasks } from "./scheduled-tasks.mjs";
+import { createPreviewCore } from "./preview-core.mjs";
+import { createImBot } from "./im-bot.mjs";
 import { createApplicationMenu } from "./app-menu.mjs";
 import { createBrowserPanel } from "./browser-panel.mjs";
 import { createPetWindow } from "./pet-window.mjs";
@@ -117,6 +123,28 @@ const uiControlServer = createUiControlServer({
   getWindow: () => createMainWindow(),
 });
 
+const previewCore = createPreviewCore({ getWindow: () => createMainWindow() });
+
+const lanPreviewServer = createLanPreviewServer({
+  appName: APP_NAME,
+  getWindow: () => createMainWindow(),
+  previewCore,
+  pageHtmlPath: lanPreviewPagePath(path.resolve(__dirname, "..")),
+});
+
+const sshOps = createSshOps({ pty });
+const gitGraph = createGitGraph();
+const imBot = createImBot({ previewCore });
+
+function broadcastScheduledTasks(payload) {
+  for (const win of BrowserWindow.getAllWindows()) {
+    if (!win.isDestroyed()) {
+      win.webContents.send("ipollowork:scheduled-tasks:changed", payload);
+    }
+  }
+}
+const scheduledTasks = createScheduledTasks({ broadcast: broadcastScheduledTasks });
+
 const terminalProcesses = new Map();
 const hyperframesProcesses = new Map();
 let nextTerminalId = 1;
@@ -136,11 +164,6 @@ function isHyperframesStudioUrl(url) {
   } catch {
     return false;
   }
-}
-
-function defaultTerminalShell() {
-  if (process.platform === "win32") return process.env.COMSPEC || "powershell.exe";
-  return process.env.SHELL || (process.platform === "darwin" ? "/bin/zsh" : "/bin/bash");
 }
 
 async function resolveTerminalCwd(cwd) {
@@ -1933,6 +1956,53 @@ async function writeOpencodeConfig(scope, projectDir, content) {
   return execResult(true, `Wrote ${targetPath}`);
 }
 
+// ---------- router gateway (smart model routing) ----------
+// 配置与状态统一放在 ~/.config/ipollowork/router-gateway/ 下，跨工作区可用。
+function routerGatewayRoot() {
+  return path.join(configHomePath(), "ipollowork", "router-gateway");
+}
+
+function routerGatewayConfigPath() {
+  return path.join(routerGatewayRoot(), "routing.json");
+}
+
+function routerGatewayStatusUrl() {
+  // 与网关默认监听地址一致，见 tools/qwen-proxy/routing.json 的 listen 配置。
+  return "http://127.0.0.1:18222/__router/status";
+}
+
+async function readRouterGatewayConfig() {
+  const targetPath = routerGatewayConfigPath();
+  const exists = await pathExists(targetPath);
+  return {
+    path: targetPath,
+    exists,
+    content: exists ? await readFile(targetPath, "utf8") : null,
+  };
+}
+
+async function writeRouterGatewayConfig(content) {
+  const targetPath = routerGatewayConfigPath();
+  await mkdir(path.dirname(targetPath), { recursive: true });
+  await writeFile(targetPath, content, { encoding: "utf8", mode: 0o600 });
+  return execResult(true, `Wrote ${targetPath}`);
+}
+
+async function routerGatewayStatus() {
+  try {
+    const response = await fetch(routerGatewayStatusUrl(), {
+      signal: AbortSignal.timeout(2000),
+    });
+    if (!response.ok) {
+      return { running: false, error: `HTTP ${response.status}` };
+    }
+    const payload = await response.json();
+    return { running: true, ...payload };
+  } catch (error) {
+    return { running: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
 function resolveCommandsDir(scope, projectDir) {
   if (scope === "workspace") {
     if (!String(projectDir ?? "").trim()) {
@@ -2171,8 +2241,26 @@ const LOCAL_IMAGE_MIME_TYPES = new Map([
   [".webp", "image/webp"],
 ]);
 
-async function readLocalImageAsDataUrl(target) {
-  const imagePath = String(target ?? "").trim();
+const SENSITIVE_PATH_SEGMENTS = new Set([".ssh", ".aws", ".gnupg", ".docker", ".kube", ".azure", ".gcloud"]);
+
+function rejectSensitivePath(target) {
+  const resolved = path.resolve(String(target ?? ""));
+  const home = os.homedir();
+  const rel = path.relative(home, resolved);
+  if (rel === "" || rel.startsWith("..") || path.isAbsolute(rel)) return false;
+  const segments = rel.split(path.sep);
+  if (segments.some((seg) => SENSITIVE_PATH_SEGMENTS.has(seg))) return true;
+  const basename = path.basename(resolved);
+  return (
+    basename === ".env" ||
+    basename === ".netrc" ||
+    basename === ".npmrc" ||
+    basename.startsWith("id_rsa") ||
+    basename.startsWith("id_ed25519")
+  );
+}
+
+async function readLocalImageAsDataUrl(target) {  const imagePath = String(target ?? "").trim();
   if (!imagePath) return null;
   const extension = path.extname(imagePath).toLowerCase();
   const mimeType = LOCAL_IMAGE_MIME_TYPES.get(extension);
@@ -2593,6 +2681,15 @@ const desktopCommandHandlers = {
         String(args[2] ?? ""),
       );
   },
+  "routerGatewayGetConfig": async () => {
+      return readRouterGatewayConfig();
+  },
+  "routerGatewayWriteConfig": async (event, ...args) => {
+      return writeRouterGatewayConfig(String(args[0] ?? ""));
+  },
+  "routerGatewayStatus": async () => {
+      return routerGatewayStatus();
+  },
   "resetiPolloWorkState": async (event, ...args) => {
       return workspaceStore.resetiPolloWorkState();
   },
@@ -2608,6 +2705,7 @@ const desktopCommandHandlers = {
   "__openPath": async (event, ...args) => {
       const target = String(args[0] ?? "").trim();
       if (!target) return "Path is required.";
+      if (rejectSensitivePath(target)) return "Path is not accessible.";
       return shell.openPath(target);
   },
   "__revealItemInDir": async (event, ...args) => {
@@ -2645,6 +2743,7 @@ const desktopCommandHandlers = {
   "__readLocalTextFile": async (event, ...args) => {
       const target = String(args[0] ?? "").trim();
       if (!target) throw new Error("Path is required.");
+      if (rejectSensitivePath(target)) throw new Error("Path is not accessible.");
       const info = await stat(target);
       if (!info.isFile()) throw new Error("File not found.");
       const maxBytes = 20 * 1024 * 1024;
@@ -2759,6 +2858,15 @@ const desktopCommandHandlers = {
       const url = String(args[0] ?? "").trim();
       const init = args[1] ?? {};
       if (!url) throw new Error("URL is required.");
+      let parsedUrl;
+      try {
+        parsedUrl = new URL(url);
+      } catch {
+        throw new Error("URL is invalid.");
+      }
+      if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+        throw new Error("Only http/https URLs are allowed.");
+      }
       if (desktopNetworkSuspended) {
         throw new Error("Desktop network is suspended. Retry after the computer resumes.");
       }
@@ -3075,24 +3183,17 @@ ipcMain.handle("ipollowork:system:askMicrophoneAccess", async () => {
 });
 
 // ── Terminal IPC ────────────────────────────────────────────────────────
+// Shared terminal spawn (spawnTerminalProcess) and ~/.ssh/config host
+// discovery (readSshConfigHosts) live in ssh-ops.mjs and are injected as
+// `sshOps`.
+
 ipcMain.handle("ipollowork:terminal:create", async (event, options = {}) => {
   const cwd = await resolveTerminalCwd(options?.cwd);
   const cols = Number.isFinite(options?.cols) ? Math.max(20, Math.floor(options.cols)) : 80;
   const rows = Number.isFinite(options?.rows) ? Math.max(5, Math.floor(options.rows)) : 24;
   const terminalId = `term_${nextTerminalId++}`;
-  const shellPath = defaultTerminalShell();
-  const child = pty.spawn(shellPath, [], {
-    name: "xterm-256color",
-    cols,
-    rows,
-    cwd,
-    env: {
-      ...process.env,
-      TERM: "xterm-256color",
-      COLORTERM: "truecolor",
-      IPOLLOWORK_TERMINAL: "1",
-    },
-  });
+  const shellPath = typeof options?.shell === "string" && options.shell.trim() ? options.shell.trim() : undefined;
+  const child = sshOps.spawnTerminalProcess({ cwd, cols, rows, command: options?.command, shellPath });
 
   terminalProcesses.set(terminalId, { process: child, webContentsId: event.sender.id });
   event.sender.once("destroyed", () => killTerminalsForWebContents(event.sender.id));
@@ -3122,6 +3223,92 @@ ipcMain.handle("ipollowork:terminal:kill", (event, terminalId) => {
   const terminal = terminalForSender(event, terminalId);
   if (!terminal) return;
   killTerminal(String(terminalId));
+});
+
+ipcMain.handle("ipollowork:ssh:list-hosts", () => sshOps.readSshConfigHosts());
+
+// ── Git graph IPC ──────────────────────────────────────────────────────
+// Commit DAG + ref mapping builder (buildGitGraph) lives in git-graph.mjs
+// and is injected as `gitGraph`.
+
+ipcMain.handle("ipollowork:git:graph", async (event, options = {}) => {
+  const cwd = typeof options?.cwd === "string" && options.cwd.trim() ? options.cwd.trim() : undefined;
+  if (!cwd) return { ok: false, error: "missing cwd" };
+  try {
+    const result = await gitGraph.buildGitGraph(cwd, Number.isFinite(options?.maxCommits) ? options.maxCommits : 2000);
+    result.isRepo = true;
+    return result;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes("not a git repository") || message.includes("fatal:")) {
+      return { ok: false, isRepo: false, error: message };
+    }
+    return { ok: false, isRepo: true, error: message };
+  }
+});
+
+// ── Scheduled tasks IPC ────────────────────────────────────────────────
+ipcMain.handle("ipollowork:scheduled-tasks:list", () => scheduledTasks.list());
+ipcMain.handle("ipollowork:scheduled-tasks:create", (_event, input) => scheduledTasks.create(input ?? {}));
+ipcMain.handle("ipollowork:scheduled-tasks:update", (_event, id, patch) => scheduledTasks.update(String(id ?? ""), patch ?? {}));
+ipcMain.handle("ipollowork:scheduled-tasks:set-enabled", (_event, id, enabled) => scheduledTasks.setEnabled(String(id ?? ""), Boolean(enabled)));
+ipcMain.handle("ipollowork:scheduled-tasks:remove", (_event, id) => scheduledTasks.remove(String(id ?? "")));
+ipcMain.handle("ipollowork:scheduled-tasks:run-now", (_event, id) => scheduledTasks.runNow(String(id ?? "")));
+ipcMain.handle("ipollowork:scheduled-tasks:logs", (_event, id) => scheduledTasks.logs(String(id ?? "")));
+ipcMain.handle("ipollowork:scheduled-tasks:preview", (_event, cron) => scheduledTasks.preview(String(cron ?? "")));
+
+// ── LAN preview IPC ────────────────────────────────────────────────────
+function lanPreviewStatePayload() {
+  return lanPreviewServer.getState();
+}
+
+function broadcastLanPreviewState() {
+  for (const win of BrowserWindow.getAllWindows()) {
+    if (!win.isDestroyed()) {
+      win.webContents.send("ipollowork:lan-preview:state", lanPreviewStatePayload());
+    }
+  }
+}
+
+ipcMain.handle("ipollowork:lan-preview:get-state", () => lanPreviewStatePayload());
+
+ipcMain.handle("ipollowork:lan-preview:set-enabled", async (event, enabled) => {
+  const target = enabled === true;
+  const current = lanPreviewServer.getState().enabled;
+  if (target === current) return lanPreviewStatePayload();
+  if (target) {
+    try {
+      await lanPreviewServer.start();
+    } catch (error) {
+      return { ...lanPreviewStatePayload(), error: error instanceof Error ? error.message : "start-failed" };
+    }
+  } else {
+    await lanPreviewServer.stop();
+  }
+  broadcastLanPreviewState();
+  return lanPreviewStatePayload();
+});
+
+ipcMain.handle("ipollowork:lan-preview:regenerate-code", () => {
+  const generated = lanPreviewServer.regenerateCode();
+  broadcastLanPreviewState();
+  return lanPreviewStatePayload();
+});
+
+ipcMain.handle("ipollowork:lan-preview:disconnect-all", () => {
+  lanPreviewServer.disconnectAll();
+  broadcastLanPreviewState();
+  return lanPreviewStatePayload();
+});
+
+ipcMain.handle("ipollowork:lan-preview:push-to-im", async (event, options = {}) => {
+  const mcpUrl = typeof options?.mcpUrl === "string" ? options.mcpUrl : "";
+  try {
+    const result = await imBot.pushSummary({ mcpUrl });
+    return { ok: true, tool: result.tool };
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : "im-push-failed" };
+  }
 });
 
 ipcMain.handle("ipollowork:hyperframes:start", (event, options = {}) => startHyperframesPreview(event, options));
@@ -4185,8 +4372,9 @@ if (!app.requestSingleInstanceLock()) {
     if (runtimeDisposeInProgress) return;
     petAssistant.stop();
     petIntegrations.stop();
+    scheduledTasks.stop();
     showShutdownScreen();
-    void Promise.all([disposeRuntimeBeforeQuit(), uiControlServer.stop()]).finally(() => app.quit());
+    void Promise.all([disposeRuntimeBeforeQuit(), uiControlServer.stop(), lanPreviewServer.stop()]).finally(() => app.quit());
   });
 
   app.on("second-instance", async (_event, argv) => {
@@ -4208,6 +4396,7 @@ if (!app.requestSingleInstanceLock()) {
   app.whenReady().then(async () => {
     const startupStartedAt = Date.now();
     console.info("[startup] Electron ready");
+    scheduledTasks.start();
     installDesktopPowerRecovery();
     installMediaPermissionHandlers(session, () => mainWindow);
     await workspaceStore.importBundledDesktopBootstrapConfigIfPreferred();

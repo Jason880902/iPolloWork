@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>培训课件 Course — 学术暖纸风教学模版</title>
+<link rel="stylesheet" href="assets/fonts.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8ECF1;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(42, 36, 24, 0.14);
+    flex-shrink: 0;
+    display: grid; grid-template-columns: 248px 1fr;
+    padding: 56px 64px; gap: 48px;
+  }
+  .slide.full { display: flex; flex-direction: column; justify-content: center; }
+
+  /* ============ typography ============ */
+  .kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ipw-color-secondary); }
+  h1.display { font-family: var(--ipw-font-display); font-size: 64px; line-height: 1.06; font-weight: 800; letter-spacing: -0.015em; color: var(--ipw-color-text); margin-top: 14px; }
+  h1.display em, h2.title em { font-style: italic; color: var(--ipw-color-primary); }
+  h2.title { font-family: var(--ipw-font-display); font-size: 42px; line-height: 1.12; font-weight: 700; letter-spacing: -0.01em; color: var(--ipw-color-text); margin-top: 12px; }
+  .lede { font-size: 19px; line-height: 1.7; color: var(--ipw-color-muted); font-weight: 400; max-width: 62ch; margin-top: 18px; }
+  .dim { color: var(--ipw-color-muted); }
+  code { font-family: var(--ipw-font-mono); font-size: 0.9em; background: var(--ipw-color-surface-2); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--ipw-color-border); }
+
+  /* ============ sidebar (signature: persistent objectives) ============ */
+  .sidebar { border-right: 1px solid var(--ipw-color-border); padding-right: 30px; }
+  .sidebar .brand { font-family: var(--ipw-font-display); font-size: 21px; font-weight: 700; color: var(--ipw-color-primary); }
+  .sidebar .brand::before { content: "✦ "; color: var(--ipw-color-secondary); }
+  .sidebar h5 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ipw-color-faint); margin: 30px 0 10px; }
+  .obj-list { list-style: none; font-size: 13px; color: var(--ipw-color-muted); line-height: 1.5; }
+  .obj-list li { padding: 7px 0 7px 22px; position: relative; border-bottom: 1px dashed var(--ipw-color-border); }
+  .obj-list li::before { content: "○"; position: absolute; left: 0; top: 7px; color: var(--ipw-color-primary); }
+  .obj-list li.done::before { content: "●"; color: var(--ipw-color-primary); }
+  .obj-list li.current { color: var(--ipw-color-text); font-weight: 700; }
+  .obj-list li.current::before { content: "▸"; color: var(--ipw-color-secondary); }
+  .sidebar .note { font-size: 13px; color: var(--ipw-color-muted); line-height: 1.6; }
+  .main { min-width: 0; }
+
+  /* ============ components ============ */
+  .concept-box { background: var(--ipw-card-bg); border: 1px solid var(--ipw-card-border); border-radius: var(--ipw-card-radius); padding: 20px 24px; box-shadow: var(--ipw-card-shadow); }
+  .concept-box h4 { font-size: 17px; font-weight: 600; color: var(--ipw-color-primary); margin-bottom: 6px; }
+  .concept-box p { font-size: 14px; line-height: 1.6; }
+  .stack > * + * { margin-top: 14px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px; }
+
+  .callout { border-left: 4px solid var(--ipw-color-secondary); background: var(--ipw-color-surface-2); padding: 16px 22px; border-radius: 0 var(--ipw-card-radius) var(--ipw-card-radius) 0; margin-top: 22px; font-size: 15px; line-height: 1.65; color: var(--ipw-color-muted); }
+  .callout b { color: var(--ipw-color-secondary); }
+
+  .exercise { background: var(--ipw-exercise-bg); border: 1.5px dashed var(--ipw-color-secondary); border-radius: var(--ipw-card-radius); padding: 22px 26px; margin-top: 24px; }
+  .exercise::before { content: "✎ 课堂练习"; display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: var(--ipw-color-secondary); margin-bottom: 10px; text-transform: uppercase; }
+  .exercise ol { margin: 8px 0 0 20px; color: var(--ipw-color-muted); line-height: 1.9; font-size: 15px; }
+
+  .mono-panel { background: var(--ipw-code-bg); color: var(--ipw-code-text); border-radius: var(--ipw-card-radius); padding: 22px 26px; font-family: var(--ipw-font-mono); font-size: 14px; line-height: 1.85; margin-top: 22px; }
+  .mono-panel .cmt { color: var(--ipw-color-faint); font-style: italic; }
+  .mono-panel .kw { color: #E8A770; }
+  .mono-panel .num { color: #8EC6B2; }
+
+  .mcq { background: var(--ipw-color-surface); border: 1px solid var(--ipw-card-border); border-radius: var(--ipw-card-radius); padding: 16px 20px; margin-top: 12px; display: flex; gap: 14px; align-items: flex-start; }
+  .mcq .letter { flex: none; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--ipw-color-faint); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--ipw-color-muted); }
+  .mcq b { font-size: 15px; }
+  .mcq p { font-size: 13px; margin-top: 4px; }
+  .mcq.correct { border-color: var(--ipw-color-primary); background: rgba(45, 125, 110, 0.06); }
+  .mcq.correct .letter { border-color: var(--ipw-color-primary); background: var(--ipw-color-primary); color: #fff; }
+
+  .pill-row { display: flex; gap: 14px; margin-top: 34px; }
+  .pill-academic { display: inline-block; padding: 5px 14px; border-radius: 4px; background: var(--ipw-color-surface-2); border: 1px solid var(--ipw-color-border); font-size: 12px; color: var(--ipw-color-muted); font-family: var(--ipw-font-mono); }
+
+  /* ============ footer ============ */
+  .footer { position: absolute; left: 64px; right: 64px; bottom: 22px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--ipw-color-faint); border-top: 1px solid var(--ipw-color-border-strong); padding-top: 10px; }
+  .footer .stamp { letter-spacing: 1.5px; font-weight: 700; }
+  .pagenum { font-variant-numeric: tabular-nums; font-family: var(--ipw-font-mono); }
+
+  /* cover */
+  .slide.cover { background: var(--ipw-color-bg); }
+  .cover .meta { margin-top: 48px; font-size: 13px; color: var(--ipw-color-faint); letter-spacing: 1px; }
+
+  /* summary */
+  .slide.summary { justify-content: center; }
+</style><link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide full cover" id="cover">
+    <p class="kicker" data-ipw-text="cover.kicker">产品学院 · 模块 04</p>
+    <h1 class="display" data-ipw-text="cover.title">定价的艺术：<br />从成本核算到<em>价值定价</em></h1>
+    <p class="lede" data-ipw-text="cover.lede">本模块面向销售与客户成功团队，讲清公司产品的三层定价结构——为什么我们不打价格战，以及如何向客户证明「贵得有道理」。</p>
+    <div class="pill-row">
+      <span class="pill-academic" data-ipw-text="cover.pill1">时长 · 约 45 分钟</span>
+      <span class="pill-academic" data-ipw-text="cover.pill2">前置 · 产品线基础知识</span>
+      <span class="pill-academic" data-ipw-text="cover.pill3">面向 · 销售 / 客户成功</span>
+    </div>
+    <div class="meta" data-ipw-text="cover.meta">讲师：市场部 · 张三 · 2026 年 8 月</div>
+    <div class="footer"><span class="stamp" data-ipw-text="cover.stamp">内部培训资料 · 请勿外传</span><span class="pagenum">01</span></div>
+  </section>
+
+  <!-- 2 Objectives -->
+  <section class="slide" id="objectives">
+    <aside class="sidebar">
+      <div class="brand" data-ipw-text="obj.brand">产品学院 · M04</div>
+      <h5 data-ipw-text="obj.sideTitle">学习目标</h5>
+      <ul class="obj-list">
+        <li class="current" data-ipw-text="obj.o1">说清价值定价</li>
+        <li data-ipw-text="obj.o2">画出三层定价结构</li>
+        <li data-ipw-text="obj.o3">独立完成报价演算</li>
+        <li data-ipw-text="obj.o4">判断守价与让价时机</li>
+        <li data-ipw-text="obj.o5">通过课后自测</li>
+      </ul>
+      <h5 data-ipw-text="obj.progressTitle">模块进度</h5>
+      <p class="note" data-ipw-text="obj.progress">第 2 页 / 共 7 页 · 刚开始</p>
+    </aside>
+    <div class="main">
+      <p class="kicker" data-ipw-text="obj.kicker">学习目标</p>
+      <h2 class="title" data-ipw-text="obj.title">学完本模块，你将能够……</h2>
+      <div class="stack" style="margin-top: 26px">
+        <div class="concept-box"><h4 data-ipw-text="obj.b1t">① 一句话说清价值定价</h4><p class="dim" data-ipw-text="obj.b1d">「价格不取决于我们花了多少成本，而取决于客户获得了多少价值。」</p></div>
+        <div class="concept-box"><h4 data-ipw-text="obj.b2t">② 画出三层定价结构</h4><p class="dim" data-ipw-text="obj.b2d">成本价是底线，竞品价是参照，价值价是上限——报价在中间找落点。</p></div>
+        <div class="concept-box"><h4 data-ipw-text="obj.b3t">③ 独立完成一次报价演算</h4><p class="dim" data-ipw-text="obj.b3d">给定客户场景，算出守住毛利底线的最低报价。</p></div>
+        <div class="concept-box"><h4 data-ipw-text="obj.b4t">④ 判断何时守价、何时让价</h4><p class="dim" data-ipw-text="obj.b4d">并说明：让价必须换到对等的交换条件。</p></div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">内部培训资料 · 请勿外传</span><span class="pagenum">02</span></div>
+  </section>
+
+  <!-- 3 Concept -->
+  <section class="slide" id="concept">
+    <aside class="sidebar">
+      <div class="brand" data-ipw-text="concept.brand">产品学院 · M04</div>
+      <h5 data-ipw-text="concept.sideTitle">学习目标</h5>
+      <ul class="obj-list">
+        <li class="done" data-ipw-text="concept.o1">说清价值定价</li>
+        <li class="current" data-ipw-text="concept.o2">画出三层定价结构</li>
+        <li data-ipw-text="concept.o3">独立完成报价演算</li>
+        <li data-ipw-text="concept.o4">判断守价与让价时机</li>
+        <li data-ipw-text="concept.o5">通过课后自测</li>
+      </ul>
+      <h5 data-ipw-text="concept.termsTitle">关键术语</h5>
+      <p class="note" data-ipw-text="concept.terms">成本价 · 竞品价 · 价值价 · 毛利底线</p>
+    </aside>
+    <div class="main">
+      <p class="kicker" data-ipw-text="concept.kicker">核心概念</p>
+      <h2 class="title" data-ipw-text="concept.title">任何报价，都落在三层之间</h2>
+      <p class="lede" data-ipw-text="concept.lede">报价不是拍脑袋：它必须高于<b>成本底线</b>，低于客户的<b>感知价值</b>，并参照<b>竞品价格</b>找到自己的位置。</p>
+      <div class="callout" data-ipw-text="concept.callout"><b>经验法则。</b>如果你说不清客户因为我们的方案多赚了多少钱，就不要先报价——先把价值算出来。</div>
+      <div class="grid2">
+        <div class="concept-box"><h4 data-ipw-text="concept.box1t">成本底线</h4><p class="dim" data-ipw-text="concept.box1d">低于此价，卖得越多亏得越多。包含交付、服务与渠道分成的全口径成本。</p></div>
+        <div class="concept-box"><h4 data-ipw-text="concept.box2t">感知价值上限</h4><p class="dim" data-ipw-text="concept.box2d">客户认为「值」的上限——由替代方案的成本决定，而非我们的成本决定。</p></div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">内部培训资料 · 请勿外传</span><span class="pagenum">03</span></div>
+  </section>
+
+  <!-- 4 Worked example -->
+  <section class="slide" id="example">
+    <aside class="sidebar">
+      <div class="brand" data-ipw-text="example.brand">产品学院 · M04</div>
+      <h5 data-ipw-text="example.sideTitle">学习目标</h5>
+      <ul class="obj-list">
+        <li class="done" data-ipw-text="example.o1">说清价值定价</li>
+        <li class="done" data-ipw-text="example.o2">画出三层定价结构</li>
+        <li class="current" data-ipw-text="example.o3">独立完成报价演算</li>
+        <li data-ipw-text="example.o4">判断守价与让价时机</li>
+        <li data-ipw-text="example.o5">通过课后自测</li>
+      </ul>
+      <h5 data-ipw-text="example.tryTitle">动手试试</h5>
+      <p class="note" data-ipw-text="example.try">把右侧客户换成你手头的真实客户，重算一遍。</p>
+    </aside>
+    <div class="main">
+      <p class="kicker" data-ipw-text="example.kicker">示例演算</p>
+      <h2 class="title" data-ipw-text="example.title">一次真实的报价演算</h2>
+      <div class="mono-panel"><pre style="margin:0" data-ipw-text="example.panel"><span class="cmt">// 客户：某省级连锁 · 100 家门店 · 年费模式</span>
+<span class="kw">全口径成本</span>  = 交付 8 万 + 服务 6 万 + 分成 4 万 = <span class="num">18 万/年</span>
+<span class="kw">竞品报价</span>    = <span class="num">42 万/年</span>（功能少 30%，无驻场服务）
+<span class="kw">客户价值</span>    = 节省人力 2 人 × 15 万 + 损耗下降 20 万 = <span class="num">50 万/年</span>
+<span class="kw">报价落点</span>    = 价值上限 50 万 × 0.8 = <span class="num">40 万</span>（毛利 55%）</pre></div>
+      <div class="callout" data-ipw-text="example.callout"><b>为什么是 0.8？</b>给客户留出「看得见的收益空间」——客户花 40 万、省 50 万，这笔账他自己能算清，成交阻力最小。</div>
+    </div>
+    <div class="footer"><span class="stamp">内部培训资料 · 请勿外传</span><span class="pagenum">04</span></div>
+  </section>
+
+  <!-- 5 Exercise -->
+  <section class="slide" id="exercise">
+    <aside class="sidebar">
+      <div class="brand" data-ipw-text="exercise.brand">产品学院 · M04</div>
+      <h5 data-ipw-text="exercise.sideTitle">学习目标</h5>
+      <ul class="obj-list">
+        <li class="done" data-ipw-text="exercise.o1">说清价值定价</li>
+        <li class="done" data-ipw-text="exercise.o2">画出三层定价结构</li>
+        <li class="done" data-ipw-text="exercise.o3">独立完成报价演算</li>
+        <li class="current" data-ipw-text="exercise.o4">判断守价与让价时机</li>
+        <li data-ipw-text="exercise.o5">通过课后自测</li>
+      </ul>
+      <h5 data-ipw-text="exercise.timeTitle">时间</h5>
+      <p class="note" data-ipw-text="exercise.time">约 10 分钟 · 独立完成</p>
+    </aside>
+    <div class="main">
+      <p class="kicker" data-ipw-text="exercise.kicker">练习 4.1</p>
+      <h2 class="title" data-ipw-text="exercise.title">为这位客户做一次报价</h2>
+      <p class="lede" data-ipw-text="exercise.lede">客户为区域制造企业，200 名员工，正在对比我们与竞品 A 的方案。</p>
+      <div class="exercise">
+        <b style="font-size:16px" data-ipw-text="exercise.taskTitle">你的任务</b>
+        <ol>
+          <li data-ipw-text="exercise.step1">算出全口径成本：交付 6 万 + 服务 5 万 + 分成 3 万。</li>
+          <li data-ipw-text="exercise.step2">估算客户价值：每年节省人力成本 25 万，出错损失下降 10 万。</li>
+          <li data-ipw-text="exercise.step3">竞品 A 报价 28 万。给出你的报价，并写出理由。</li>
+          <li data-ipw-text="exercise.step4">进阶：客户要求再降 15%，你该答应还是拒绝？交换条件是什么？</li>
+        </ol>
+      </div>
+      <p style="font-size:14px; margin-top:18px; color:var(--ipw-color-accent)" data-ipw-text="exercise.hint">卡住了？记住：让价不是问题，无条件让价才是问题。</p>
+    </div>
+    <div class="footer"><span class="stamp">内部培训资料 · 请勿外传</span><span class="pagenum">05</span></div>
+  </section>
+
+  <!-- 6 Check understanding -->
+  <section class="slide" id="check">
+    <aside class="sidebar">
+      <div class="brand" data-ipw-text="check.brand">产品学院 · M04</div>
+      <h5 data-ipw-text="check.sideTitle">学习目标</h5>
+      <ul class="obj-list">
+        <li class="done" data-ipw-text="check.o1">说清价值定价</li>
+        <li class="done" data-ipw-text="check.o2">画出三层定价结构</li>
+        <li class="done" data-ipw-text="check.o3">独立完成报价演算</li>
+        <li class="done" data-ipw-text="check.o4">判断守价与让价时机</li>
+        <li class="current" data-ipw-text="check.o5">通过课后自测</li>
+      </ul>
+      <h5 data-ipw-text="check.assessTitle">自测要求</h5>
+      <p class="note" data-ipw-text="check.assess">目标 3 / 3 全对。</p>
+    </aside>
+    <div class="main">
+      <p class="kicker" data-ipw-text="check.kicker">理解自测</p>
+      <h2 class="title" data-ipw-text="check.title">客户压价 15%，哪种回应最专业？</h2>
+      <div style="margin-top:20px">
+        <div class="mcq"><div class="letter">A</div><div><b data-ipw-text="check.a1t">直接答应，先把单签下来再说</b><p class="dim" data-ipw-text="check.a1d">无条件让价 = 告诉客户你的报价本来就有水分，明年会更难谈。</p></div></div>
+        <div class="mcq correct"><div class="letter">B</div><div><b data-ipw-text="check.b1t">让价 15%，但要求签三年框架 + 预付年费</b><p class="dim" data-ipw-text="check.b1d"><b style="color:var(--ipw-color-primary)">✓ 正确。</b>让价必须换到对等条件：账期、年限、案例授权，都是筹码。</p></div></div>
+        <div class="mcq"><div class="letter">C</div><div><b data-ipw-text="check.c1t">强硬拒绝，强调我们从不打折</b><p class="dim" data-ipw-text="check.c1d">守价没错，但关上谈判大门的同时，也把客户推给了竞品。</p></div></div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">内部培训资料 · 请勿外传</span><span class="pagenum">06</span></div>
+  </section>
+
+  <!-- 7 Summary + next module -->
+  <section class="slide full summary" id="summary">
+    <p class="kicker" data-ipw-text="summary.kicker">总结 · 模块 04</p>
+    <h1 class="display" style="font-size:52px" data-ipw-text="summary.title">你现在可以……</h1>
+    <div class="grid2" style="margin-top:30px">
+      <div class="concept-box"><h4 data-ipw-text="summary.b1t">✓ 说清价值定价</h4><p class="dim" data-ipw-text="summary.b1d">价格由客户获得的价值决定，而非我方成本。</p></div>
+      <div class="concept-box"><h4 data-ipw-text="summary.b2t">✓ 画出三层定价结构</h4><p class="dim" data-ipw-text="summary.b2d">成本底线、竞品参照、价值上限，报价落在其间。</p></div>
+      <div class="concept-box"><h4 data-ipw-text="summary.b3t">✓ 独立完成报价演算</h4><p class="dim" data-ipw-text="summary.b3d">给定客户场景，算出守住毛利的报价落点。</p></div>
+      <div class="concept-box"><h4 data-ipw-text="summary.b4t">✓ 专业地让价</h4><p class="dim" data-ipw-text="summary.b4d">每一分让步，都要换回对等的交换条件。</p></div>
+    </div>
+    <div class="callout" data-ipw-text="summary.next"><b>下一模块 · 模块 05。</b>渠道定价与返利设计：如何让代理商有钱赚、又不打乱直营价格体系。</div>
+    <div class="footer"><span class="stamp" data-ipw-text="summary.stamp">内部培训资料 · 请勿外传</span><span class="pagenum">07</span></div>
+  </section>
+
+</div>
+</body>
+</html>

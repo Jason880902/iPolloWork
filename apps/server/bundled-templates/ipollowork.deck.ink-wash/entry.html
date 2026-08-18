@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>水墨 · 藏拙 — 品牌文化宣讲模版</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E6E0D0;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: var(--ipw-body-line-height);
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(26, 26, 26, 0.12);
+    flex-shrink: 0;
+  }
+  .slide-inner { position: absolute; inset: 76px 100px 84px; display: flex; flex-direction: column; }
+
+  /* signature seal: the single cinnabar focal point of the whole deck */
+  .seal {
+    width: 44px; height: 44px;
+    background: var(--ipw-color-accent);
+    color: #FDFBF6;
+    font-family: var(--ipw-font-display);
+    font-size: 24px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    transform: rotate(-4deg);
+    flex-shrink: 0;
+  }
+
+  /* faint ink mountains: decorative wash, never competes with content */
+  .mountains { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 240px;
+    opacity: 0.05; pointer-events: none; }
+
+  .kicker { font-size: 13px; letter-spacing: 4px; color: var(--ipw-color-muted); margin-bottom: 16px; }
+  h1.page-title { font-family: var(--ipw-font-display); font-size: 34px; font-weight: 700; line-height: 1.5; max-width: 920px; }
+
+  /* hairline rule: 1px low-alpha ink */
+  .hairline { height: 1px; background: var(--ipw-color-border); width: 100%; margin: 28px 0 36px; }
+
+  .footer { position: absolute; left: 100px; right: 100px; bottom: 30px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--ipw-font-display);
+    font-size: 11px; color: var(--ipw-color-muted);
+    border-top: 1px solid var(--ipw-color-border); padding-top: 12px; }
+  .footer .stamp { letter-spacing: 2px; }
+  .pagenum { font-variant-numeric: tabular-nums; letter-spacing: 2px; }
+
+  /* emphasis: ink label-chip, never red text */
+  .chip { display: inline-block; background: var(--ipw-color-primary); color: #F5F1E8;
+    font-size: 12px; letter-spacing: 1px; padding: 4px 12px; border-radius: 999px;
+    margin-right: 14px; vertical-align: 1px; }
+
+  /* toc: chinese numerals 壹贰叁肆, large and light */
+  .toc { margin-top: 0; }
+  .toc-item { display: flex; align-items: baseline; gap: 44px; padding: 14px 0;
+    border-bottom: 1px solid var(--ipw-color-border); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item .chnum { font-family: var(--ipw-font-display); font-size: 32px;
+    color: rgba(26, 26, 26, 0.25); width: 72px; flex-shrink: 0; line-height: 1.2; }
+  .toc-item h3 { font-family: var(--ipw-font-display); font-size: 21px; font-weight: 700; }
+  .toc-item p { font-size: 13px; color: var(--ipw-color-muted); margin-top: 2px; }
+
+  /* content points: sparse, wide leading */
+  .points { list-style: none; margin-top: 4px; max-width: 920px; }
+  .points li { font-size: 17px; padding: 16px 0 16px 26px; position: relative;
+    border-bottom: 1px solid var(--ipw-color-border); }
+  .points li:last-child { border-bottom: none; }
+  .points li::before { content: ""; position: absolute; left: 2px; top: 29px;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--ipw-color-secondary); opacity: 0.5; }
+
+  /* cover */
+  .cover .slide-inner { justify-content: center; }
+  .cover .title-row { display: flex; align-items: flex-start; gap: 28px; }
+  .cover h1 { font-family: var(--ipw-font-display); font-size: 64px; font-weight: 700; line-height: 1.4; }
+  .cover .seal { margin-top: 18px; }
+  .cover .sub { margin-top: 28px; font-size: 17px; color: var(--ipw-color-secondary); max-width: 640px; }
+  .cover .meta { margin-top: 64px; font-size: 13px; color: var(--ipw-color-muted); letter-spacing: 2px; }
+
+  /* divider: oversized pale chinese numeral on one side */
+  .divider .slide-inner { justify-content: center; }
+  .divider .bignum { position: absolute; left: 72px; top: 50%; transform: translateY(-50%);
+    font-family: var(--ipw-font-display); font-size: 300px; line-height: 1;
+    color: rgba(26, 26, 26, 0.06); }
+  .divider .chapter { margin-left: 300px; position: relative; }
+  .divider h2 { font-family: var(--ipw-font-display); font-size: 40px; font-weight: 700; line-height: 1.5; max-width: 600px; }
+  .divider .hairline { width: 120px; margin: 24px 0 0; }
+
+  /* ending */
+  .ending .slide-inner { justify-content: center; }
+  .ending h2 { font-family: var(--ipw-font-display); font-size: 64px; font-weight: 700; letter-spacing: 12px; }
+  .ending .closing { margin-top: 28px; font-size: 16px; color: var(--ipw-color-secondary); max-width: 560px; }
+  .ending .signoff { margin-top: 56px; font-family: var(--ipw-font-display); font-size: 14px;
+    color: var(--ipw-color-muted); letter-spacing: 2px; }
+</style>
+<link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide cover" id="cover">
+    <svg class="mountains" viewBox="0 0 1280 240" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,190 C160,128 280,96 440,138 C580,174 660,84 840,62 C1000,44 1100,116 1280,88 L1280,240 L0,240 Z" fill="#1A1A1A"/>
+      <path d="M0,214 C220,168 380,158 560,184 C740,208 900,148 1080,158 C1180,164 1240,178 1280,174 L1280,240 L0,240 Z" fill="#1A1A1A" opacity="0.6"/>
+    </svg>
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="cover.kicker">品牌文化宣讲 · BRAND CULTURE</div>
+      <div class="title-row">
+        <h1 data-ipw-text="cover.title">藏拙守真<br />以文化人</h1>
+        <div class="seal" data-ipw-text="cover.seal">拙</div>
+      </div>
+      <p class="sub" data-ipw-text="cover.sub">回到问题本质，讲清我们是谁、相信什么、如何行事</p>
+      <div class="meta" data-ipw-text="cover.meta">品牌市场部 · 张三 · 2026 年 8 月</div>
+    </div>
+    <div class="footer">
+      <span class="stamp" data-ipw-text="cover.stamp">品牌文化宣讲 · 内部资料</span>
+      <span class="pagenum">01</span>
+    </div>
+  </section>
+
+  <!-- 2 TOC -->
+  <section class="slide" id="toc">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="toc.kicker">CONTENTS</div>
+      <h1 class="page-title" data-ipw-text="toc.title">目录</h1>
+      <div class="hairline"></div>
+      <div class="toc">
+        <div class="toc-item">
+          <div class="chnum" data-ipw-text="toc.c1n">壹</div>
+          <div><h3 data-ipw-text="toc.c1t">品牌初心</h3><p data-ipw-text="toc.c1d">我们是谁，为何出发</p></div>
+        </div>
+        <div class="toc-item">
+          <div class="chnum" data-ipw-text="toc.c2n">贰</div>
+          <div><h3 data-ipw-text="toc.c2t">文化内核</h3><p data-ipw-text="toc.c2d">相信什么，坚持什么</p></div>
+        </div>
+        <div class="toc-item">
+          <div class="chnum" data-ipw-text="toc.c3n">叁</div>
+          <div><h3 data-ipw-text="toc.c3t">落地机制</h3><p data-ipw-text="toc.c3d">文化如何进入考核与协同</p></div>
+        </div>
+        <div class="toc-item">
+          <div class="chnum" data-ipw-text="toc.c4n">肆</div>
+          <div><h3 data-ipw-text="toc.c4t">同行之路</h3><p data-ipw-text="toc.c4d">下半年品牌建设行动</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">品牌文化宣讲 · 内部资料</span><span class="pagenum">02</span></div>
+  </section>
+
+  <!-- 3 Content: sparse points -->
+  <section class="slide" id="origin">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="origin.kicker">第壹章 · 品牌初心</div>
+      <h1 class="page-title" data-ipw-text="origin.title">回到三个根本问题，回答品牌为什么存在</h1>
+      <div class="hairline"></div>
+      <ul class="points">
+        <li data-ipw-text="origin.p1">我们为谁解决问题 —— 一切从产品为用户创造的真实价值出发</li>
+        <li data-ipw-text="origin.p2">我们因何而不同 —— 不追风口，把资源押在长期正确的事上</li>
+        <li data-ipw-text="origin.p3">我们希望被如何记住 —— 可靠、克制、值得信赖</li>
+      </ul>
+    </div>
+    <div class="footer"><span class="stamp">品牌文化宣讲 · 内部资料</span><span class="pagenum">03</span></div>
+  </section>
+
+  <!-- 4 Content: points with ink label-chips -->
+  <section class="slide" id="values">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="values.kicker">第贰章 · 文化内核</div>
+      <h1 class="page-title" data-ipw-text="values.title">四条行为准则，写进日常考核与协同</h1>
+      <div class="hairline"></div>
+      <ul class="points">
+        <li><span class="chip" data-ipw-text="values.c1">长期主义</span><span data-ipw-text="values.p1">不因季度压力牺牲品牌承诺，定价与宣传经得起复盘</span></li>
+        <li><span class="chip" data-ipw-text="values.c2">用户第一</span><span data-ipw-text="values.p2">市场洞察先行，所有营销动作回到用户真实场景</span></li>
+        <li><span class="chip" data-ipw-text="values.c3">协同担当</span><span data-ipw-text="values.p3">跨部门目标一张表，考核共担、成果共享</span></li>
+        <li><span class="chip" data-ipw-text="values.c4">求真务实</span><span data-ipw-text="values.p4">数据说话，报喜也报忧</span></li>
+      </ul>
+    </div>
+    <div class="footer"><span class="stamp">品牌文化宣讲 · 内部资料</span><span class="pagenum">04</span></div>
+  </section>
+
+  <!-- 5 Divider -->
+  <section class="slide divider" id="divider">
+    <div class="bignum" data-ipw-text="div.num">叁</div>
+    <div class="slide-inner">
+      <div class="chapter">
+        <div class="kicker" data-ipw-text="div.kicker">第叁章</div>
+        <h2 data-ipw-text="div.title">落地机制：让文化进入考核、激励与每一次协同</h2>
+        <div class="hairline"></div>
+      </div>
+    </div>
+    <div class="footer"><span class="stamp">品牌文化宣讲 · 内部资料</span><span class="pagenum">05</span></div>
+  </section>
+
+  <!-- 6 Ending -->
+  <section class="slide ending" id="ending">
+    <div class="slide-inner">
+      <div class="kicker" data-ipw-text="end.kicker">结语 · CLOSING</div>
+      <h2 data-ipw-text="end.title">谢 谢</h2>
+      <p class="closing" data-ipw-text="end.closing">文化的落成，不在墙上，在每一次决策里。敬请指正。</p>
+      <div class="signoff" data-ipw-text="end.signoff">品牌市场部 · 张三 谨识 · 二〇二六年八月</div>
+    </div>
+    <div class="footer"><span class="stamp">品牌文化宣讲 · 内部资料</span><span class="pagenum">06</span></div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>融资路演 Pitch — AI 产品 A 轮融资</title>
+<link rel="stylesheet" href="assets/fonts.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8ECF1;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(13, 17, 48, 0.12);
+    flex-shrink: 0;
+    padding: 80px 100px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .slide > * { position: relative; z-index: 1; }
+
+  /* ---------- signature elements ---------- */
+  .gradient-text {
+    background: var(--ipw-gradient);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+  .num-tag {
+    font-family: var(--ipw-font-mono); font-size: 14px; font-weight: 700;
+    color: var(--ipw-color-primary); letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .section-num {
+    position: absolute; right: 64px; bottom: 24px; z-index: 0;
+    font-size: 220px; font-weight: 900; line-height: 0.9; letter-spacing: -0.05em;
+    color: var(--ipw-color-surface); font-family: var(--ipw-font-display);
+  }
+  .brand-dot {
+    display: inline-block; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--ipw-gradient); margin-right: 10px; vertical-align: middle;
+  }
+  .brand { font-weight: 800; font-size: 22px; letter-spacing: -0.02em; }
+  .cover-bg { position: absolute; inset: 0; background: var(--ipw-gradient-soft); z-index: 0; }
+  .cover-blob {
+    position: absolute; right: -140px; top: -140px; width: 560px; height: 560px;
+    border-radius: 50%; background: var(--ipw-gradient); filter: blur(8px); opacity: 0.35; z-index: 0;
+  }
+
+  h1.h1 { font-family: var(--ipw-font-display); font-size: 76px; line-height: 1.08; font-weight: 900; letter-spacing: -0.035em; margin-top: 18px; }
+  h2.h2 { font-family: var(--ipw-font-display); font-size: 54px; line-height: 1.12; font-weight: 800; letter-spacing: -0.03em; margin-top: 12px; }
+  .lede { font-size: 21px; line-height: 1.6; color: var(--ipw-color-muted); font-weight: 300; max-width: 56ch; }
+  .dim { color: var(--ipw-color-muted); }
+  .mt-m { margin-top: 20px; } .mt-l { margin-top: 36px; }
+
+  .card {
+    background: var(--ipw-card-bg); border: 1px solid var(--ipw-card-border);
+    border-radius: var(--ipw-card-radius); box-shadow: var(--ipw-card-shadow);
+    padding: 26px 28px; position: relative; overflow: hidden;
+  }
+  .card h4 { font-size: 21px; font-weight: 700; margin-bottom: 8px; }
+  .card p { font-size: 15px; color: var(--ipw-color-muted); line-height: 1.6; }
+
+  .pill {
+    display: inline-block; padding: 6px 16px; border-radius: 999px; font-size: 14px; font-weight: 500;
+    background: var(--ipw-color-surface); color: var(--ipw-color-muted); border: 1px solid var(--ipw-color-border);
+  }
+  .pill-accent {
+    background: rgba(59, 91, 255, 0.10); color: var(--ipw-color-primary);
+    border-color: rgba(59, 91, 255, 0.26); font-weight: 600;
+  }
+  .row { display: flex; gap: 16px; align-items: center; }
+  .grid { display: grid; gap: 24px; }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+
+  .metric { display: flex; flex-direction: column; gap: 8px; }
+  .metric .n {
+    font-size: 68px; font-weight: 900; letter-spacing: -0.035em; line-height: 1;
+    background: var(--ipw-gradient); -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  .metric .l { color: var(--ipw-color-muted); font-size: 15px; }
+
+  .traction-bar { display: flex; align-items: flex-end; gap: 16px; height: 220px; margin-top: 32px; }
+  .traction-bar .bar { flex: 1; background: var(--ipw-gradient); border-radius: 8px 8px 0 0; position: relative; min-height: 20px; }
+  .traction-bar .bar span { position: absolute; bottom: -28px; left: 0; right: 0; text-align: center; font-size: 13px; color: var(--ipw-color-subtle); }
+  .traction-bar .bar em { position: absolute; top: -28px; left: 0; right: 0; text-align: center; font-size: 14px; font-weight: 700; font-style: normal; color: var(--ipw-color-text); font-variant-numeric: tabular-nums; }
+
+  .team-card { text-align: center; padding: 32px 20px; }
+  .avatar {
+    width: 92px; height: 92px; border-radius: 50%; margin: 0 auto 14px;
+    background: var(--ipw-gradient); display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 30px; font-family: var(--ipw-font-display);
+  }
+
+  .ask-box {
+    background: var(--ipw-gradient); color: #fff;
+    padding: 48px 56px; border-radius: 28px;
+    box-shadow: 0 30px 70px rgba(59, 91, 255, 0.35);
+  }
+  .ask-box h2.h2 { color: #fff; margin-top: 0; }
+  .ask-box .lede { color: rgba(255, 255, 255, 0.9); }
+  .ask-box .dim { color: rgba(255, 255, 255, 0.8); }
+  .ask-num { font-size: 44px; font-weight: 900; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+
+  .deck-footer {
+    position: absolute; bottom: 24px; left: 56px; right: 56px; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; color: var(--ipw-color-subtle);
+  }
+  .pagenum { font-family: var(--ipw-font-mono); font-variant-numeric: tabular-nums; }
+
+  /* thanks / ending */
+  .slide.thanks { align-items: center; text-align: center; }
+  .mega {
+    font-family: var(--ipw-font-display); font-size: 172px; font-weight: 900;
+    line-height: 0.95; letter-spacing: -0.05em;
+    background: var(--ipw-gradient); -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+  .serif-accent {
+    font-family: var(--ipw-font-serif); font-weight: 600; font-size: 30px;
+    color: var(--ipw-color-muted); margin-top: 26px;
+  }
+  .mega-sub { font-size: 18px; color: var(--ipw-color-muted); margin-top: 22px; }
+</style><link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide" id="cover">
+    <div class="cover-bg"></div>
+    <div class="cover-blob"></div>
+    <div style="position:absolute;top:48px;left:100px;z-index:1">
+      <span class="brand-dot"></span><span class="brand" data-ipw-text="cover.brand">流形智能</span>
+    </div>
+    <p class="num-tag" data-ipw-text="cover.kicker">SERIES A · 2026</p>
+    <h1 class="h1" data-ipw-text="cover.title">AI 原生的一体化<br /><span class="gradient-text">产品营销工作台</span></h1>
+    <p class="lede mt-m" data-ipw-text="cover.lede">从市场洞察、内容生产到渠道投放与效果归因，一个工作台走完产品营销全流程 —— 为增长团队而生。</p>
+    <div class="deck-footer">
+      <span data-ipw-text="cover.meta">陈默 · 创始人兼 CEO</span>
+      <span class="pagenum">01 / 08</span>
+    </div>
+  </section>
+
+  <!-- 2 Problem -->
+  <section class="slide" id="problem">
+    <span class="section-num" data-ipw-text="problem.num">01</span>
+    <p class="num-tag" data-ipw-text="problem.kicker">PROBLEM</p>
+    <h2 class="h2" data-ipw-text="problem.title">营销团队被困在<br />七个互相不通的工具里。</h2>
+    <div class="grid g3 mt-l">
+      <div class="card">
+        <h4 data-ipw-text="problem.c1t">流程割裂</h4>
+        <p data-ipw-text="problem.c1d">洞察在文档里、内容在编辑器里、投放在后台里，数据彼此看不见，复盘靠手工拼表。</p>
+      </div>
+      <div class="card">
+        <h4 data-ipw-text="problem.c2t">成本失控</h4>
+        <p data-ipw-text="problem.c2d">中型团队年均采购 9 款 SaaS，每款只用三成功能，年浪费超过 40 万元。</p>
+      </div>
+      <div class="card">
+        <h4 data-ipw-text="problem.c3t">时间空转</h4>
+        <p data-ipw-text="problem.c3d">营销经理每周 14 小时耗在跨工具搬运与对齐上，而不是花在策略与创意上。</p>
+      </div>
+    </div>
+    <div class="deck-footer">
+      <span data-ipw-text="problem.footer">流形智能 · A 轮融资路演</span>
+      <span class="pagenum">02 / 08</span>
+    </div>
+  </section>
+
+  <!-- 3 Solution -->
+  <section class="slide" id="solution">
+    <span class="section-num" data-ipw-text="solution.num">02</span>
+    <p class="num-tag" data-ipw-text="solution.kicker">SOLUTION</p>
+    <h2 class="h2" data-ipw-text="solution.title">一条 <span class="gradient-text">AI 工作流主干</span><br />贯通营销全链路。</h2>
+    <p class="lede mt-m" data-ipw-text="solution.lede">输入产品资料 → AI 生成洞察与定位建议 → 一键产出多渠道内容 → 投放数据自动回流归因 → 下一轮策略自动优化。全程无需切换工具。</p>
+    <div class="row mt-l">
+      <span class="pill pill-accent" data-ipw-text="solution.p1">市场洞察</span>
+      <span class="pill pill-accent" data-ipw-text="solution.p2">定位策略</span>
+      <span class="pill pill-accent" data-ipw-text="solution.p3">内容生产</span>
+      <span class="pill pill-accent" data-ipw-text="solution.p4">渠道投放</span>
+      <span class="pill pill-accent" data-ipw-text="solution.p5">效果归因</span>
+    </div>
+    <div class="deck-footer">
+      <span data-ipw-text="solution.footer">流形智能 · A 轮融资路演</span>
+      <span class="pagenum">03 / 08</span>
+    </div>
+  </section>
+
+  <!-- 4 Market -->
+  <section class="slide" id="market">
+    <span class="section-num" data-ipw-text="market.num">03</span>
+    <p class="num-tag" data-ipw-text="market.kicker">MARKET</p>
+    <h2 class="h2" data-ipw-text="market.title">被低估的大市场。</h2>
+    <div class="grid g3 mt-l">
+      <div class="metric"><div class="n" data-ipw-text="market.m1v">¥2,400<span style="font-size:40px">亿</span></div><div class="l" data-ipw-text="market.m1l">中国企业营销技术支出 · TAM</div></div>
+      <div class="metric"><div class="n" data-ipw-text="market.m2v">86<span style="font-size:40px">万</span></div><div class="l" data-ipw-text="market.m2l">具备数字化营销团队的中大型企业</div></div>
+      <div class="metric"><div class="n" data-ipw-text="market.m3v">31%</div><div class="l" data-ipw-text="market.m3l">AI 营销工具年复合增速（至 2030）</div></div>
+    </div>
+    <p class="lede mt-l" data-ipw-text="market.lede">生成式 AI 正在重写营销软件的价值链 —— 这是十年来第一次，工具可以从「记录流程」升级为「完成工作」。</p>
+    <div class="deck-footer">
+      <span data-ipw-text="market.footer">流形智能 · A 轮融资路演</span>
+      <span class="pagenum">04 / 08</span>
+    </div>
+  </section>
+
+  <!-- 5 Traction -->
+  <section class="slide" id="traction">
+    <span class="section-num" data-ipw-text="traction.num">04</span>
+    <p class="num-tag" data-ipw-text="traction.kicker">TRACTION</p>
+    <h2 class="h2" data-ipw-text="traction.title">上线 6 个月，月经常性收入环比增长 42%。</h2>
+    <div class="traction-bar">
+      <div class="bar" style="height:16%"><em data-ipw-text="traction.b1v">¥18万</em><span data-ipw-text="traction.b1m">3月</span></div>
+      <div class="bar" style="height:27%"><em data-ipw-text="traction.b2v">¥31万</em><span data-ipw-text="traction.b2m">4月</span></div>
+      <div class="bar" style="height:41%"><em data-ipw-text="traction.b3v">¥47万</em><span data-ipw-text="traction.b3m">5月</span></div>
+      <div class="bar" style="height:58%"><em data-ipw-text="traction.b4v">¥66万</em><span data-ipw-text="traction.b4m">6月</span></div>
+      <div class="bar" style="height:79%"><em data-ipw-text="traction.b5v">¥90万</em><span data-ipw-text="traction.b5m">7月</span></div>
+      <div class="bar" style="height:100%"><em data-ipw-text="traction.b6v">¥114万</em><span data-ipw-text="traction.b6m">8月</span></div>
+    </div>
+    <p class="dim" style="margin-top:52px" data-ipw-text="traction.note">328 家付费企业 · NPS 68 · 净收入留存率 124% · 标杆客户续约率 100%</p>
+    <div class="deck-footer">
+      <span data-ipw-text="traction.footer">流形智能 · A 轮融资路演</span>
+      <span class="pagenum">05 / 08</span>
+    </div>
+  </section>
+
+  <!-- 6 Team -->
+  <section class="slide" id="team">
+    <span class="section-num" data-ipw-text="team.num">05</span>
+    <p class="num-tag" data-ipw-text="team.kicker">TEAM</p>
+    <h2 class="h2" data-ipw-text="team.title">做过大规模产品的人。</h2>
+    <div class="grid g3 mt-l">
+      <div class="card team-card">
+        <div class="avatar" data-ipw-text="team.t1a">陈</div>
+        <h4 data-ipw-text="team.t1n">陈默</h4>
+        <p data-ipw-text="team.t1d">CEO · 前头部云厂商营销平台负责人，10 年企业级产品经验。</p>
+      </div>
+      <div class="card team-card">
+        <div class="avatar" data-ipw-text="team.t2a">林</div>
+        <h4 data-ipw-text="team.t2n">林之遥</h4>
+        <p data-ipw-text="team.t2d">CTO · 前大厂大模型infra核心成员，主导过亿级用户推荐系统。</p>
+      </div>
+      <div class="card team-card">
+        <div class="avatar" data-ipw-text="team.t3a">苏</div>
+        <h4 data-ipw-text="team.t3n">苏黎</h4>
+        <p data-ipw-text="team.t3d">产品VP · 前协作工具设计负责人，操盘过三次从 0 到 1 增长。</p>
+      </div>
+    </div>
+    <div class="deck-footer">
+      <span data-ipw-text="team.footer">流形智能 · A 轮融资路演</span>
+      <span class="pagenum">06 / 08</span>
+    </div>
+  </section>
+
+  <!-- 7 Ask -->
+  <section class="slide" id="ask">
+    <p class="num-tag" data-ipw-text="ask.kicker">THE ASK</p>
+    <div class="ask-box mt-m">
+      <h2 class="h2" data-ipw-text="ask.title">本轮融资 ¥8,000 万。</h2>
+      <p class="lede mt-m" data-ipw-text="ask.lede">支撑 24 个月发展，ARR 目标 ¥6,000 万：45% 投入模型与产品研发，30% 投入市场与渠道体系，15% 投入数据安全与合规，10% 作为机动储备。</p>
+      <div class="row mt-l" style="gap:48px">
+        <div><div class="ask-num" data-ipw-text="ask.n1v">¥8,000万</div><div class="dim" data-ipw-text="ask.n1l">A 轮 · 出让约 12%</div></div>
+        <div><div class="ask-num" data-ipw-text="ask.n2v">24 个月</div><div class="dim" data-ipw-text="ask.n2l">发展资金覆盖周期</div></div>
+        <div><div class="ask-num" data-ipw-text="ask.n3v">¥6,000万</div><div class="dim" data-ipw-text="ask.n3l">交割前 ARR 目标</div></div>
+      </div>
+    </div>
+    <div class="deck-footer">
+      <span data-ipw-text="ask.contact">chenmo@manifold-ai.cn · 期待与您深聊</span>
+      <span class="pagenum">07 / 08</span>
+    </div>
+  </section>
+
+  <!-- 8 Thanks -->
+  <section class="slide thanks" id="thanks">
+    <div class="cover-bg"></div>
+    <div>
+      <div class="mega" data-ipw-text="thanks.mega">Thanks.</div>
+      <p class="serif-accent" data-ipw-text="thanks.quote">Make every marketing move measurable.</p>
+      <p class="mega-sub" data-ipw-text="thanks.contact">chenmo@manifold-ai.cn · manifold-ai.cn/investors</p>
+      <div class="row mt-l" style="justify-content:center;gap:20px">
+        <span class="pill pill-accent" data-ipw-text="thanks.p1">预约路演</span>
+        <span class="pill" data-ipw-text="thanks.p2">Deck v3.0 · 2026 年 8 月</span>
+      </div>
+    </div>
+    <div class="deck-footer">
+      <span data-ipw-text="thanks.footer">流形智能 · A 轮融资路演</span>
+      <span class="pagenum">08 / 08</span>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

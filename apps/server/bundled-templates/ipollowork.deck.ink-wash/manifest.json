@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.deck.ink-wash",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "culture",
+  "style": "editorial",
+  "tags": [
+    "chinese",
+    "ink",
+    "culture",
+    "brand",
+    "editorial"
+  ],
+  "surface": "design",
+  "title": "水墨 · 藏拙",
+  "description": "中式水墨编辑风幻灯片模版：暖宣纸底、墨色楷体标题、一枚朱砂印章作为全篇唯一红色焦点，发丝级细分隔线、宽页边距与大量留白，强调用墨底白字 label-chip 而非红色大字。适合品牌文化宣讲、价值观沟通、企业文化发布等克制内敛的中文叙事场景。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "slide-maker",
+    "repository": "https://github.com/addsumtech/slides_maker",
+    "license": "MIT",
+    "attribution": "Ported from the slide-maker skill 'ink_wash' preset to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (ink)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (ink gray)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (cinnabar, seal only)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-risk",
+        "label": "Risk (ink gray)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-neutral",
+        "label": "Neutral (warm gray)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background (rice paper)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text (ink)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border (hairline ink)",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font (Kaiti)",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案全部替换为真实宣讲内容。",
+    "必须留白：不要填满四角，不要使用密集网格，每页只讲一件事。",
+    "朱砂红 #A52A2A 只出现在印章上，全篇不得引入第二个暖色。",
+    "强调一律使用墨底白字 label-chip，不要用红色文字或堆砌大字。",
+    "章节序号保持中文数字（壹贰叁肆），大号浅色置于版面一侧。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

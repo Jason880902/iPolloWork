@@ -125,6 +125,23 @@ export function parsePluginMcpEntries(
   });
 }
 
+// v1 已安装 artifact 的资源仍在 .opencode/<dir>/ 下；v2 manifest 写的是去掉前缀的
+// 相对路径。读取失败时回退到 legacy 路径，保证升级前安装的插件仍能同步。
+const LEGACY_RESOURCE_FALLBACK_PREFIXES: ReadonlyArray<readonly [string, string]> = [
+  ["skills/", ".opencode/skills/"],
+  ["mcp/", ".opencode/mcps/"],
+  ["agents/", ".opencode/agents/"],
+  ["commands/", ".opencode/commands/"],
+  ["service/", ".opencode/service/"],
+];
+
+function legacyResourcePath(path: string): string | null {
+  for (const [v2, v1] of LEGACY_RESOURCE_FALLBACK_PREFIXES) {
+    if (path.startsWith(v2)) return `${v1}${path.slice(v2.length)}`;
+  }
+  return null;
+}
+
 async function mcpEntries(
   version: PluginEngineVersion | null,
   resolvePath: PluginEngineContext["resolvePath"],
@@ -133,7 +150,18 @@ async function mcpEntries(
   const entries: Array<{ name: string; config: Record<string, unknown> }> = [];
   for (const resource of version.manifest.resources) {
     if (resource.type !== "mcp" || !resource.path) continue;
-    const payload: unknown = JSON.parse(await readFile(resolvePath(version.artifactRoot, resource.path), "utf8"));
+    const primaryPath = resolvePath(version.artifactRoot, resource.path);
+    let payload: unknown;
+    try {
+      payload = JSON.parse(await readFile(primaryPath, "utf8"));
+    } catch (error) {
+      const legacyPath = legacyResourcePath(resource.path);
+      if (legacyPath) {
+        payload = JSON.parse(await readFile(resolvePath(version.artifactRoot, legacyPath), "utf8"));
+      } else {
+        throw error;
+      }
+    }
     entries.push(...parsePluginMcpEntries(payload, resource.mcpServerName ?? resource.id, resource.path));
   }
   return entries;

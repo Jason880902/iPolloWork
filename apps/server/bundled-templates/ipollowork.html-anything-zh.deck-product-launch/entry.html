@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>产品发布 Launch — 新品上市 Keynote 模版</title>
+<link rel="stylesheet" href="assets/fonts.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8ECF1;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(10, 10, 18, 0.12);
+    flex-shrink: 0;
+  }
+  .slide-inner { position: absolute; inset: 0; padding: 64px 88px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* dark variant */
+  .slide.dark { background: var(--ipw-color-dark); color: #F5F5F7; }
+  .slide.dark .lede, .slide.dark .dim { color: rgba(245, 245, 247, 0.72); }
+  .slide.dark .kicker { color: var(--ipw-color-secondary); }
+
+  /* type */
+  .kicker { font-size: 14px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ipw-color-primary); margin-bottom: 18px; }
+  .h1 { font-family: var(--ipw-font-display); font-size: 88px; line-height: 1.02; font-weight: 900; letter-spacing: -0.04em; }
+  .h2 { font-family: var(--ipw-font-display); font-size: 56px; line-height: 1.08; font-weight: 800; letter-spacing: -0.03em; }
+  .lede { font-size: 21px; line-height: 1.55; color: var(--ipw-color-muted); font-weight: 300; max-width: 46ch; margin-top: 20px; }
+  .dim { color: var(--ipw-color-muted); }
+  .gradient-text { background: var(--ipw-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+
+  /* footer chrome */
+  .slide-foot { position: absolute; left: 88px; right: 88px; bottom: 26px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--ipw-color-faint); letter-spacing: 0.08em; }
+  .slide-foot .pagenum { font-variant-numeric: tabular-nums; }
+
+  /* grids & cards */
+  .grid { display: grid; gap: 24px; margin-top: 40px; }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .feature-card { background: var(--ipw-card-bg); border: 1px solid var(--ipw-card-border); border-radius: var(--ipw-card-radius); box-shadow: var(--ipw-card-shadow); padding: 36px 32px; }
+  .feature-card .icon { width: 56px; height: 56px; border-radius: 16px; background: var(--ipw-gradient); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 900; margin-bottom: 20px; }
+  .feature-card h4 { font-size: 21px; font-weight: 700; margin-bottom: 8px; }
+  .feature-card p { font-size: 15px; color: var(--ipw-color-muted); }
+  .glass-card { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--ipw-card-radius); padding: 32px; backdrop-filter: blur(20px); }
+  .glass-card h4 { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+  .glass-card p { font-size: 15px; color: rgba(245, 245, 247, 0.72); }
+
+  /* cover hero */
+  .hero-shot { position: absolute; right: -70px; top: 50%; transform: translateY(-50%); width: 620px; height: 620px; border-radius: 50%; background: var(--ipw-gradient); opacity: 0.9; }
+  .hero-shot::after { content: ""; position: absolute; inset: 84px; border-radius: 40px; background: linear-gradient(160deg, rgba(255, 255, 255, 0.3), transparent 60%), #1A1A28; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2); }
+  .hero-shot::before { content: attr(data-label); position: absolute; inset: 84px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 42px; font-weight: 900; letter-spacing: -0.02em; z-index: 2; }
+  .brand { position: absolute; top: 48px; left: 88px; font-size: 18px; font-weight: 800; letter-spacing: -0.02em; z-index: 3; }
+
+  /* pricing */
+  .price-card { background: var(--ipw-card-bg); border: 1.5px solid var(--ipw-card-border); border-radius: 28px; padding: 36px 30px; text-align: left; }
+  .price-card.pro { background: var(--ipw-color-dark); color: #fff; border-color: var(--ipw-color-dark); transform: scale(1.04); box-shadow: 0 30px 80px rgba(255, 90, 54, 0.25); }
+  .price-card h4 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ipw-color-primary); }
+  .price-card.pro h4 { color: var(--ipw-color-secondary); }
+  .price-card .amount { font-size: 56px; font-weight: 900; letter-spacing: -0.03em; margin: 12px 0; font-family: var(--ipw-font-display); }
+  .price-card ul { list-style: none; margin-top: 18px; }
+  .price-card li { padding: 8px 0; font-size: 14px; color: var(--ipw-color-muted); border-top: 1px solid var(--ipw-card-border); }
+  .price-card.pro li { color: rgba(255, 255, 255, 0.8); border-color: rgba(255, 255, 255, 0.12); }
+
+  /* cta */
+  .testimonial { font-family: var(--ipw-font-serif); font-size: 40px; line-height: 1.3; font-weight: 500; letter-spacing: -0.01em; max-width: 22ch; }
+  .cta-btn { display: inline-block; padding: 18px 36px; border-radius: 999px; background: var(--ipw-gradient); color: #fff; font-weight: 700; font-size: 19px; box-shadow: 0 20px 50px rgba(255, 90, 54, 0.4); }
+</style><link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover / hero -->
+  <section class="slide dark" id="cover">
+    <div class="hero-shot" data-label="Halo S2"></div>
+    <div class="brand" data-ipw-text="cover.brand">◎ Halo</div>
+    <div class="slide-inner">
+      <p class="kicker" data-ipw-text="cover.kicker">新品发布 · 2026 年 5 月</p>
+      <h1 class="h1" data-ipw-text="cover.title">认识一下 Halo S2。<br />你的耳朵，<br /><span class="gradient-text">重新定义。</span></h1>
+      <p class="lede" data-ipw-text="cover.sub">录音室级空间音频，装进迄今为止最轻的开放式耳机。</p>
+    </div>
+    <div class="slide-foot"><span data-ipw-text="cover.foot">halo.audio</span><span class="pagenum">01</span></div>
+  </section>
+
+  <!-- 2 Introducing -->
+  <section class="slide" id="intro">
+    <div class="slide-inner" style="align-items: center; text-align: center;">
+      <p class="kicker" data-ipw-text="intro.kicker">隆重登场</p>
+      <h1 class="h1" style="font-size: 118px;" data-ipw-text="intro.title">Halo S2</h1>
+      <p class="lede" style="max-width: 40ch;" data-ipw-text="intro.sub">四年声学研发，三代自研芯片，只为做一副你会忘记自己正戴着的耳机。</p>
+    </div>
+    <div class="slide-foot"><span data-ipw-text="intro.foot">Halo S2 · 新品发布</span><span class="pagenum">02</span></div>
+  </section>
+
+  <!-- 3 Feature 01 听感 -->
+  <section class="slide" id="sound">
+    <div class="slide-inner">
+      <p class="kicker" data-ipw-text="sound.kicker">01 · 听感</p>
+      <h2 class="h2" data-ipw-text="sound.title">听得见音乐，<br />也听得见世界。</h2>
+      <div class="grid g3">
+        <div class="feature-card"><div class="icon">♪</div><h4 data-ipw-text="sound.c1t">开放式空间音频</h4><p data-ipw-text="sound.c1d">16mm 钛振膜单元定向入耳，音乐与环境声同时在线。</p></div>
+        <div class="feature-card"><div class="icon">◈</div><h4 data-ipw-text="sound.c2t">24-bit 无损传输</h4><p data-ipw-text="sound.c2d">aptX Lossless 与 LDAC 双高清编码，蓝牙 5.4，无线也不妥协。</p></div>
+        <div class="feature-card"><div class="icon">◐</div><h4 data-ipw-text="sound.c3t">自适应 EQ</h4><p data-ipw-text="sound.c3d">每 120 秒根据你的耳型自动校准一次。</p></div>
+      </div>
+    </div>
+    <div class="slide-foot"><span data-ipw-text="sound.foot">Halo S2 · 新品发布</span><span class="pagenum">03</span></div>
+  </section>
+
+  <!-- 4 Feature 02 佩戴 -->
+  <section class="slide dark" id="fit">
+    <div class="slide-inner">
+      <p class="kicker" data-ipw-text="fit.kicker">02 · 佩戴</p>
+      <h2 class="h2" data-ipw-text="fit.title">4.9 克。<br />轻到忘记存在。</h2>
+      <div class="grid g3">
+        <div class="glass-card"><h4 data-ipw-text="fit.c1t">液态硅胶耳挂</h4><p data-ipw-text="fit.c1d">像眼镜腿一样贴合耳后，跑步也不会掉。</p></div>
+        <div class="glass-card"><h4 data-ipw-text="fit.c2t">IP57 防汗防雨</h4><p data-ipw-text="fit.c2d">海边淋雨都不怕，水龙头下冲冲就干净。</p></div>
+        <div class="glass-card"><h4 data-ipw-text="fit.c3t">14h + 42h 续航</h4><p data-ipw-text="fit.c3d">耳机 14 小时，充电盒再续 42 小时，通勤一周一充。</p></div>
+      </div>
+    </div>
+    <div class="slide-foot"><span data-ipw-text="fit.foot">Halo S2 · 新品发布</span><span class="pagenum">04</span></div>
+  </section>
+
+  <!-- 5 Feature 03 智能 -->
+  <section class="slide" id="ai">
+    <div class="slide-inner">
+      <p class="kicker" data-ipw-text="ai.kicker">03 · 智能</p>
+      <h2 class="h2" data-ipw-text="ai.title">AI 替你听，<br />你专注生活。</h2>
+      <div class="grid g2">
+        <div class="feature-card"><div class="icon">✦</div><h4 data-ipw-text="ai.c1t">实时翻译</h4><p data-ipw-text="ai.c1d">41 种语言同声传译，延迟仅 380ms，直接在耳边轻语。</p></div>
+        <div class="feature-card"><div class="icon">✧</div><h4 data-ipw-text="ai.c2t">会议纪要</h4><p data-ipw-text="ai.c2d">双击开始录音，散会即有摘要、待办和可检索的逐字稿。</p></div>
+      </div>
+    </div>
+    <div class="slide-foot"><span data-ipw-text="ai.foot">Halo S2 · 新品发布</span><span class="pagenum">05</span></div>
+  </section>
+
+  <!-- 6 Pricing -->
+  <section class="slide" id="price">
+    <div class="slide-inner">
+      <p class="kicker" data-ipw-text="price.kicker">价格</p>
+      <h2 class="h2" data-ipw-text="price.title">选择你的 Halo。</h2>
+      <div class="grid g3" style="align-items: start;">
+        <div class="price-card">
+          <h4 data-ipw-text="price.p1t">Halo Lite</h4>
+          <div class="amount" data-ipw-text="price.p1v">¥1,299</div>
+          <p class="dim" data-ipw-text="price.p1d" style="font-size: 14px;">开放式音频 · IP57 · 12h 续航</p>
+          <ul><li data-ipw-text="price.p1l1">AAC + SBC 编码</li><li data-ipw-text="price.p1l2">单击操控</li><li data-ipw-text="price.p1l3">USB-C 充电</li></ul>
+        </div>
+        <div class="price-card pro">
+          <h4 data-ipw-text="price.p2t">Halo S2 · Pro</h4>
+          <div class="amount" data-ipw-text="price.p2v">¥1,999</div>
+          <p data-ipw-text="price.p2d" style="font-size: 14px; color: rgba(255,255,255,0.7);">全部体验，一步到位</p>
+          <ul><li data-ipw-text="price.p2l1">高清无损编码</li><li data-ipw-text="price.p2l2">实时翻译 · 41 种语言</li><li data-ipw-text="price.p2l3">无线 + 磁吸充电</li><li data-ipw-text="price.p2l4">自适应 EQ</li></ul>
+        </div>
+        <div class="price-card">
+          <h4 data-ipw-text="price.p3t">Halo Studio</h4>
+          <div class="amount" data-ipw-text="price.p3v">¥2,899</div>
+          <p class="dim" data-ipw-text="price.p3d" style="font-size: 14px;">为创作者与现场录音师准备</p>
+          <ul><li data-ipw-text="price.p3l1">32-bit 双耳录音</li><li data-ipw-text="price.p3l2">附赠 XLR 转接头</li><li data-ipw-text="price.p3l3">终身固件升级</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot"><span data-ipw-text="price.foot">Halo S2 · 新品发布</span><span class="pagenum">06</span></div>
+  </section>
+
+  <!-- 7 Testimonial + CTA -->
+  <section class="slide dark" id="cta">
+    <div class="slide-inner">
+      <p class="kicker" data-ipw-text="cta.kicker">压轴一句</p>
+      <div style="display: flex; gap: 80px; align-items: center;">
+        <div style="flex: 1;">
+          <p class="testimonial" data-ipw-text="cta.quote">「戴着它开了一下午会，散会时才想起来——原来一直还戴着。」</p>
+          <p class="dim" style="margin-top: 24px;" data-ipw-text="cta.attrib">—— 《数字生活》· 抢先评测</p>
+        </div>
+        <div style="flex: 0 0 auto; text-align: center;">
+          <p class="dim" style="margin-bottom: 16px;" data-ipw-text="cta.date">5 月 14 日现货开售 · 首发价</p>
+          <div style="font-size: 80px; font-weight: 900; letter-spacing: -0.04em; font-family: var(--ipw-font-display);" data-ipw-text="cta.price">¥1,999</div>
+          <a class="cta-btn" style="margin-top: 28px;" data-ipw-text="cta.btn">立即预约 Halo S2 →</a>
+          <p class="dim" style="margin-top: 18px; font-size: 13px;" data-ipw-text="cta.note">全国包邮 · 45 天无理由退换 · 两年质保</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot"><span data-ipw-text="cta.foot">halo.audio</span><span class="pagenum">07</span></div>
+  </section>
+
+</div>
+</body>
+</html>

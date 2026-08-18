@@ -40,6 +40,12 @@ import type {
   WorkspaceList,
 } from "./desktop-types";
 import type { BrowserPanelTab } from "./desktop-types";
+import type {
+  ScheduledTask,
+  ScheduledTaskCreateInput,
+  ScheduledTaskLogEntry,
+  ScheduledTaskUpdatePatch,
+} from "@/react-app/domains/session/scheduled-tasks/scheduled-task";
 
 export const LOCAL_IMAGE_FILE_EXTENSIONS = ["avif", "bmp", "gif", "ico", "jpeg", "jpg", "png", "svg", "webp"];
 export const LOCAL_IMAGE_FILE_FILTERS = [{ name: "图片文件", extensions: LOCAL_IMAGE_FILE_EXTENSIONS }];
@@ -51,6 +57,17 @@ export type BrowserStatePayload = {
 
 export type BrowserProxyState = {
   proxy: { rules: string; authenticated: boolean } | null;
+};
+
+export type LanPreviewState = {
+  enabled: boolean;
+  port: number;
+  addresses: string[];
+  code: string | null;
+  codeExpiresAt: number;
+  sessionCount: number;
+  pendingChallengeCount?: number;
+  error?: string;
 };
 
 // ---------------------------------------------------------------------------
@@ -154,12 +171,50 @@ declare global {
         onPanelClosed?: (callback: () => void) => () => void;
       };
       terminal?: {
-        create?: (options: { cwd: string; cols: number; rows: number }) => Promise<{ terminalId: string }>;
+        create?: (options: {
+          cwd: string;
+          cols: number;
+          rows: number;
+          /** Optional argv for the shell. When present the shell runs this
+              command instead of opening an interactive prompt, e.g.
+              `["ssh", "user@host"]` for the ops panel. */
+          command?: string[];
+          /** Optional explicit shell/executable path. */
+          shell?: string;
+        }) => Promise<{ terminalId: string }>;
         write?: (terminalId: string, data: string) => Promise<void>;
         resize?: (terminalId: string, cols: number, rows: number) => Promise<void>;
         kill?: (terminalId: string) => Promise<void>;
         onData?: (callback: (payload: { terminalId: string; data: string }) => void) => () => void;
         onExit?: (callback: (payload: { terminalId: string; exitCode: number | null; signal?: number }) => void) => () => void;
+      };
+      ssh?: {
+        listHosts?: () => Promise<{ hosts: string[]; configPath: string }>;
+      };
+      git?: {
+        graph?: (options: { cwd: string; maxCommits?: number }) => Promise<
+          | { ok: true; repoRoot: string; count: number; totalCount: number | null; truncated: boolean; isRepo: true; commits: { sha: string; parents: string[] }[]; refs: { sha: string; refname: string; head: boolean }[]; headShas: string[] }
+          | { ok: false; isRepo: boolean; error: string }
+        >;
+      };
+      scheduledTasks?: {
+        list?: () => Promise<ScheduledTask[]>;
+        create?: (input: ScheduledTaskCreateInput) => Promise<ScheduledTask>;
+        update?: (id: string, patch: ScheduledTaskUpdatePatch) => Promise<ScheduledTask | null>;
+        setEnabled?: (id: string, enabled: boolean) => Promise<ScheduledTask | null>;
+        remove?: (id: string) => Promise<boolean>;
+        runNow?: (id: string) => Promise<ScheduledTask | null>;
+        logs?: (id: string) => Promise<ScheduledTaskLogEntry[]>;
+        preview?: (cron: string) => Promise<{ valid: boolean; nextRunAt: number | null }>;
+        onChanged?: (callback: (payload: { type: string; taskId?: string }) => void) => () => void;
+      };
+      lanPreview?: {
+        getState?: () => Promise<LanPreviewState>;
+        setEnabled?: (enabled: boolean) => Promise<LanPreviewState>;
+        regenerateCode?: () => Promise<LanPreviewState>;
+        disconnectAll?: () => Promise<LanPreviewState>;
+        pushToIm?: (options: { mcpUrl: string }) => Promise<{ ok: boolean; tool?: string; error?: string }>;
+        onStateChanged?: (callback: (state: LanPreviewState) => void) => () => void;
       };
       hyperframes?: {
         start?: (options: { workspaceRoot: string; sessionId: string; projectDirectory: string; port: number }) => Promise<{ ok: boolean; port?: number; reused?: boolean }>;
@@ -576,6 +631,9 @@ const {
   updaterEnvironment,
   readOpencodeConfig,
   writeOpencodeConfig,
+  routerGatewayGetConfig,
+  routerGatewayWriteConfig,
+  routerGatewayStatus,
   resetiPolloWorkState,
   resetOpencodeCache,
   opencodeMcpAuth,
@@ -644,6 +702,9 @@ export {
   updaterEnvironment,
   readOpencodeConfig,
   writeOpencodeConfig,
+  routerGatewayGetConfig,
+  routerGatewayWriteConfig,
+  routerGatewayStatus,
   resetiPolloWorkState,
   resetOpencodeCache,
   opencodeMcpAuth,

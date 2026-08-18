@@ -1,0 +1,17 @@
+:root {
+  --ipw-color-primary: #E0392B;
+  --ipw-color-secondary: #D9A441;
+  --ipw-color-bg: #0E0E12;
+  --ipw-color-surface: #16161C;
+  --ipw-color-text: #ECECEF;
+  --ipw-color-muted: #8C8C97;
+  --ipw-color-border: #2A2A33;
+  --ipw-font-display: "Playfair Display", Georgia, "Songti SC", "Noto Serif CJK SC", serif;
+  --ipw-font-body: Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --ipw-font-mono: "SF Mono", Consolas, "Courier New", monospace;
+  --ipw-body-line-height: 1.6;
+  --ipw-card-bg: #16161C;
+  --ipw-card-border: #2A2A33;
+  --ipw-card-radius: 2px;
+  --ipw-card-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}

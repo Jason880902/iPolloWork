@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>技术分享 Tech Talk — AI 工程实践</title>
+<link rel="stylesheet" href="assets/fonts.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #E8ECF1;
+    font-family: var(--ipw-font-body);
+    color: var(--ipw-color-text);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px 16px; }
+  .slide {
+    position: relative;
+    width: 1280px; height: 720px;
+    background: var(--ipw-color-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(1, 4, 9, 0.35);
+    flex-shrink: 0;
+    padding: 60px 80px 72px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  /* signature radial glows */
+  .slide::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(60% 50% at 90% 10%, color-mix(in srgb, var(--ipw-color-secondary) 12%, transparent), transparent 60%),
+      radial-gradient(50% 50% at 10% 90%, color-mix(in srgb, var(--ipw-color-primary) 8%, transparent), transparent 60%);
+  }
+  .slide > * { position: relative; z-index: 1; }
+
+  .mono { font-family: var(--ipw-font-mono); }
+  .kicker {
+    font-family: var(--ipw-font-mono); font-size: 14px; font-weight: 600;
+    color: var(--ipw-color-primary); letter-spacing: 0.02em; margin-bottom: 18px;
+  }
+  .kicker::before { content: "> "; }
+  .h1 { font-family: var(--ipw-font-display); font-size: 62px; line-height: 1.08; font-weight: 800; letter-spacing: -0.03em; color: #FFFFFF; }
+  .h2 { font-family: var(--ipw-font-display); font-size: 40px; line-height: 1.15; font-weight: 700; letter-spacing: -0.025em; color: #FFFFFF; }
+  .lede { font-size: 18px; line-height: 1.6; color: var(--ipw-color-muted); font-weight: 400; }
+  .gradient-text {
+    background: var(--ipw-gradient);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+
+  .footer {
+    position: absolute; left: 80px; right: 80px; bottom: 26px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--ipw-font-mono); font-size: 12px; color: var(--ipw-color-faint);
+    border-top: 1px solid var(--ipw-color-border); padding-top: 12px;
+  }
+  .pagenum { font-variant-numeric: tabular-nums; }
+
+  /* cards & tags */
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 36px; align-items: start; }
+  .card {
+    background: var(--ipw-card-bg); border: 1px solid var(--ipw-card-border);
+    border-radius: var(--ipw-card-radius); box-shadow: var(--ipw-card-shadow);
+    padding: 26px 28px; border-top: 3px solid var(--ipw-color-primary);
+  }
+  .card h4 { font-size: 18px; font-weight: 600; color: #FFFFFF; margin-bottom: 10px; }
+  .card p { font-size: 14px; color: var(--ipw-color-muted); line-height: 1.65; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 6px;
+    font-family: var(--ipw-font-mono); font-size: 12px;
+    background: var(--ipw-color-surface-2); border: 1px solid var(--ipw-color-border);
+    color: var(--ipw-color-muted);
+  }
+  .card .tag { margin-top: 16px; }
+  .tag-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+  .tag-stack { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; align-items: flex-start; }
+
+  /* terminal */
+  .terminal {
+    background: var(--ipw-color-terminal-bg); border: 1px solid var(--ipw-color-border);
+    border-radius: var(--ipw-card-radius); overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    font-family: var(--ipw-font-mono); font-size: 14px; line-height: 1.65;
+  }
+  .terminal .bar {
+    display: flex; align-items: center; gap: 8px; padding: 10px 16px;
+    background: var(--ipw-color-surface); border-bottom: 1px solid var(--ipw-color-border);
+    font-size: 12px; color: var(--ipw-color-faint);
+  }
+  .terminal .bar .fname { margin-left: 6px; }
+  .terminal .dot { width: 12px; height: 12px; border-radius: 50%; background: #FF5F56; }
+  .terminal .dot:nth-child(2) { background: #FFBD2E; }
+  .terminal .dot:nth-child(3) { background: #27C93F; }
+  .terminal pre { margin: 0; padding: 22px 26px; color: var(--ipw-color-text); overflow: hidden; }
+  .kw  { color: var(--ipw-color-accent-2); }
+  .fn  { color: var(--ipw-color-accent); }
+  .str { color: var(--ipw-color-code-str); }
+  .cmt { color: var(--ipw-color-muted); font-style: italic; }
+  .num { color: var(--ipw-color-secondary); }
+
+  /* agenda rows */
+  .agenda { margin-top: 36px; }
+  .agenda-row {
+    display: flex; align-items: baseline; gap: 24px;
+    padding: 17px 0; border-bottom: 1px dashed var(--ipw-color-border);
+    font-family: var(--ipw-font-mono);
+  }
+  .agenda-row:last-child { border-bottom: none; }
+  .agenda-row .no { color: var(--ipw-color-primary); flex: none; width: 48px; font-size: 15px; }
+  .agenda-row .t { color: #FFFFFF; font-size: 22px; flex: 1; font-family: var(--ipw-font-body); font-weight: 600; }
+  .agenda-row .d { color: var(--ipw-color-faint); font-size: 13px; }
+
+  /* cover speaker */
+  .speaker { display: flex; align-items: center; gap: 14px; margin-top: 36px; }
+  .speaker .av { width: 52px; height: 52px; border-radius: 50%; background: var(--ipw-gradient); flex-shrink: 0; }
+  .speaker b { display: block; color: #FFFFFF; font-size: 17px; }
+  .speaker span { color: var(--ipw-color-faint); font-size: 13px; font-family: var(--ipw-font-mono); }
+
+  /* numbered loop card (deep dive 2) */
+  .loop-card { padding: 30px 32px; }
+  .loop-card h4 { font-family: var(--ipw-font-mono); color: var(--ipw-color-secondary); font-size: 15px; margin-bottom: 16px; }
+  .loop-card .step { font-family: var(--ipw-font-mono); font-size: 13.5px; line-height: 2.05; color: var(--ipw-color-muted); }
+  .loop-card .step b { color: var(--ipw-color-primary); font-weight: 600; margin-right: 6px; }
+
+  /* Q&A */
+  .slide.qa { align-items: center; text-align: center; }
+  .qa .big { font-family: var(--ipw-font-mono); font-size: 120px; font-weight: 800; letter-spacing: -0.04em; color: var(--ipw-color-primary); line-height: 1; }
+  .qa .lede { margin: 16px auto 0; }
+  .qa .tag-row { justify-content: center; }
+</style><link rel="stylesheet" href="design-tokens.css" data-ipw-design-tokens>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide" id="cover">
+    <p class="kicker" data-ipw-text="cover.kicker">tech-sharing / 2026-08-20</p>
+    <h1 class="h1" data-ipw-text="cover.title">AI 应用从 Demo 到生产<br />隔着一整条<span class="gradient-text">工程鸿沟</span></h1>
+    <p class="lede" style="margin-top:22px; max-width:760px;" data-ipw-text="cover.lede">从提示词管理、评测体系到在线推理调度，一次把 AI 工程实践讲清楚。</p>
+    <div class="speaker">
+      <div class="av"></div>
+      <div><b data-ipw-text="cover.speaker">@hanli</b><span data-ipw-text="cover.speakerMeta">AI platform · 45 min + Q&amp;A</span></div>
+    </div>
+    <div class="footer"><span data-ipw-text="cover.tags">#llm #eval #serving</span><span class="pagenum">01 / 08</span></div>
+  </section>
+
+  <!-- 2 Agenda -->
+  <section class="slide" id="agenda">
+    <p class="kicker" data-ipw-text="agenda.kicker">agenda.toml</p>
+    <h2 class="h2" data-ipw-text="agenda.title">今天的路线图</h2>
+    <div class="agenda">
+      <div class="agenda-row"><span class="no">01</span><span class="t" data-ipw-text="agenda.r1t">Context：为什么 Demo ≠ 产品</span><span class="d" data-ipw-text="agenda.r1d">~5min</span></div>
+      <div class="agenda-row"><span class="no">02</span><span class="t" data-ipw-text="agenda.r2t">Deep dive 1：评测驱动的迭代管线</span><span class="d" data-ipw-text="agenda.r2d">~12min</span></div>
+      <div class="agenda-row"><span class="no">03</span><span class="t" data-ipw-text="agenda.r3t">Deep dive 2：推理服务的流量调度</span><span class="d" data-ipw-text="agenda.r3d">~15min</span></div>
+      <div class="agenda-row"><span class="no">04</span><span class="t" data-ipw-text="agenda.r4t">Code：手写一个迷你评测器</span><span class="d" data-ipw-text="agenda.r4d">~8min</span></div>
+      <div class="agenda-row"><span class="no">05</span><span class="t" data-ipw-text="agenda.r5t">Takeaways + Q&amp;A</span><span class="d" data-ipw-text="agenda.r5d">~5min</span></div>
+    </div>
+    <div class="footer"><span data-ipw-text="agenda.tags">#roadmap</span><span class="pagenum">02 / 08</span></div>
+  </section>
+
+  <!-- 3 Context -->
+  <section class="slide" id="context">
+    <p class="kicker" data-ipw-text="ctx.kicker">// context</p>
+    <h2 class="h2" data-ipw-text="ctx.title">问题：Demo 一周能跑，<br />上线三个月还悬。</h2>
+    <div class="grid3">
+      <div class="card">
+        <h4 data-ipw-text="ctx.c1t">提示词靠手调</h4>
+        <p data-ipw-text="ctx.c1p">改一句 prompt，效果全靠肉眼回看。没有回归基线，越改越心虚。</p>
+        <span class="tag" data-ipw-text="ctx.c1tag">❌ 不可持续</span>
+      </div>
+      <div class="card">
+        <h4 data-ipw-text="ctx.c2t">离线评测缺失</h4>
+        <p data-ipw-text="ctx.c2p">没有 golden set，模型升级等于祈祷。线上 badcase 全靠用户上报。</p>
+        <span class="tag" data-ipw-text="ctx.c2tag">😩 祈祷式发布</span>
+      </div>
+      <div class="card">
+        <h4 data-ipw-text="ctx.c3t">工程化管线</h4>
+        <p data-ipw-text="ctx.c3p">评测、灰度、回滚全自动化，每次变更都有数据背书。</p>
+        <span class="tag" data-ipw-text="ctx.c3tag">✅ 我们选这个</span>
+      </div>
+    </div>
+    <div class="footer"><span data-ipw-text="ctx.tags">#pain-points</span><span class="pagenum">03 / 08</span></div>
+  </section>
+
+  <!-- 4 Deep dive 1 -->
+  <section class="slide" id="dive1">
+    <p class="kicker" data-ipw-text="d1.kicker">deep-dive · 1 / 2</p>
+    <h2 class="h2" data-ipw-text="d1.title">评测是管线的入口，<br />不是事后补考。</h2>
+    <div class="grid2">
+      <div>
+        <p class="lede" data-ipw-text="d1.lede">把评测前置到每次提交：任何 prompt 或模型变更，先过 golden set 回归门禁，再谈上线。不达标直接阻断合并，并附上逐条 diff 报告。</p>
+        <div class="tag-row">
+          <span class="tag" data-ipw-text="d1.tag1">golden set · 500 条</span>
+          <span class="tag" data-ipw-text="d1.tag2">regression gate ±2%</span>
+          <span class="tag" data-ipw-text="d1.tag3">人工抽检 5%</span>
+        </div>
+      </div>
+      <div class="terminal">
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="fname" data-ipw-text="d1.file">eval_gate.py</span></div>
+<pre data-ipw-text="d1.code"><span class="kw">def</span> <span class="fn">eval_gate</span>(candidate, golden):
+    report = <span class="fn">run_eval</span>(candidate, golden)
+    <span class="kw">if</span> report.score &lt; BASELINE - <span class="num">0.02</span>:
+        <span class="kw">raise</span> <span class="fn">RegressionError</span>(report.diff)
+    <span class="kw">return</span> report  <span class="cmt"># 通过门禁，进入灰度</span>
+
+<span class="cmt"># 每次 prompt 变更 = 一次 CI 评测</span>
+<span class="cmt"># 不达标 → 阻断合并 + diff 报告</span></pre>
+      </div>
+    </div>
+    <div class="footer"><span data-ipw-text="d1.tags">#eval #ci</span><span class="pagenum">04 / 08</span></div>
+  </section>
+
+  <!-- 5 Deep dive 2 -->
+  <section class="slide" id="dive2">
+    <p class="kicker" data-ipw-text="d2.kicker">deep-dive · 2 / 2</p>
+    <h2 class="h2" data-ipw-text="d2.title">推理服务是一台<br />"偷算力"的调度器。</h2>
+    <div class="grid2">
+      <div>
+        <p class="lede" data-ipw-text="d2.lede">在线推理 = N 个推理 worker + 分级请求队列。空闲 worker 主动组批拉新请求，慢请求被隔离，不能拖垮整个在线池。</p>
+        <div class="tag-stack">
+          <div class="tag" data-ipw-text="d2.tag1">✦ continuous batching · 动态组批</div>
+          <div class="tag" data-ipw-text="d2.tag2">✦ 优先级队列 · 交互 &gt; 批处理</div>
+          <div class="tag" data-ipw-text="d2.tag3">✦ 背压限流 @ 队列水位 80%</div>
+          <div class="tag" data-ipw-text="d2.tag4">✦ 慢请求抢占 / 重试隔离</div>
+        </div>
+      </div>
+      <div class="card loop-card">
+        <h4 data-ipw-text="d2.loopTitle">scheduler tick loop</h4>
+        <div class="step" data-ipw-text="d2.s1"><b>1.</b> 从优先队列取最高优请求</div>
+        <div class="step" data-ipw-text="d2.s2"><b>2.</b> 组批：凑满 max_batch 或 50ms 超时</div>
+        <div class="step" data-ipw-text="d2.s3"><b>3.</b> KV cache 不足 → 抢占最低优请求</div>
+        <div class="step" data-ipw-text="d2.s4"><b>4.</b> 超时请求转异步队列，不占在线池</div>
+        <div class="step" data-ipw-text="d2.s5"><b>5.</b> 队列空 → worker 挂起等唤醒</div>
+      </div>
+    </div>
+    <div class="footer"><span data-ipw-text="d2.tags">#serving #scheduler</span><span class="pagenum">05 / 08</span></div>
+  </section>
+
+  <!-- 6 Code -->
+  <section class="slide" id="code">
+    <p class="kicker" data-ipw-text="code.kicker">mini-eval.py · ~30 LOC</p>
+    <h2 class="h2" data-ipw-text="code.title">手写一个最小评测器。</h2>
+    <div class="terminal" style="margin-top:28px;">
+      <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="fname" data-ipw-text="code.file">mini-eval.py</span></div>
+<pre data-ipw-text="code.code"><span class="kw">import</span> json
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass
+
+<span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="fn">Case</span>:
+    q: <span class="kw">str</span>
+    expect: <span class="kw">str</span>
+
+<span class="kw">def</span> <span class="fn">main</span>() -> <span class="kw">None</span>:
+    cases = [<span class="fn">Case</span>(**c) <span class="kw">for</span> c <span class="kw">in</span> json.load(<span class="fn">open</span>(<span class="str">"golden.jsonl"</span>))]
+    scores = [<span class="fn">judge</span>(c, <span class="fn">chat</span>(c.q)) <span class="kw">for</span> c <span class="kw">in</span> cases]  <span class="cmt"># LLM-as-judge 打分 0~1</span>
+    avg = <span class="fn">sum</span>(scores) / <span class="fn">len</span>(scores)
+    <span class="fn">print</span>(<span class="str">f"score={avg:.3f} n={len(scores)}"</span>)
+    <span class="kw">assert</span> avg &gt;= <span class="num">0.85</span>, <span class="str">"回归门禁未通过"</span>  <span class="cmt"># 就是这一行</span></pre>
+    </div>
+    <div class="footer"><span data-ipw-text="code.tags">#hands-on</span><span class="pagenum">06 / 08</span></div>
+  </section>
+
+  <!-- 7 Takeaways -->
+  <section class="slide" id="takeaways">
+    <p class="kicker" data-ipw-text="tk.kicker">// takeaways</p>
+    <h2 class="h2" data-ipw-text="tk.title">三件事带回去。</h2>
+    <div class="grid3">
+      <div class="card">
+        <h4 data-ipw-text="tk.c1t">1 · 评测先行</h4>
+        <p data-ipw-text="tk.c1p">没有 golden set 的迭代都是盲人摸象。先建评测，再谈优化。</p>
+      </div>
+      <div class="card">
+        <h4 data-ipw-text="tk.c2t">2 · 变更走门禁</h4>
+        <p data-ipw-text="tk.c2p">prompt 和模型都是代码，过 CI 回归门禁才能上线。</p>
+      </div>
+      <div class="card">
+        <h4 data-ipw-text="tk.c3t">3 · 在线服务要兜底</h4>
+        <p data-ipw-text="tk.c3p">限流、抢占、降级三件套，让慢请求拖不垮整池。</p>
+      </div>
+    </div>
+    <p class="lede" style="margin-top:36px; font-size:16px;" data-ipw-text="tk.reading">延伸阅读：<span class="mono">wiki/ai-eval-harness</span> · <span class="mono">wiki/llm-serving-ops</span></p>
+    <div class="footer"><span data-ipw-text="tk.tags">#takeaways</span><span class="pagenum">07 / 08</span></div>
+  </section>
+
+  <!-- 8 Q&A -->
+  <section class="slide qa" id="qa">
+    <div>
+      <div class="big" data-ipw-text="qa.mark">?</div>
+      <h2 class="h2" data-ipw-text="qa.title">Questions?</h2>
+      <p class="lede" data-ipw-text="qa.contact">飞书 @hanli · 内部社区 #ai-engineering</p>
+      <div class="tag-row">
+        <span class="tag" data-ipw-text="qa.link1">slides: wiki.co/ai-eng-deck</span>
+        <span class="tag" data-ipw-text="qa.link2">code: git.co/mini-eval</span>
+      </div>
+    </div>
+    <div class="footer"><span data-ipw-text="qa.tags">#q-and-a</span><span class="pagenum">08 / 08</span></div>
+  </section>
+
+</div>
+</body>
+</html>

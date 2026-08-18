@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.html-anything-zh.deck-course-module",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "education",
+  "style": "editorial",
+  "tags": [
+    "course",
+    "training",
+    "workshop",
+    "education",
+    "html-anything"
+  ],
+  "surface": "design",
+  "title": "培训课件 Course",
+  "description": "学术暖纸风培训课件模版：暖纸底色、Playfair 衬线标题、teal/orange/terracotta 三暖色，左侧栏常驻学习目标与进度（○/●/▸ 状态），含概念卡片、经验法则 callout、深色演算面板、虚线练习框与 MCQ 自测页。适合企业内部培训、产品学院课程、workshop 教学。移植自 nexu-io/html-anything 的 deck-course-module skill。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "nexu-io/html-anything",
+    "repository": "https://github.com/nexu-io/html-anything",
+    "license": "Apache-2.0",
+    "attribution": "Ported from the html-anything skill 'deck-course-module' to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (teal)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (orange)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (terracotta)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background (warm paper)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface-2",
+        "label": "Soft surface",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-faint",
+        "label": "Faint text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-color-border-strong",
+        "label": "Strong border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font (serif)",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-mono",
+        "label": "Mono font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-code-bg",
+        "label": "Code panel background",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-code-text",
+        "label": "Code panel text",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-exercise-bg",
+        "label": "Exercise box background",
+        "type": "color",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "把示例文案替换为真实课程内容，保持每页一个明确教学目标。",
+    "左侧栏学习目标全程常驻，○=未学 ●=已学 ▸=当前页，别删这个设计。",
+    "teal=知识/正向，orange=强调/练习，terracotta=警示，不要改派用途。",
+    "衬线大标题是风格核心，不要换成无衬线粗黑标题。",
+    "每页内容宁少勿多，教学页留白比信息密度更重要。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

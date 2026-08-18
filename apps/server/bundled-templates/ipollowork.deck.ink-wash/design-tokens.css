@@ -1,0 +1,20 @@
+:root {
+  --ipw-color-primary: #1A1A1A;
+  --ipw-color-secondary: #5C5852;
+  --ipw-color-accent: #A52A2A;
+  --ipw-color-risk: #5C5852;
+  --ipw-color-neutral: #8B8680;
+  --ipw-color-bg: #F5F1E8;
+  --ipw-color-surface: #EFE9DB;
+  --ipw-color-text: #1A1A1A;
+  --ipw-color-muted: #8B8680;
+  --ipw-color-border: rgba(26, 26, 26, 0.14);
+  --ipw-font-display: "Kaiti SC", "KaiTi", serif;
+  --ipw-font-body: "Hiragino Sans GB", "PingFang SC", sans-serif;
+  --ipw-type-scale: 1.25;
+  --ipw-body-line-height: 1.9;
+  --ipw-card-bg: #FAF7EF;
+  --ipw-card-border: rgba(26, 26, 26, 0.12);
+  --ipw-card-radius: 2px;
+  --ipw-card-shadow: none;
+}

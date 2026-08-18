@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "id": "ipollowork.html-anything-zh.ppt-keynote",
+  "version": "1.0.0",
+  "kind": "design",
+  "category": "slides",
+  "subcategory": "launch",
+  "style": "editorial",
+  "tags": [
+    "keynote",
+    "launch",
+    "product",
+    "presentation",
+    "html-anything"
+  ],
+  "surface": "design",
+  "title": "Keynote 发布会",
+  "description": "苹果 Keynote 风产品发布幻灯片模版：一屏一卡、超大字号标题、衬线斜体点睛词、等宽字体页码指示器；暖纸米白 / 墨黑 / 陶土橙→琥珀金品牌渐变三种页面形态交替，数据卡片网格对齐。适合产品发布会、新功能推介、路演演讲。移植自 nexu-io/html-anything 项目的 ppt-keynote skill。",
+  "cover": "cover.png",
+  "entry": "entry.html",
+  "source": {
+    "name": "nexu-io/html-anything",
+    "repository": "https://github.com/nexu-io/html-anything",
+    "license": "Apache-2.0",
+    "attribution": "Ported from the ppt-keynote skill of nexu-io/html-anything to an iPolloWork HTML slides template."
+  },
+  "designSystem": {
+    "tokenVersion": 1,
+    "tokens": "design-tokens.css",
+    "editableGroups": [
+      "theme",
+      "background",
+      "typography",
+      "components"
+    ],
+    "variables": [
+      {
+        "id": "--ipw-color-primary",
+        "label": "Primary (terracotta)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-secondary",
+        "label": "Secondary (amber)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-accent",
+        "label": "Accent (ink / dark slide)",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-bg",
+        "label": "Page background (cream)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-surface",
+        "label": "Surface (card cream)",
+        "type": "color",
+        "group": "background"
+      },
+      {
+        "id": "--ipw-color-text",
+        "label": "Text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-muted",
+        "label": "Muted text",
+        "type": "color",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-color-border",
+        "label": "Border",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-font-display",
+        "label": "Display font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-body",
+        "label": "Body font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-serif",
+        "label": "Serif italic accent font",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-font-mono",
+        "label": "Mono font (page indicator)",
+        "type": "font",
+        "group": "typography"
+      },
+      {
+        "id": "--ipw-gradient-brand",
+        "label": "Brand gradient",
+        "type": "text",
+        "group": "theme"
+      },
+      {
+        "id": "--ipw-card-bg",
+        "label": "Card background (light)",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-border",
+        "label": "Card border (light)",
+        "type": "color",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-radius",
+        "label": "Card radius",
+        "type": "number",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-shadow",
+        "label": "Card shadow",
+        "type": "text",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-dark-bg",
+        "label": "Card background (dark slide)",
+        "type": "text",
+        "group": "components"
+      },
+      {
+        "id": "--ipw-card-dark-border",
+        "label": "Card border (dark slide)",
+        "type": "text",
+        "group": "components"
+      }
+    ]
+  },
+  "applyChecklist": [
+    "每页只讲一件事：一个大标题 + 至多 3 行支撑文字，信息超量就拆页。",
+    "衬线斜体（serif italic）每页最多点睛一个词/短语，滥用会失去张力。",
+    "米白 / 墨黑 / 品牌渐变三种页面形态交替使用，深色页用于方案、数据等强调时刻。",
+    "保持超大字号（标题 64px 以上），不要为了塞内容缩小字号。",
+    "示例文案全部替换为真实发布内容后再导出。"
+  ],
+  "minimumAppVersion": "0.17.20"
+}

@@ -7,7 +7,7 @@ import {
   resolvePetEngineHandle,
   type PetEngineHandle,
 } from "../kernel/pet-engine";
-import { readPetPersona } from "../kernel/pet-persona";
+import { PET_PERSONA_DEFAULT_NAME, readPetPersona } from "../kernel/pet-persona";
 
 const PET_CHAT_REQUEST_EVENT = "ipollowork:pet:chat-request";
 
@@ -59,24 +59,38 @@ export function usePetCompanionBridge() {
         const handle = await resolvePetEngineHandle();
         if (!handle) throw new Error("engine handle unavailable");
 
+        // The default persona follows the configured nickname; a custom
+        // persona from settings is used verbatim.
+        const petConfig = internal ? null : await petGetConfig().catch(() => null);
+        const nickname = petConfig?.nickname?.trim() || undefined;
+
         if (!sessionIdRef.current) {
           const created = await petEngineRequestJson<{ id?: string }>(`${handle.mount}/session`, handle, {
             method: "POST",
-            body: JSON.stringify({ title: PET_COMPANION_SESSION_TITLE }),
+            body: JSON.stringify({ title: `桌面助手${nickname || PET_PERSONA_DEFAULT_NAME}` }),
           });
           if (!created?.id) throw new Error("pet companion session create failed");
           sessionIdRef.current = created.id;
         }
         const sessionId = sessionIdRef.current;
 
-        // The default persona follows the configured nickname; a custom
-        // persona from settings is used verbatim.
-        const petConfig = internal ? null : await petGetConfig().catch(() => null);
-        const nickname = petConfig?.nickname?.trim() || undefined;
-
         // The proxy serves reads under /opencode/api/* but prompts and the
         // live message log must go to /opencode/* (the recipe the app UI uses).
         const directMount = handle.mount.replace(/\/opencode\/api$/, "/opencode");
+
+        // Snapshot the last assistant reply BEFORE prompting so the poll below
+        // only accepts a reply produced by this request (avoids replaying the
+        // previous turn when the model is slow).
+        const lastAssistantText = (messages: MessageListItem[]) =>
+          (messages ?? [])
+            .filter((message) => message.info?.role === "assistant")
+            .pop();
+        const before = await petEngineRequestJson<MessageListItem[]>(`${directMount}/session/${sessionId}/message?limit=20`, handle);
+        const beforeText = (lastAssistantText(Array.isArray(before) ? before : [])?.parts ?? [])
+          .map((part) => (part.type === "text" && typeof part.text === "string" ? part.text : ""))
+          .join("")
+          .trim();
+
         const promptUrl = `${directMount}/session/${sessionId}/prompt_async`;
         const response = await fetch(promptUrl, {
           method: "POST",
@@ -93,14 +107,12 @@ export function usePetCompanionBridge() {
         while (Date.now() < deadline) {
           await new Promise((resolve) => setTimeout(resolve, PET_CHAT_POLL_MS));
           const messages = await petEngineRequestJson<MessageListItem[]>(`${directMount}/session/${sessionId}/message?limit=20`, handle);
-          const assistant = (Array.isArray(messages) ? messages : [])
-            .filter((message) => message.info?.role === "assistant")
-            .pop();
+          const assistant = lastAssistantText(Array.isArray(messages) ? messages : []);
           const candidate = (assistant?.parts ?? [])
             .map((part) => (part.type === "text" && typeof part.text === "string" ? part.text : ""))
             .join("")
             .trim();
-          if (candidate) {
+          if (candidate && candidate !== beforeText) {
             replyText = candidate;
             break;
           }

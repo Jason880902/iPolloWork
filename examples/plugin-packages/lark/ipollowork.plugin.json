@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "lark",
   "name": "飞书",
   "description": "飞书待办、日程、消息、审批接入：用 lark-cli 扫码/桌面客户端授权一次即可，无需在开放平台手动创建应用。",
@@ -10,8 +10,12 @@
     "trusted": true,
     "reference": "https://github.com/larksuite/cli"
   },
-  "icon": { "simpleIconSlug": "lark" },
-  "composer": { "prompt": "使用飞书 lark-cli 查询或处理待办、日程、消息和审批，涉及写操作前先确认范围。" },
+  "icon": {
+    "simpleIconSlug": "lark"
+  },
+  "composer": {
+    "prompt": "使用飞书 lark-cli 查询或处理待办、日程、消息和审批，涉及写操作前先确认范围。"
+  },
   "setup": {
     "instructions": "免控制台：先在终端安装并初始化 lark-cli（npm i -g @larksuite/cli），运行 lark-cli config init --new，按提示在浏览器完成自动建应用；再运行 lark-cli auth login --domain task,calendar,im,approval，用飞书扫码/桌面客户端授权一次即可。之后小珀就能直接查你的待办、日程和消息。",
     "primaryCta": "查看 lark-cli 使用指南",
@@ -23,7 +27,9 @@
       "en": {
         "description": "Feishu/Lark todos, calendar, messages, approvals via lark-cli — authorize once with scan/desktop login, no manual app creation on the console.",
         "category": "Work Collaboration",
-        "composer": { "prompt": "Use lark-cli to query or handle todos, calendar, messages, and approvals; confirm scope before write actions." },
+        "composer": {
+          "prompt": "Use lark-cli to query or handle todos, calendar, messages, and approvals; confirm scope before write actions."
+        },
         "setup": {
           "instructions": "No console needed: install lark-cli (npm i -g @larksuite/cli), run `lark-cli config init --new` and finish the browser verification to auto-provision an app, then run `lark-cli auth login --domain task,calendar,im,approval` and authorize once with a scan/desktop login.",
           "primaryCta": "View lark-cli guide",
@@ -31,31 +37,128 @@
         },
         "resources": {
           "lark-cli": {
-            "label": "lark-cli 飞书助手",
+            "label": "lark-cli Feishu Assistant",
             "description": "Drives the official lark-cli to query and manage todos, calendar, messages, and approvals."
           },
           "lark-mcp": {
             "label": "Feishu/Lark MCP (advanced)",
             "description": "Optional OpenAPI MCP; requires an app's App ID/Secret in Settings → Environment Variables."
+          },
+          "lark-approval": {
+            "label": "Feishu Approvals"
+          },
+          "lark-apps": {
+            "label": "Feishu Apps (Spark/Miaoda)"
+          },
+          "lark-attendance": {
+            "label": "Feishu Attendance"
+          },
+          "lark-base": {
+            "label": "Feishu Base (Bitable)"
+          },
+          "lark-calendar": {
+            "label": "Feishu Calendar"
+          },
+          "lark-contact": {
+            "label": "Feishu Contacts"
+          },
+          "lark-doc": {
+            "label": "Feishu Docs"
+          },
+          "lark-drive": {
+            "label": "Feishu Drive"
+          },
+          "lark-event": {
+            "label": "Feishu Event Stream"
+          },
+          "lark-im": {
+            "label": "Feishu Messaging"
+          },
+          "lark-mail": {
+            "label": "Feishu Mail"
+          },
+          "lark-markdown": {
+            "label": "Feishu Markdown"
+          },
+          "lark-minutes": {
+            "label": "Feishu Minutes"
+          },
+          "lark-note": {
+            "label": "Feishu Meeting Notes"
+          },
+          "lark-okr": {
+            "label": "Feishu OKR"
+          },
+          "lark-openapi-explorer": {
+            "label": "Feishu OpenAPI Explorer"
+          },
+          "lark-shared": {
+            "label": "Feishu Shared Entry"
+          },
+          "lark-sheets": {
+            "label": "Feishu Sheets"
+          },
+          "lark-skill-maker": {
+            "label": "lark-cli Skill Maker"
+          },
+          "lark-slides": {
+            "label": "Feishu Slides"
+          },
+          "lark-task": {
+            "label": "Feishu Tasks"
+          },
+          "lark-vc": {
+            "label": "Feishu Video Conferencing"
+          },
+          "lark-vc-agent": {
+            "label": "Feishu Meeting Agent"
+          },
+          "lark-whiteboard": {
+            "label": "Feishu Whiteboard"
+          },
+          "lark-wiki": {
+            "label": "Feishu Wiki"
+          },
+          "lark-workflow-meeting-summary": {
+            "label": "Meeting Summary Workflow"
+          },
+          "lark-workflow-standup-report": {
+            "label": "Standup Report Workflow"
           }
         },
         "permissions": {
-          "process": { "reason": "Run the official lark-cli for Feishu/Lark operations." },
-          "network": { "reason": "Call the Feishu/Lark OpenAPI endpoints requested by the user." }
-        }
+          "process": {
+            "reason": "Run the official lark-cli for Feishu/Lark operations."
+          },
+          "network": {
+            "reason": "Call the Feishu/Lark OpenAPI endpoints requested by the user."
+          }
+        },
+        "name": "Feishu/Lark"
       }
     }
   },
   "package": {
     "version": "1.1.0",
-    "publisher": { "id": "ipollowork", "name": "iPolloWork" },
-    "compatibility": { "ipollowork": ">=0.18.0", "opencode": ">=1.18.0" },
-    "updateId": "ipollowork/lark",
-    "entrypoints": {}
+    "publisher": {
+      "id": "ipollowork",
+      "name": "iPolloWork"
+    },
+    "compatibility": {
+      "ipollowork": ">=0.18.0"
+    },
+    "updateId": "ipollowork/lark"
   },
   "permissions": [
-    { "id": "process", "reason": "运行官方 lark-cli 完成飞书操作。" },
-    { "id": "network", "reason": "调用用户请求的飞书开放平台 API。", "optional": true }
+    {
+      "id": "process",
+      "reason": "运行官方 lark-cli 完成飞书操作。"
+    },
+    {
+      "id": "network",
+      "reason": "调用用户请求的飞书开放平台 API。",
+      "optional": true
+    }
   ],
   "resources": [
     {
@@ -63,16 +166,180 @@
       "id": "lark-cli",
       "label": "lark-cli 飞书助手",
       "description": "通过官方 lark-cli 查询和管理待办、日程、消息、审批。",
-      "path": ".opencode/skills/lark-cli/SKILL.md",
-      "provides": ["workflow:lark-cli"],
+      "path": "skills/lark-cli/SKILL.md",
+      "provides": [
+        "workflow:lark-cli"
+      ],
       "required": true
+    },
+    {
+      "type": "skill",
+      "id": "lark-approval",
+      "label": "飞书审批",
+      "path": "skills/lark-approval/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-apps",
+      "label": "妙搭（Spark/Miaoda）应用开发与托管",
+      "path": "skills/lark-apps/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-attendance",
+      "label": "飞书考勤打卡",
+      "path": "skills/lark-attendance/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-base",
+      "label": "飞书多维表格（Base）操作",
+      "path": "skills/lark-base/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-calendar",
+      "label": "飞书日历",
+      "path": "skills/lark-calendar/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-contact",
+      "label": "飞书 / Lark 通讯录",
+      "path": "skills/lark-contact/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-doc",
+      "label": "飞书云文档（Docx/Wiki）",
+      "path": "skills/lark-doc/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-drive",
+      "label": "飞书云空间（云盘/云存储）",
+      "path": "skills/lark-drive/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-event",
+      "label": "飞书事件监听",
+      "path": "skills/lark-event/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-im",
+      "label": "飞书即时通讯",
+      "path": "skills/lark-im/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-mail",
+      "label": "飞书邮箱",
+      "path": "skills/lark-mail/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-markdown",
+      "label": "飞书 Markdown",
+      "path": "skills/lark-markdown/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-minutes",
+      "label": "飞书妙记",
+      "path": "skills/lark-minutes/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-note",
+      "label": "飞书会议纪要（Note）直查",
+      "path": "skills/lark-note/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-okr",
+      "label": "飞书 OKR",
+      "path": "skills/lark-okr/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-openapi-explorer",
+      "label": "飞书/Lark 原生 OpenAPI 探索",
+      "path": "skills/lark-openapi-explorer/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-shared",
+      "label": "飞书共享入口",
+      "path": "skills/lark-shared/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-sheets",
+      "label": "飞书电子表格",
+      "path": "skills/lark-sheets/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-skill-maker",
+      "label": "lark-cli 自定义 Skill",
+      "path": "skills/lark-skill-maker/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-slides",
+      "label": "飞书幻灯片",
+      "path": "skills/lark-slides/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-task",
+      "label": "飞书任务",
+      "path": "skills/lark-task/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-vc",
+      "label": "飞书视频会议",
+      "path": "skills/lark-vc/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-vc-agent",
+      "label": "飞书视频会议会中能力",
+      "path": "skills/lark-vc-agent/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-whiteboard",
+      "label": "飞书画板",
+      "path": "skills/lark-whiteboard/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-wiki",
+      "label": "飞书知识库",
+      "path": "skills/lark-wiki/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-workflow-meeting-summary",
+      "label": "会议纪要整理工作流",
+      "path": "skills/lark-workflow-meeting-summary/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "id": "lark-workflow-standup-report",
+      "label": "日程待办摘要",
+      "path": "skills/lark-workflow-standup-report/SKILL.md"
     },
     {
       "type": "mcp",
       "id": "lark-mcp",
       "label": "飞书 MCP（高级）",
       "description": "可选的飞书 OpenAPI MCP；需在环境变量配置应用的 App ID/Secret。",
-      "path": ".opencode/mcps/lark.json",
+      "path": "mcp/lark.json",
       "mcpServerName": "lark",
       "oauth": false,
       "required": false
