@@ -8,7 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PET_HTML = "pet.html";
 const PET_WINDOW_WIDTH = 380;
-const PET_WINDOW_HEIGHT = 520;
+const PET_WINDOW_HEIGHT = 640;
 const PET_STATE_FILE = "pet-state.json";
 const PET_DRAG_POLL_MS = 16;
 const PET_DEFAULT_TEMPLATE_ID = "whale-girl";

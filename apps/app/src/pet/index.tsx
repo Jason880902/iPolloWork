@@ -389,7 +389,7 @@ function PetApp() {
   const spriteTemplate = template.kind === "spritesheet" ? template : null;
 
   return (
-    <div className="relative flex h-dvh flex-col items-center justify-end pb-6">
+    <div className="relative flex h-dvh flex-col items-center justify-end pb-[140px]">
       {chatOpen ? (
         <ChatPanel
           name={petName}

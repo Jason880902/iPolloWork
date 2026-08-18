@@ -365,9 +365,7 @@ const WHALE_CSS = `
 }
 /* When the hover panel is open it occupies the space directly above the
    sprite; lift bubbles clear of it so neither clips the other. */
-.whale-float.has-panel .whale-bubble {
-  bottom: calc(100% + 96px);
-}
+/* Panel sits below the sprite; bubbles stay above. */
 @keyframes whale-bubble-pop {
   0% { opacity: 0; transform: translateY(6px) scale(0.85); }
   15% { opacity: 1; transform: translateY(0) scale(1.05); }
@@ -388,7 +386,7 @@ const WHALE_CSS = `
   font-size: 12px;
   display: flex;
   position: absolute;
-  bottom: calc(100% + 4px);
+  top: calc(100% + 6px);
   box-shadow: 0 4px 16px #00000059;
   z-index: 10;
 }
@@ -396,7 +394,7 @@ const WHALE_CSS = `
   content: "";
   height: 14px;
   position: absolute;
-  top: 100%;
+  bottom: 100%;
   left: 0;
   right: 0;
 }

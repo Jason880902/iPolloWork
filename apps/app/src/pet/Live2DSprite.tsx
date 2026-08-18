@@ -349,10 +349,10 @@ export function Live2DSprite(props: Live2DSpriteProps) {
         .whale-bubble-pet { background: #f472b6eb; }
         .whale-bubble-feed { background: #38bdf8eb; }
         .whale-bubble-status { text-overflow: ellipsis; background: #0f172ae6; border: 1px solid #7dd3fc80; max-width: min(280px, 100vw - 24px); animation: none; overflow: hidden; }
-        .whale-float.has-panel .whale-bubble { bottom: calc(100% + 96px); }
+        /* Panel sits below the sprite (top:100%); bubbles stay above. */
         @keyframes whale-bubble-pop { 0% { opacity: 0; transform: translateY(6px) scale(0.85); } 15% { opacity: 1; transform: translateY(0) scale(1.05); } 25% { transform: translateY(0) scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-8px) scale(0.95); } }
-        .whale-panel { color: #e2e8f0; backdrop-filter: blur(6px); background: #0f172aeb; border: 1px solid #94a3b859; border-radius: 10px; flex-direction: column; gap: 6px; min-width: 148px; padding: 8px 10px; font-size: 12px; display: flex; position: absolute; bottom: calc(100% + 4px); box-shadow: 0 4px 16px #00000059; z-index: 10; }
-        .whale-panel::after { content: ""; height: 14px; position: absolute; top: 100%; left: 0; right: 0; }
+        .whale-panel { color: #e2e8f0; backdrop-filter: blur(6px); background: #0f172aeb; border: 1px solid #94a3b859; border-radius: 10px; flex-direction: column; gap: 6px; min-width: 148px; padding: 8px 10px; font-size: 12px; display: flex; position: absolute; top: calc(100% + 6px); box-shadow: 0 4px 16px #00000059; z-index: 10; }
+        .whale-panel::after { content: ""; height: 14px; position: absolute; bottom: 100%; left: 0; right: 0; }
         .whale-rank-row { white-space: nowrap; justify-content: space-between; gap: 10px; display: flex; }
         .whale-name-cell { font-weight: 600; }
         .whale-rename-row { align-items: center; gap: 6px; display: flex; }
